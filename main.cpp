@@ -1,16 +1,17 @@
 #include <iostream>
 #include <string>
+#include <list>
 #include <deque>
-#if 1 //CREATE A REAL STL EXAMPLE
-	#include <map>
-	#include <stack>
-	#include <vector>
-	namespace ft = std;
-#else
-	#include <map.hpp>
-	#include <stack.hpp>
-	#include <vector.hpp>
-#endif
+// #if 1 //CREATE A REAL STL EXAMPLE
+// 	#include <map>
+// 	#include <stack>
+// 	#include <vector>
+// 	namespace ft = std;
+// #else
+	// #include <map.hpp>
+	// #include <stack.hpp>
+	#include <Vector.hpp>
+// #endif
 
 #include <stdlib.h>
 
@@ -24,7 +25,7 @@ struct Buffer
 
 
 #define COUNT (MAX_RAM / (int)sizeof(Buffer))
-
+/*
 template<typename T>
 class MutantStack : public ft::stack<T>
 {
@@ -43,18 +44,23 @@ public:
 	iterator begin() { return this->c.begin(); }
 	iterator end() { return this->c.end(); }
 };
-
+*/
 int main(int argc, char** argv) {
-	if (argc != 2)
-	{
-		std::cerr << "Usage: ./test seed" << std::endl;
-		std::cerr << "Provide a seed please" << std::endl;
-		std::cerr << "Count value:" << COUNT << std::endl;
-		return 1;
-	}
-	const int seed = atoi(argv[1]);
-	srand(seed);
-
+	// if (argc != 2)
+	// {
+	// 	std::cerr << "Usage: ./test seed" << std::endl;
+	// 	std::cerr << "Provide a seed please" << std::endl;
+	// 	std::cerr << "Count value:" << COUNT << std::endl;
+	// 	return 1;
+	// }
+	// const int seed = atoi(argv[1]);
+	// srand(seed);
+	
+	ft::Vector<std::string> vector_str;
+	(void)argc;
+	(void)argv;
+	
+/*
 	ft::vector<std::string> vector_str;
 	ft::vector<int> vector_int;
 	ft::stack<int> stack_int;
@@ -112,5 +118,6 @@ int main(int argc, char** argv) {
 		std::cout << *it;
 	}
 	std::cout << std::endl;
+	*/
 	return (0);
 }
