@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <Iterator>
+#include <cstddef>
+#include "RandomAccess.hpp"
 
 template <class Iterator>
 class IteratorTraits
@@ -15,6 +17,11 @@ class IteratorTraits
 			(void)rhs;
 			return *this;
 		}
+	typedef Iterator::difference_type difference_type;
+	typedef Iterator::value_type value_type;
+	typedef Iterator::pointer pointer;
+	typedef Iterator::reference reference;
+	typedef Iterator::iterator_category iterator_category
 };
 
 template <class T>
@@ -30,10 +37,11 @@ class IteratorTraits<T*>
 				(void)rhs;
 				return *this;
 		}
+		typedef ptrdiff_t difference_type;
 		typedef T value_type;
 		typedef T* pointer;
 		typedef T& reference;
-		typedef std::random_access_iterator_tag iterator_category;
+		typedef RandomAccessIterator iterator_category;
 };
 
 template <class T>
@@ -49,9 +57,11 @@ class IteratorTraits<const T*>
 				(void)rhs;
 				return *this;
 		}
+		typedef ptrdiff_t difference_type;
+		typedef T value_type;
 		typedef const T* pointer;
 		typedef const T& reference;
-		typedef std::random_access_iterator_tag iterator_category;
+		typedef RandomAccessIterator iterator_category;
 };
 
 #endif
