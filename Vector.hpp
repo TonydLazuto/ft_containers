@@ -179,12 +179,11 @@ namespace ft
 
 
 		private:
-			allocator_type				_alloc;
-			iterator					_v;
-			
-			pointer _v_start;
-			pointer _v_end;
-			pointer _v_end_alloc;
+			allocator_type	_alloc;
+			iterator		_v;
+			pointer			_v_start;
+			pointer 		_v_end;
+			pointer			_v_end_alloc;
 	};
 }
 
