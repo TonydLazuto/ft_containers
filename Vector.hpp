@@ -6,16 +6,6 @@
 #include "IteratorTraits.hpp"
 #include "RandomAccess.hpp"
 
-template<class T>
-class Vector_itor : public Itor<T>
-{
-	// Vector implementation Vector<T>& v;
-	size_t index; // index of current element public:
-	Vector_itor(Vector<T>&vv):v(vv),index(0){}
-	T* first() { return (v.size()) ? &v[index=0] : 0; }
-	T* next() { return (++index<v.size()) ? &v[index] : 0; }
-};
-
 namespace ft 
 {
 	template <typename T, class Alloc = std::allocator<T> >
@@ -23,34 +13,51 @@ namespace ft
 	{
 		public:
 			typedef	T value_type;
-			typedef typename std::allocator<T> allocator_type;
-			typedef typename allocator_type::reference reference;
-			typedef typename allocator_type::const_reference const_reference;
-			typedef typename allocator_type::pointer pointer;
-			typedef typename allocator_type::const_pointer const_pointer;
+			typedef Alloc allocator_type;
 
-			typedef IteratorTraits<T>::difference_type difference_type;
+			typedef Alloc::size_type size_type;
+			typedef Alloc::difference_type difference_type;
+
+			typedef T* iterator; //T*
+			typedef const T* const_iterator; // const T*
+			typedef ft::reverse_iterator<iterator>reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>const_reverse_iterator;
+
+
+			typedef typename Alloc::reference reference;
+			typedef typename Alloc::const_reference const_reference;
+			typedef typename Alloc::pointer pointer;
+			typedef typename Alloc::const_pointer const_pointer;
+
 			typedef typename size_type;
 
 			
 			explicit Vector( void )
 			{
-				// this->elets = test.allocate(0, 0);
-				// std::cout << "test address : " << test.address(*p) << std::endl;
-				// test.construct(p, "hello");
-				// std::cout << *p << std::endl;
-				// test.destroy(p);
-				// test.deallocate(p);
+				this->_v_start = alloc.allocate(0, 0);
+				this->_v_end = this->_v_start;
+				this->_v_end_alloc = this->_v_end;
 			}
-			// explicit Vector( size_type n, const value_type& val = value_type() )
+			explicit vector (size_type n, const value_type& val = value_type(),
+				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
+				{
+					_v = alloc.allocate(n);
+					for (iterator it = _v; it < _v + n; it++)
+					{
+						alloc.construct(p, val);
+					}
+				}
+			// explicit Vector( size_type n )
 			// {
-			// 	;
+			// 	this->_v_start = alloc.allocate(n, 0);
+			// 	this->_v_end = this->_v_start;
+			// 	this->_v_end_alloc = this->_v_end;
 			// }
-			// template <class InputIterator>
-			// vector (InputIterator first, InputIterator last )
-			// {
-			// 	;
-			// }
+			template <class InputIterator>
+			vector (InputIterator first, InputIterator last )
+			{
+				;
+			}
 			virtual ~Vector( void ) {}
 			Vector(Vector const & x) { (void)x; }
 
@@ -58,7 +65,7 @@ namespace ft
 
 			iterator begin(void)
 			{
-				// return this->
+				return iterator(this->_v_start); // ?
 			}
 			const_iterator begin(void) const
 			{
@@ -72,35 +79,56 @@ namespace ft
 			{
 				// return this->
 			}
-			size_type size() const 
+			size_type size(void) const 
 			{
 				// return size_type(this->_M_impl._M_finish - this->_M_impl._M_start);
 			}
-			size_type max_size() const;
+			size_type max_size(void) const;
 
-			void resize (size_type n, value_type val = value_type());
+			void resize (size_type n, value_type val = value_type(void));
 
-			size_type capacity() const;
+			size_type capacity(void) const;
 
-			bool empty() const;
+			bool empty(void) const;
 
-			void reserve (size_type n);
+			void reserve (size_type n)
+			{
+				if (n <= capacity())
+					return ;
+				iterator my_v = alloc.allocate(n);
+				iterator tmp = _v;
+
+				while (tmp < _v + size())
+				{
+					alloc.construct(my_v++, tmp);
+					alloc.destroy(tmp++);
+				}
+				alloc.deallocate(_v, capacity());
+				_v = my_v;
+			}
 
 			reference operator[] (size_type n);
 
 			const_reference operator[] (size_type n) const;
 
 			reference at (size_type n);
+			/*
+			Indexing is done by operator[]() and at();
+			operator[]() provides unchecked access,
+			whereas at() does a range check and throws out_of_range
+			if an index is out of range
+			try catch
+			 */
 
 			const_reference at (size_type n) const;
 
-			reference front();
+			reference front(void);
 
-			const_reference front() const;
+			const_reference front(void) const;
 
-			reference back();
+			reference back(void);
 
-			const_reference back() const;
+			const_reference back(void) const;
 
 			template <class InputIterator>
   			void assign (InputIterator first, InputIterator last);
@@ -109,7 +137,7 @@ namespace ft
 
 			void push_back (const value_type& val);
 
-			void pop_back();
+			void pop_back(void);
 
 			iterator insert (iterator position, const value_type& val);
 
@@ -124,9 +152,9 @@ namespace ft
 
 			void swap (Vector& x);
 
-			void clear();
+			void clear(void);
 
-			allocator_type get_allocator() const;
+			allocator_type get_allocator(void) const;
 			
 			template <class T, class Alloc>
 			bool operator==(const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
@@ -151,16 +179,12 @@ namespace ft
 
 
 		private:
-			allocator_type			test;
-			pointer					elets;
-			random_access_iterator_tag	it;
-			typedef struct	s_pointer_info {
-				pointer _v_start;
-				pointer _v_end;
-				pointer _v_end_alloc;
-			}				t_pointer_info;
+			allocator_type				_alloc;
+			iterator					_v;
 			
-			// typedef typename std::vector::allocator_type::allocator allocator;
+			pointer _v_start;
+			pointer _v_end;
+			pointer _v_end_alloc;
 	};
 }
 

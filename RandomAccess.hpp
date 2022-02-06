@@ -2,19 +2,22 @@
 # define RANDOMACCESS_HPP
 
 #include <iostream>
+#include "Bidirectional.hpp"
 
-template <class T>
-class RandomAccessIterator
+namespace ft 
 {
-	private:
-
-	public:
-		RandomAccessIterator( void );
-		virtual ~RandomAccessIterator( void );
-		RandomAccessIterator(RandomAccessIterator const & src);
-		RandomAccessIterator& operator=(RandomAccessIterator const & rhs);
-		T*	first( void ) = 0;
-		T*	next( void ) = 0;
-};
+	template <class T>
+	class RandomAccessIterator : public BidirectionalIterator
+	{
+		private:
+			T*	p;
+		public:
+			RandomAccessIterator( void ) {}
+			virtual ~RandomAccessIterator( void ) {}
+			RandomAccessIterator(RandomAccessIterator const & src) {}
+			RandomAccessIterator& operator=(RandomAccessIterator const & rhs) {}
+			
+	};
+}
 
 #endif

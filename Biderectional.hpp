@@ -3,18 +3,21 @@
 
 #include <iostream>
 
-class BiderectionalIterator
+namespace ft 
 {
-	private:
-		
+	class BiderectionalIterator
+	{
+		private:
+			
 
-	public:
-		BiderectionalIterator( void );
-		virtual ~BiderectionalIterator( void );
-		BiderectionalIterator(BiderectionalIterator const & src);
-		BiderectionalIterator& operator=(BiderectionalIterator const & rhs);
+		public:
+			BiderectionalIterator( void );
+			virtual ~BiderectionalIterator( void );
+			BiderectionalIterator(BiderectionalIterator const & src);
+			BiderectionalIterator& operator=(BiderectionalIterator const & rhs);
 
-		
-};
+			
+	};
+}
 
 #endif
