@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <memory>
-#include "IteratorTraits.hpp"
 #include "RandomAccess.hpp"
 
 namespace ft 
@@ -18,11 +17,10 @@ namespace ft
 			typedef Alloc::size_type size_type;
 			typedef Alloc::difference_type difference_type;
 
-			typedef T* iterator; //T*
-			typedef const T* const_iterator; // const T*
+			typedef typename ft::RandomAccessIterator<T> iterator;
+			// typedef typename ft::RandomAccessIterator<T> const_iterator;
 			typedef ft::reverse_iterator<iterator>reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>const_reverse_iterator;
-
 
 			typedef typename Alloc::reference reference;
 			typedef typename Alloc::const_reference const_reference;
