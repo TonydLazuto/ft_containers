@@ -13,14 +13,13 @@ namespace ft
 			Iter current;
 
 		public:
-			ReverseIterator( void );
+			ReverseIterator( void ) : current() { }
 			virtual ~ReverseIterator( void );
+			explicit ReverseIterator(Iter x) : current(x){}
+			template<class U> ReverseIterator (const ReverseIterator<U>&x) : current(x.base()) {}
+
 			ReverseIterator(ReverseIterator const & src);
 			ReverseIterator& operator=(ReverseIterator const & rhs);
-
-			reverse_iterator() : current() { }
-			explicit reverse_iterator(Iter x) : current(x){}
-			template<class U> reverse_iterator (const reverse_iterator<U>&x) : current(x.base()) {}
 
 			Iter base()const{ return current; }//current iterator value
 
@@ -31,22 +30,22 @@ namespace ft
 			pointer operator->()const;
 			reference operator[](difference_type n)const;
 
-			reverse_iterator& operator++() { --current; return *this; } // note: not ++
-			reverse_iterator operator++(int){
-				reverse_iterator t=current;
+			ReverseIterator& operator++() { --current; return *this; } // note: not ++
+			ReverseIterator operator++(int){
+				ReverseIterator t=current;
 				--current;
 				return t;
 			}
-			reverse_iterator& operator--() { ++current; return *this; } // note: not – –
-			reverse_iterator operator--(int) {
-				reverse_iterator t=current;
+			ReverseIterator& operator--() { ++current; return *this; } // note: not – –
+			ReverseIterator operator--(int) {
+				ReverseIterator t=current;
 				++current;
 				return t;
 			}
-			reverse_iterator operator+(difference_type n)const;
-			reverse_iterator&operator+=(difference_type n);
-			reverse_iterator operator-(difference_type n)const;
-			reverse_iterator&operator-=(difference_type n);
+			ReverseIterator operator+(difference_type n)const;
+			ReverseIterator&operator+=(difference_type n);
+			ReverseIterator operator-(difference_type n)const;
+			ReverseIterator&operator-=(difference_type n);
 			
 	};
 }
