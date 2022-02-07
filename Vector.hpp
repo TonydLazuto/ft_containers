@@ -30,79 +30,82 @@ namespace ft
 			typedef typename size_type;
 
 			
-			explicit Vector( void )
+			explicit Vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 			{
-				this->_v_start = alloc.allocate(0, 0);
-				this->_v_end = this->_v_start;
-				this->_v_end_alloc = this->_v_end;
+				this->_v = alloc.allocate(0);
+				this->_v_start = this->_v;
+				this->_v_end = this->_v;
+				this->_v_end_alloc = this->_v;
 			}
 			explicit vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 				{
-					_v = alloc.allocate(n);
-					for (iterator it = _v; it < _v + n; it++)
-					{
-						alloc.construct(p, val);
-					}
+					_v = _alloc.allocate(n);
+					iterator it = _v;
+					this->_v_start = it;
+					while (it < _v + n)
+						_alloc.construct(it++, val);
+					this->_v_end = it;
+					this->_v_end_alloc = it;
 				}
-			// explicit Vector( size_type n )
-			// {
-			// 	this->_v_start = alloc.allocate(n, 0);
-			// 	this->_v_end = this->_v_start;
-			// 	this->_v_end_alloc = this->_v_end;
-			// }
 			template <class InputIterator>
-			vector (InputIterator first, InputIterator last )
+         	vector (InputIterator first, InputIterator last,
+                const allocator_type& alloc = allocator_type() : _alloc(alloc)
+				{
+					if (last - first < 1)
+						throw std::exception();
+					
+					this->_v_start = first;
+					_v = _alloc.allocate(last - first);
+					while (first <= last)
+					{
+						_alloc.construct(_v++, *first);
+						first++;
+					}
+					this->_v_end = last;
+					this->_v_end_alloc = last;
+				}
+			virtual ~Vector( void ) {}
+			Vector(Vector const & x) {}
+			Vector& operator=(const Vector& x) {}
+
+			iterator begin(void) { return _v_start; }
+			const_iterator begin(void) const { return const_cast<const_iterator>this->(_v_start); }
+			iterator end(void) { return _v_end; }
+			const_iterator end(void) const { return const_cast<const_iterator>this->(_v_end); }
+			size_type size(void) const 
+			{
+				return static_cast<size_type>(this->_v_end - this->_v);
+			}
+			size_type max_size(void) const
+			{
+				return std::numeric_limits<difference_type>::max();
+			}
+
+			void resize (size_type n, value_type val = value_type(void))
 			{
 				;
 			}
-			virtual ~Vector( void ) {}
-			Vector(Vector const & x) { (void)x; }
-
-			Vector& operator=(const Vector& x) {}
-
-			iterator begin(void)
+			size_type capacity(void) const
 			{
-				return iterator(this->_v_start); // ?
+				return static_cast<size_type>(this->_v_end_alloc - this->_v);
 			}
-			const_iterator begin(void) const
-			{
-				// return this->
-			}
-			iterator end(void)
-			{
-				// return this->
-			}
-			const_iterator end(void) const
-			{
-				// return this->
-			}
-			size_type size(void) const 
-			{
-				// return size_type(this->_M_impl._M_finish - this->_M_impl._M_start);
-			}
-			size_type max_size(void) const;
-
-			void resize (size_type n, value_type val = value_type(void));
-
-			size_type capacity(void) const;
-
-			bool empty(void) const;
-
+			bool empty(void) const { return (this->size() == 0 ? true : false); }
 			void reserve (size_type n)
 			{
 				if (n <= capacity())
 					return ;
+				
 				iterator my_v = alloc.allocate(n);
-				iterator tmp = _v;
+				iterator v_saved = this->_v;
 
-				while (tmp < _v + size())
+				while (v_saved < this->_v + size())
 				{
-					alloc.construct(my_v++, tmp);
-					alloc.destroy(tmp++);
+					alloc.construct(my_v++, *v_saved);
+					alloc.destroy(v_saved++);
 				}
-				alloc.deallocate(_v, capacity());
-				_v = my_v;
+				alloc.deallocate(this->_v, capacity());
+				this->_v = my_v;
 			}
 
 			reference operator[] (size_type n);
@@ -133,7 +136,14 @@ namespace ft
 
 			void assign (size_type n, const value_type& val);
 
-			void push_back (const value_type& val);
+			void push_back (const value_type& val)
+			{
+				if (size() >= capacity())
+					realloc(capacity() * 2);
+				this->_v[this->size() - 1] = val;
+				this->_v_end++;
+				this->_v_end_alloc = capacity();
+			}
 
 			void pop_back(void);
 
@@ -178,10 +188,28 @@ namespace ft
 
 		private:
 			allocator_type	_alloc;
-			iterator		_v;
-			pointer			_v_start;
-			pointer 		_v_end;
-			pointer			_v_end_alloc;
+			pointer		_v;
+			iterator	_v_start;
+			iterator	_v_end;
+			iterator	_v_end_alloc;
+
+			Vector&	realloc(size_t new_capacity)
+			{
+				size_t new_size;
+
+				new_size = new_capacity < this->size() ? new_capacity : this->size();
+				new_v = _alloc.allocate(new_capacity);
+				for (int i = 0; i < new_size; i++)
+					alloc.construct(new_v[i], this->_v[i]);	
+				for (int i = 0; i < this->size(); i++)
+					alloc.destroy(this->_v[i]);
+				_alloc.deallocate(this->v, capacity());
+				this->_v = new_v;
+				this->_v_start = new_v;
+				this->_v_end = size() - 1;
+				this->_v_end_alloc = _v_start + new_capacity;
+				return *this;
+			}
 	};
 }
 
