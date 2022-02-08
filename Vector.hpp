@@ -49,22 +49,34 @@ namespace ft
 					this->_v_end = p;
 					this->_v_end_alloc = p;
 				}
+			// template <typename InputIt,
+			// std::enable_if<
+			//     std::is_base_of<std::input_iterator_tag,typename std::iterator_traits<
+			// 						InputIt>::iterator_category
+			//                     >::value,
+			//     bool>::type = true>
 			template <class InputIterator>
-         	Vector (InputIterator first, InputIterator last,
-                const allocator_type& alloc = allocator_type()) : _alloc(alloc)
+			Vector (InputIterator first, InputIterator last,
+				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 				{
-					if (last - first < 1)
-						throw std::exception();
+					// if (last - first < 1)
+					// 	throw std::exception();
 					
-					this->_v_start = first;
-					_v = this->_alloc.allocate(last - first);
-					while (first <= last)
+					// std::cout << first << std::endl;
+					// std::cout << last << std::endl;
+					// std::cout << &first << std::endl;
+					// std::cout << &last << std::endl;
+					// this->_v_start = first;
+					difference_type d = last - first;
+					_v = this->_alloc.allocate(d);
+					for (int i = 0; i < d - 1; i++)
 					{
+						// std::cout << first << std::endl;
 						this->_alloc.construct(_v++, *first);
 						first++;
 					}
-					this->_v_end = last;
-					this->_v_end_alloc = last;
+					// this->_v_end = last;
+					// this->_v_end_alloc = last;
 				}
 			virtual ~Vector( void )
 			{
@@ -118,8 +130,8 @@ namespace ft
 			{
 				if (n <= capacity())
 					return ;
-				iterator new_v = _alloc.allocate(n);
-				iterator v_saved = this->_v;
+				pointer new_v = _alloc.allocate(n);
+				pointer v_saved = this->_v;
 				while (v_saved < this->_v + size())
 				{
 					_alloc.construct(new_v++, *v_saved);
@@ -134,15 +146,15 @@ namespace ft
 
 			reference at (size_type n)
 			{
-				if (n > size())
-					throw std::exception();
+				// if (n > size())
+				// 	throw std::exception();
 				return (this->_v[n]);
 			}
 
 			const_reference at (size_type n) const
 			{
-				if (n > size())
-					throw std::exception();
+				// if (n > size())
+				// 	throw std::exception();
 				return (const_cast<const_reference>(this->_v[n]));
 			}
 

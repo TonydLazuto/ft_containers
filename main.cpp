@@ -5,7 +5,7 @@
 // #if 1 //CREATE A REAL STL EXAMPLE
 // 	#include <map>
 // 	#include <stack>
-// 	#include <vector>
+	#include <vector>
 // 	namespace ft = std;
 // #else
 	// #include <map.hpp>
@@ -55,10 +55,11 @@ int main(int argc, char** argv) {
 	// }
 	// const int seed = atoi(argv[1]);
 	// srand(seed);
-	
-	ft::Vector<int> vector(10);
-	vector[2] = 150;
+	std::vector<int> true_vector (20, 100);
+	// ft::Vector<int> vector2 (5, 100);
+	ft::Vector<int> vector(true_vector.begin(), true_vector.end());
 	std::cout << vector[2] << std::endl;
+
 	(void)argc;
 	(void)argv;
 	

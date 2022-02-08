@@ -30,7 +30,7 @@ namespace ft
 			bool operator!=(RandomAccessIterator const &rhs) { return (this->_itor != rhs._itor); }
 
 			RandomAccessIterator* operator*(void) { return (*this->iterator); }
-			RandomAccessIterator& operator=(T* t)
+			RandomAccessIterator operator=(T t)
 			{
 				this->_itor = t;
 				return *this;
@@ -72,15 +72,15 @@ namespace ft
 			
 			RandomAccessIterator operator+(int n)
 			{
-				return this->_itor + n;
+				return (*this->_itor + n);
 			}
 			RandomAccessIterator operator-(int n)
 			{
-				return this->_itor - n;
+				return (*this->_itor - n);
 			}
 			int operator-(RandomAccessIterator const &rhs)
 			{
-				return *this - rhs;
+				return (*this->_itor - *rhs._itor);
 			}
 			bool operator<(RandomAccessIterator const &rhs) { return (this->_itor < rhs._itor); }
 			bool operator>(RandomAccessIterator const &rhs) { return (this->_itor > rhs._itor); }

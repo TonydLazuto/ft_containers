@@ -62,7 +62,7 @@ namespace ft
 			typedef T value_type;
 			typedef T* pointer;
 			typedef T& reference;
-			typedef typename T::iterator_category iterator_category;
+			// typedef typename ft::RandomAccessIterator<T> iterator_category;
 	};
 
 	template <class T>
@@ -82,7 +82,7 @@ namespace ft
 			typedef T value_type;
 			typedef const T* pointer;
 			typedef const T& reference;
-			typedef typename T::iterator_category iterator_category;
+			// typedef typename ft::RandomAccessIterator<T> iterator_category;
 	};
 }
 
