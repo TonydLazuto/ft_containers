@@ -2,12 +2,13 @@
 # define REVERSEITERATOR_HPP
 
 #include <iostream>
-#include <Iterator>
+#include <iterator>
+#include "IteratorTraits.hpp"
 
 namespace ft 
 {
 	template <class Iter>
-	class ReverseIterator : public Iterator
+	class ReverseIterator
 	{
 		private:
 			Iter current;
@@ -21,22 +22,22 @@ namespace ft
 			ReverseIterator(ReverseIterator const & src);
 			ReverseIterator& operator=(ReverseIterator const & rhs);
 
-			Iter base()const{ return current; }//current iterator value
+			Iter base(void)const{ return current; }//current iterator value
 
-			reference operator*()const {
+			reference operator*(void)const {
 				Iter tmp=current;
 				return *--tmp;
 			}
-			pointer operator->()const;
+			pointer operator->(void)const;
 			reference operator[](difference_type n)const;
 
-			ReverseIterator& operator++() { --current; return *this; } // note: not ++
+			ReverseIterator& operator++(void) { --current; return *this; } // note: not ++
 			ReverseIterator operator++(int){
 				ReverseIterator t=current;
 				--current;
 				return t;
 			}
-			ReverseIterator& operator--() { ++current; return *this; } // note: not – –
+			ReverseIterator& operator--(void) { ++current; return *this; } // note: not – –
 			ReverseIterator operator--(int) {
 				ReverseIterator t=current;
 				++current;

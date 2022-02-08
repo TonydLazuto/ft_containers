@@ -7,13 +7,14 @@
 namespace ft 
 {
 	template <class T>
-	class RandomAccessIterator : public IteratorTraits
+	class RandomAccessIterator
 	{
 		private:
 			T*	_itor;
-			RandomAccessIterator( void ) {}
+
 		public:
-			RandomAccessIterator( RandomAccessIterator itor ) : _itor(itor) {}
+			RandomAccessIterator( void ) : _itor(NULL) {}
+			RandomAccessIterator(T* itor) : _itor(itor) {}
 			virtual ~RandomAccessIterator( void ) {}
 			RandomAccessIterator(RandomAccessIterator const & src)
 			{
@@ -21,17 +22,15 @@ namespace ft
 			}
 			RandomAccessIterator& operator=(RandomAccessIterator const & rhs)
 			{
-				this->_itor = src._itor;
+				this->_itor = rhs._itor;
 				return *this;
 			}
+		
+			bool operator==(RandomAccessIterator const &rhs) { return (this->_itor == rhs._itor); }
+			bool operator!=(RandomAccessIterator const &rhs) { return (this->_itor != rhs._itor); }
 
-			bool operator==(RandomAccessIterator const &lhs
-				, RandomAccessIterator const &rhs) { return (lhs == rhs); }
-			bool operator!=(RandomAccessIterator const &lhs
-				, RandomAccessIterator const &rhs) { return (lhs != rhs); }
-
-			RandomAccessIterator* operator*(RandomAccessIterator const &src) { return (*this->iterator); }
-			RandomAccessIterator& operator=(pointer t)
+			RandomAccessIterator* operator*(void) { return (*this->iterator); }
+			RandomAccessIterator& operator=(T* t)
 			{
 				this->_itor = t;
 				return *this;
@@ -43,16 +42,16 @@ namespace ft
 				++*this->_itor;
 				return tmp;
 			}
-			RandomAccessIterator& operator++(void)
+			RandomAccessIterator& operator++(int)
 			{
 				this->_itor++;
 				return *this;
 			}
-			RandomAccessIterator& operator++(void)
-			{
-				*(this->_itor)++;
-				return *this;
-			}
+			// RandomAccessIterator& operator++(int)
+			// {
+			// 	*(this->_itor)++;
+			// 	return *this;
+			// }
 			
 			RandomAccessIterator operator--(void)
 			{
@@ -60,16 +59,16 @@ namespace ft
 				--*this->_itor;
 				return tmp;
 			}
-			RandomAccessIterator& operator--(void)
+			RandomAccessIterator& operator--(int)
 			{
 				this->_itor--;
 				return *this;
 			}
-			RandomAccessIterator& operator--(void)
-			{
-				*(this->_itor)--;
-				return *this;
-			}
+			// RandomAccessIterator& operator--(int)
+			// {
+			// 	*(this->_itor)--;
+			// 	return *this;
+			// }
 			
 			RandomAccessIterator operator+(int n)
 			{
@@ -79,19 +78,14 @@ namespace ft
 			{
 				return this->_itor - n;
 			}
-			RandomAccessIterator operator-(RandomAccessIterator const &lhs
-				, RandomAccessIterator const &rhs)
+			int operator-(RandomAccessIterator const &rhs)
 			{
-				return lhs - rhs;
+				return *this - rhs;
 			}
-			bool operator<(RandomAccessIterator const &lhs
-				, RandomAccessIterator const &rhs) { return (lhs < rhs); }
-			bool operator>(RandomAccessIterator const &lhs
-				, RandomAccessIterator const &rhs) { return (lhs > rhs); }
-			bool operator<=(RandomAccessIterator const &lhs
-				, RandomAccessIterator const &rhs) { return (lhs <= rhs); }
-			bool operator>=(RandomAccessIterator const &lhs
-				, RandomAccessIterator const &rhs) { return (lhs >= rhs); }
+			bool operator<(RandomAccessIterator const &rhs) { return (this->_itor < rhs._itor); }
+			bool operator>(RandomAccessIterator const &rhs) { return (this->_itor > rhs._itor); }
+			bool operator<=(RandomAccessIterator const &rhs) { return (this->_itor <= rhs._itor); }
+			bool operator>=(RandomAccessIterator const &rhs) { return (this->_itor >= rhs._itor); }
 
 			RandomAccessIterator operator+=(int n)
 			{
@@ -103,7 +97,12 @@ namespace ft
 				this->_itor -= n;
 				return *this;
 			}
+			
 	};
+
+
+	
+
 }
 
 #endif

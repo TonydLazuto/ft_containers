@@ -5,70 +5,74 @@
 #include <memory>
 #include <exception>
 #include "RandomAccess.hpp"
+// #include "ReverseIterator.hpp"
 
 namespace ft 
 {
 	template <typename T, class Alloc = std::allocator<T> >
-	class Vector : public RandomAccess
+	class Vector
 	{
 		public:
 			typedef	T value_type;
 			typedef Alloc allocator_type;
 
-			typedef Alloc::size_type size_type;
-			typedef Alloc::difference_type difference_type;
+			typedef typename Alloc::size_type size_type;
+			typedef typename Alloc::difference_type difference_type;
 
 			typedef typename ft::RandomAccessIterator<T> iterator;
 			// typedef typename ft::RandomAccessIterator<T> const_iterator;
-			typedef ft::reverse_iterator<iterator>reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>const_reverse_iterator;
+			// typedef ft::ReverseIterator<iterator> reverse_iterator;
+			// typedef ft::ReverseIterator<const_iterator> const_reverse_iterator;
 
 			typedef typename Alloc::reference reference;
 			typedef typename Alloc::const_reference const_reference;
 			typedef typename Alloc::pointer pointer;
 			typedef typename Alloc::const_pointer const_pointer;
 
-			typedef typename size_type;
+			// typedef typename size_type;
 
-			
 			explicit Vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 			{
-				this->_v = alloc.allocate(0);
+				this->_v = _alloc.allocate(0);
 				this->_v_start = this->_v;
 				this->_v_end = this->_v;
-				this->_v_end_alloc = this->_v;
+				this->_v_end_alloc = 0;
 			}
-			explicit vector (size_type n, const value_type& val = value_type(),
+			explicit Vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 				{
 					_v = _alloc.allocate(n);
-					iterator it = _v;
-					this->_v_start = it;
-					while (it < _v + n)
-						_alloc.construct(it++, val);
-					this->_v_end = it;
-					this->_v_end_alloc = it;
+					pointer p = _v;
+					this->_v_start = p;
+					while (p < _v + n)
+						_alloc.construct(p++, val);
+					this->_v_end = p;
+					this->_v_end_alloc = p;
 				}
 			template <class InputIterator>
-         	vector (InputIterator first, InputIterator last,
-                const allocator_type& alloc = allocator_type() : _alloc(alloc)
+         	Vector (InputIterator first, InputIterator last,
+                const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 				{
 					if (last - first < 1)
 						throw std::exception();
 					
 					this->_v_start = first;
-					_v = _alloc.allocate(last - first);
+					_v = this->_alloc.allocate(last - first);
 					while (first <= last)
 					{
-						_alloc.construct(_v++, *first);
+						this->_alloc.construct(_v++, *first);
 						first++;
 					}
 					this->_v_end = last;
 					this->_v_end_alloc = last;
 				}
-			virtual ~Vector( void ) {}
-			Vector(Vector const & x) {}
-			Vector& operator=(const Vector& x) {}
+			virtual ~Vector( void )
+			{
+				// if (_v_end != _v_start)
+				// 	;
+			}
+			// Vector(Vector const & x) {}
+			// Vector& operator=(const Vector& x) {}
 
 			iterator begin(void) { return _v_start; }
 			// const_iterator begin(void) const { return const_cast<const_iterator>this->(_v_start); }
@@ -83,11 +87,12 @@ namespace ft
 				return static_cast<size_type>(std::numeric_limits<difference_type>::max());
 			}
 
-			void resize (size_type n, value_type val = value_type(void))
+			void resize (size_type n, value_type val = value_type())
 			{
 				if (n < size())
 				{
-					for (int i = n - 1 ; i < size(); i++)
+					int i = n - 1;
+					while (i < size())
 					{
 						_alloc.destroy(&_v[i]);
 						if (val)
@@ -100,7 +105,7 @@ namespace ft
 				{
 					if (!val)
 						val = static_cast<value_type>(0); // ?
-					for (int i = size(); i < n; i++)
+					for (int it = size(); it < n; it++)
 						push_back(val);
 				}
 			}
@@ -124,21 +129,21 @@ namespace ft
 				this->_v = new_v;
 			}
 
-			reference operator[] (size_type n) { return (&this->_v[n]); }
+			reference operator[] (size_type n) { return (this->_v[n]); }
 			const_reference operator[] (size_type n) const { return (const_cast<const_reference>(&this->_v[n])); }
 
-			reference at (size_type n);
+			reference at (size_type n)
 			{
 				if (n > size())
 					throw std::exception();
-				return (&this->_v[n]);
+				return (this->_v[n]);
 			}
 
-			const_reference at (size_type n) const;
+			const_reference at (size_type n) const
 			{
 				if (n > size())
 					throw std::exception();
-				return (const_cast<const_reference>(&this->_v[n]));
+				return (const_cast<const_reference>(this->_v[n]));
 			}
 
 			/*
@@ -148,11 +153,11 @@ namespace ft
 			if an index is out of range (try catch)
 			 */
 
-			reference front(void) { return &this->_v_start; }
+			reference front(void) { return this->_v_start; }
 
 			// const_reference front(void) const { return const_cast<const_iterator>(&this->_v_start); }
 
-			reference back(void) { return &this->_v_end; }
+			reference back(void) { return this->_v_end; }
 
 			// const_reference back(void) const { return const_cast<const_iterator>(&this->_v_end); }
 
@@ -223,21 +228,21 @@ namespace ft
 
 		private:
 			allocator_type	_alloc;
-			pointer		_v;
-			iterator	_v_start;
-			iterator	_v_end;
-			iterator	_v_end_alloc;
+			pointer			_v;
+			iterator		_v_start;
+			iterator		_v_end;
+			iterator		_v_end_alloc;
 
 			Vector&	realloc(size_t new_capacity)
 			{
-				size_t new_size;
+				int new_size;
 
 				new_size = new_capacity < this->size() ? new_capacity : this->size();
-				new_v = _alloc.allocate(new_capacity);
+				pointer new_v = _alloc.allocate(new_capacity);
 				for (int i = 0; i < new_size; i++)
-					alloc.construct(new_v[i], this->_v[i]);	
+					_alloc.construct(new_v[i], this->_v[i]);	
 				for (int i = 0; i < this->size(); i++)
-					alloc.destroy(this->_v[i]);
+					_alloc.destroy(this->_v[i]);
 				_alloc.deallocate(this->v, capacity());
 				this->_v = new_v;
 				this->_v_start = new_v;

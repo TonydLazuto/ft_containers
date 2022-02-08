@@ -2,7 +2,7 @@
 # define ITERATORTRAITS_HPP
 
 #include <iostream>
-#include <Iterator>
+#include <iterator>
 #include <cstddef>
 #include "RandomAccess.hpp"
 
@@ -19,30 +19,30 @@ namespace ft
 				(void)rhs;
 				return *this;
 			}
-		typedef Iterator::difference_type difference_type;
-		typedef Iterator::value_type value_type;
-		typedef Iterator::pointer pointer;
-		typedef Iterator::reference reference;
-		typedef Iterator::iterator_category iterator_category
+		typedef typename Iterator::difference_type difference_type;
+		typedef typename Iterator::value_type value_type;
+		typedef typename Iterator::pointer pointer;
+		typedef typename Iterator::reference reference;
+		typedef typename Iterator::iterator_category iterator_category;
 
 		// Source code
-		template<class In>
-		typename iterator_traits<In>::difference_type dist_helper(In first,In last,input_iterator_tag)
-		{
-			typename iterator_traits<In>::difference_type d=0;
-			while (first++!=last)
-				d++; // use increment only return d;
-		}
-		template<class Ran>
-		typename iterator_traits<Ran>::difference_type dist_helper(Ran first,Ran last,random_access_iterator_tag)
-		{
-			return last-first; // rely on random access
-		}
-		template<class In>
-		typename iterator_traits<In>::difference_type distance(In first,In last)
-		{
-			return dist_helper(first,last,iterator_traits<In>::iterator_category()); 
-		}
+		// template<class In>
+		// typename iterator_traits<In>::difference_type dist_helper(In first,In last,input_iterator_tag)
+		// {
+		// 	typename iterator_traits<In>::difference_type d=0;
+		// 	while (first++!=last)
+		// 		d++; // use increment only return d;
+		// }
+		// template<class Ran>
+		// typename iterator_traits<Ran>::difference_type dist_helper(Ran first,Ran last,random_access_iterator_tag)
+		// {
+		// 	return last-first; // rely on random access
+		// }
+		// template<class In>
+		// typename iterator_traits<In>::difference_type distance(In first,In last)
+		// {
+		// 	return dist_helper(first,last,iterator_traits<In>::iterator_category()); 
+		// }
 	};
 
 	template <class T>
@@ -62,7 +62,7 @@ namespace ft
 			typedef T value_type;
 			typedef T* pointer;
 			typedef T& reference;
-			typedef RandomAccessIterator iterator_category;
+			typedef typename T::iterator_category iterator_category;
 	};
 
 	template <class T>
@@ -82,7 +82,7 @@ namespace ft
 			typedef T value_type;
 			typedef const T* pointer;
 			typedef const T& reference;
-			typedef RandomAccessIterator iterator_category;
+			typedef typename T::iterator_category iterator_category;
 	};
 }
 

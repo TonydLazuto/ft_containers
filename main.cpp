@@ -56,7 +56,9 @@ int main(int argc, char** argv) {
 	// const int seed = atoi(argv[1]);
 	// srand(seed);
 	
-	ft::Vector<std::string> vector_str;
+	ft::Vector<int> vector(10);
+	vector[2] = 150;
+	std::cout << vector[2] << std::endl;
 	(void)argc;
 	(void)argv;
 	
