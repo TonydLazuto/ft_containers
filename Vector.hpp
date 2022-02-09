@@ -5,7 +5,7 @@
 #include <memory>
 #include <exception>
 #include "RandomAccess.hpp"
-// #include "ReverseIterator.hpp"
+#include "ReverseIterator.hpp"
 
 namespace ft 
 {
@@ -20,7 +20,7 @@ namespace ft
 			typedef typename Alloc::difference_type difference_type;
 
 			typedef typename ft::RandomAccessIterator<T> iterator;
-			// typedef typename ft::RandomAccessIterator<T> const_iterator;
+			// typedef typename ft::RandomAccessIterator<const T> const_iterator;
 			// typedef ft::ReverseIterator<iterator> reverse_iterator;
 			// typedef ft::ReverseIterator<const_iterator> const_reverse_iterator;
 
@@ -34,9 +34,9 @@ namespace ft
 			explicit Vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 			{
 				this->_v = _alloc.allocate(0);
-				this->_v_start = this->_v;
-				this->_v_end = this->_v;
-				this->_v_end_alloc = 0;
+				this->_v_start = NULL;
+				this->_v_end = NULL;
+				this->_v_end_alloc = NULL;
 			}
 			explicit Vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
@@ -46,7 +46,7 @@ namespace ft
 					this->_v_start = p;
 					while (p < _v + n)
 						_alloc.construct(p++, val);
-					this->_v_end = p;
+					this->_v_end = p + 1;
 					this->_v_end_alloc = p;
 				}
 			// template <typename InputIt,
@@ -55,10 +55,10 @@ namespace ft
 			// 						InputIt>::iterator_category
 			//                     >::value,
 			//     bool>::type = true>
-			template <class InputIterator>
-			Vector (InputIterator first, InputIterator last,
-				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
-				{
+			// template <class InputIterator>
+			// Vector (InputIterator first, InputIterator last,
+			// const allocator_type& alloc = allocator_type()) : _alloc(alloc)
+			// 	{
 					// if (last - first < 1)
 					// 	throw std::exception();
 					
@@ -67,17 +67,17 @@ namespace ft
 					// std::cout << &first << std::endl;
 					// std::cout << &last << std::endl;
 					// this->_v_start = first;
-					difference_type d = last - first;
-					_v = this->_alloc.allocate(d);
-					for (int i = 0; i < d - 1; i++)
-					{
-						// std::cout << first << std::endl;
-						this->_alloc.construct(_v++, *first);
-						first++;
-					}
+					// difference_type d = last - first;
+					// _v = this->_alloc.allocate(d);
+					// for (int i = 0; i < d - 1; i++)
+					// {
+					// 	// std::cout << first << std::endl;
+					// 	this->_alloc.construct(_v++, *first);
+					// 	first++;
+					// }
 					// this->_v_end = last;
 					// this->_v_end_alloc = last;
-				}
+				// }
 			virtual ~Vector( void )
 			{
 				// if (_v_end != _v_start)
@@ -88,11 +88,16 @@ namespace ft
 
 			iterator begin(void) { return _v_start; }
 			// const_iterator begin(void) const { return const_cast<const_iterator>this->(_v_start); }
-			iterator end(void) { return _v_end; }
+			iterator end(void)
+			{
+				if (empty())
+					return _v_start;
+				return _v_end;
+			}
 			// const_iterator end(void) const { return const_cast<const_iterator>this->(_v_end); }
 			size_type size(void) const 
 			{
-				return static_cast<size_type>(this->_v_end - this->_v);
+				return static_cast<size_type>(this->_v_end - this->_v_start);
 			}
 			size_type max_size(void) const
 			{
@@ -165,11 +170,11 @@ namespace ft
 			if an index is out of range (try catch)
 			 */
 
-			reference front(void) { return this->_v_start; }
+			reference front(void) { return *this->_v_start; }
 
 			// const_reference front(void) const { return const_cast<const_iterator>(&this->_v_start); }
 
-			reference back(void) { return this->_v_end; }
+			reference back(void) { return (*(this->_v_end - 1)); }
 
 			// const_reference back(void) const { return const_cast<const_iterator>(&this->_v_end); }
 

@@ -2,51 +2,77 @@
 # define REVERSEITERATOR_HPP
 
 #include <iostream>
-#include <iterator>
 #include "IteratorTraits.hpp"
 
-namespace ft 
+namespace ft
 {
 	template <class Iter>
 	class ReverseIterator
 	{
 		private:
-			Iter current;
+			Iter _itor;
 
 		public:
-			ReverseIterator( void ) : current() { }
-			virtual ~ReverseIterator( void );
-			explicit ReverseIterator(Iter x) : current(x){}
-			template<class U> ReverseIterator (const ReverseIterator<U>&x) : current(x.base()) {}
+			typedef Iter	iterator_type;
+			typedef typename ft::IteratorTraits<Iter>::iterator_category	iterator_category;
+			typedef typename ft::IteratorTraits<Iter>::value_type			value_type;
+			typedef typename ft::IteratorTraits<Iter>::difference_type		difference_type;
+			typedef typename ft::IteratorTraits<Iter>::pointer				pointer;
+			typedef typename ft::IteratorTraits<Iter>::reference			reference;
 
-			ReverseIterator(ReverseIterator const & src);
+			ReverseIterator( void ) : _itor() {}
+			explicit ReverseIterator(Iter x) : _itor(x) {}
+			virtual ~ReverseIterator( void );
+			template < class U >
+			ReverseIterator (const ReverseIterator< U > &src) : _itor(src.base()) {}
+
 			ReverseIterator& operator=(ReverseIterator const & rhs);
 
-			Iter base(void)const{ return current; }//current iterator value
+			iterator_type base(void)const{ return _itor; } //_itor iterator value
 
-			reference operator*(void)const {
-				Iter tmp=current;
-				return *--tmp;
+			reference operator*(void) const {
+				Iter tmp = _itor;
+				return (*(--tmp));
 			}
-			pointer operator->(void)const;
-			reference operator[](difference_type n)const;
+			pointer operator->(void) const { return &(operator*()); }
+			reference operator[](difference_type n) const { return (this->base()[-n - 1]); }
 
-			ReverseIterator& operator++(void) { --current; return *this; } // note: not ++
-			ReverseIterator operator++(int){
-				ReverseIterator t=current;
-				--current;
-				return t;
+			ReverseIterator& operator++(void)
+			{
+				--_itor;
+				return *this;
 			}
-			ReverseIterator& operator--(void) { ++current; return *this; } // note: not – –
+			ReverseIterator operator++(int)
+			{
+				ReverseIterator tmp = _itor;
+				--_itor;
+				return tmp;
+			}
+			ReverseIterator& operator--(void) { ++_itor; return *this; } // note: not – –
 			ReverseIterator operator--(int) {
-				ReverseIterator t=current;
-				++current;
-				return t;
+				ReverseIterator tmp = _itor;
+				++_itor;
+				return tmp;
 			}
-			ReverseIterator operator+(difference_type n)const;
-			ReverseIterator&operator+=(difference_type n);
-			ReverseIterator operator-(difference_type n)const;
-			ReverseIterator&operator-=(difference_type n);
+			ReverseIterator operator+(difference_type n) const { return (reverse_iterator(_itor - n)); }
+			ReverseIterator&operator+=(difference_type n)
+			{
+				_itor -= n;
+				return (*this);
+			}
+			ReverseIterator operator-(difference_type n) const { return (reverse_iterator(_itor + n)); }
+			ReverseIterator&operator-=(difference_type n)
+			{
+				_itor += n;
+				return (*this);
+			}
+
+			bool operator==(ReverseIterator const &rhs) { return (this->_itor == rhs._itor); }
+			bool operator!=(ReverseIterator const &rhs) { return (this->_itor != rhs._itor); }
+			bool operator<(ReverseIterator const &rhs) { return (this->_itor < rhs._itor); }
+			bool operator>(ReverseIterator const &rhs) { return (this->_itor > rhs._itor); }
+			bool operator<=(ReverseIterator const &rhs) { return (this->_itor <= rhs._itor); }
+			bool operator>=(ReverseIterator const &rhs) { return (this->_itor >= rhs._itor); }
 			
 	};
 }

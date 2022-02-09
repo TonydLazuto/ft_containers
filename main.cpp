@@ -55,10 +55,10 @@ int main(int argc, char** argv) {
 	// }
 	// const int seed = atoi(argv[1]);
 	// srand(seed);
-	std::vector<int> true_vector (20, 100);
-	// ft::Vector<int> vector2 (5, 100);
-	ft::Vector<int> vector(true_vector.begin(), true_vector.end());
-	std::cout << vector[2] << std::endl;
+	// std::vector<int> true_vector (20, 100);
+	ft::Vector<int> vector2 (5, 100);
+	// ft::Vector<int> vector(true_vector.begin(), true_vector.end());
+	std::cout << vector2[2] << std::endl;
 
 	(void)argc;
 	(void)argv;

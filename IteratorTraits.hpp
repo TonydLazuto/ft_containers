@@ -2,12 +2,13 @@
 # define ITERATORTRAITS_HPP
 
 #include <iostream>
-#include <iterator>
 #include <cstddef>
+#include "Iterator.hpp"
 #include "RandomAccess.hpp"
 
 namespace ft 
 {
+
 	template <class Iterator>
 	class IteratorTraits
 	{
@@ -62,7 +63,7 @@ namespace ft
 			typedef T value_type;
 			typedef T* pointer;
 			typedef T& reference;
-			// typedef typename ft::RandomAccessIterator<T> iterator_category;
+			typedef ft::random_access_iterator_tag iterator_category;
 	};
 
 	template <class T>
@@ -82,7 +83,7 @@ namespace ft
 			typedef T value_type;
 			typedef const T* pointer;
 			typedef const T& reference;
-			// typedef typename ft::RandomAccessIterator<T> iterator_category;
+			typedef ft::random_access_iterator_tag iterator_category;
 	};
 }
 
