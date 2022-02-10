@@ -13,6 +13,16 @@ namespace ft
 	class Vector
 	{
 		public:
+			class ValueOutOfRange : public std::exception
+			{
+				public:
+					ValueOutOfRange( void ) throw() {}
+					virtual ~ValueOutOfRange( void ) throw() {}
+					virtual const char* what() const throw()
+					{
+						return "Error: try to reach a value greater than the vector size";
+					}
+			};
 			typedef	T value_type;
 			typedef Alloc allocator_type;
 
@@ -20,16 +30,14 @@ namespace ft
 			typedef typename Alloc::difference_type difference_type;
 
 			typedef typename ft::RandomAccessIterator<T> iterator;
-			// typedef typename ft::RandomAccessIterator<const T> const_iterator;
-			// typedef ft::ReverseIterator<iterator> reverse_iterator;
-			// typedef ft::ReverseIterator<const_iterator> const_reverse_iterator;
+			typedef typename ft::RandomAccessIterator<const T> const_iterator;
+			typedef ft::ReverseIterator<iterator> reverse_iterator;
+			typedef ft::ReverseIterator<const_iterator> const_reverse_iterator;
 
 			typedef typename Alloc::reference reference;
 			typedef typename Alloc::const_reference const_reference;
 			typedef typename Alloc::pointer pointer;
 			typedef typename Alloc::const_pointer const_pointer;
-
-			// typedef typename size_type;
 
 			explicit Vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 			{
@@ -87,17 +95,17 @@ namespace ft
 			// Vector& operator=(const Vector& x) {}
 
 			iterator begin(void) { return _v_start; }
-			// const_iterator begin(void) const { return const_cast<const_iterator>this->(_v_start); }
+			const_iterator begin(void) const { return const_cast<const_iterator>(this->_v_start); }
 			iterator end(void)
 			{
 				if (empty())
 					return _v_start;
 				return _v_end;
 			}
-			// const_iterator end(void) const { return const_cast<const_iterator>this->(_v_end); }
+			const_iterator end(void) const { return const_cast<const_iterator>(this->_v_end); }
 			size_type size(void) const 
 			{
-				return static_cast<size_type>(this->_v_end - this->_v_start);
+				return static_cast<size_type>((this->_v_end - 1) - this->_v_start);
 			}
 			size_type max_size(void) const
 			{
@@ -108,21 +116,20 @@ namespace ft
 			{
 				if (n < size())
 				{
-					int i = n - 1;
+					size_type i = n;
 					while (i < size())
 					{
-						_alloc.destroy(&_v[i]);
-						if (val)
-							_alloc.construct(&_v[i], val);
+						_alloc.destroy(_v + i);
+						_alloc.construct(_v + i, val);
 						i++;
 					}
-					this->_v_end = _v[i - 1];
+					this->_v_end = _v + n + 1;
 				}
-				else
+				else if (n > size())
 				{
-					if (!val)
-						val = static_cast<value_type>(0); // ?
-					for (int it = size(); it < n; it++)
+					if (n > capacity())
+						realloc(capacity() * 2);
+					for (size_type it = size(); it < n; it++)
 						push_back(val);
 				}
 			}
@@ -133,17 +140,8 @@ namespace ft
 			bool empty(void) const { return (this->size() == 0 ? true : false); }
 			void reserve (size_type n)
 			{
-				if (n <= capacity())
-					return ;
-				pointer new_v = _alloc.allocate(n);
-				pointer v_saved = this->_v;
-				while (v_saved < this->_v + size())
-				{
-					_alloc.construct(new_v++, *v_saved);
-					_alloc.destroy(v_saved++);
-				}
-				_alloc.deallocate(this->_v, capacity());
-				this->_v = new_v;
+				if (n > capacity())
+					realloc(n);
 			}
 
 			reference operator[] (size_type n) { return (this->_v[n]); }
@@ -151,23 +149,37 @@ namespace ft
 
 			reference at (size_type n)
 			{
-				// if (n > size())
-				// 	throw std::exception();
+				try
+				{
+					if (n >= size())
+						throw ValueOutOfRange();
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << std::endl;
+				}
 				return (this->_v[n]);
 			}
 
 			const_reference at (size_type n) const
 			{
-				// if (n > size())
-				// 	throw std::exception();
+				try
+				{
+					if (n >= size())
+						throw ValueOutOfRange();
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << std::endl;
+				}
 				return (const_cast<const_reference>(this->_v[n]));
 			}
 
 			/*
-			Indexing is done by operator[]() and at();
-			operator[]() provides unchecked access,
-			whereas at() does a range check and throws out_of_range
-			if an index is out of range (try catch)
+				Indexing is done by operator[]() and at();
+				operator[]() provides unchecked access,
+				whereas at() does a range check and throws out_of_range
+				if an index is out of range (try catch)
 			 */
 
 			reference front(void) { return *this->_v_start; }
@@ -186,11 +198,8 @@ namespace ft
 			void push_back (const value_type& val)
 			{
 				if (size() >= capacity())
-				{
 					realloc(capacity() * 2);
-					this->_v_end_alloc = this->_v_start + capacity() * 2;
-				}
-				this->_v[this->size() - 1] = val;
+				this->_v[this->size()] = val;
 				this->_v_end++;
 			}
 
@@ -252,17 +261,19 @@ namespace ft
 
 			Vector&	realloc(size_t new_capacity)
 			{
-				int new_size;
+				size_type	new_size = new_capacity < this->size() ? new_capacity : this->size();
+				pointer		new_v = _alloc.allocate(new_capacity);
 
-				new_size = new_capacity < this->size() ? new_capacity : this->size();
-				pointer new_v = _alloc.allocate(new_capacity);
-				for (int i = 0; i < new_size; i++)
-					_alloc.construct(new_v[i], this->_v[i]);	
-				for (int i = 0; i < this->size(); i++)
-					_alloc.destroy(this->_v[i]);
-				_alloc.deallocate(this->v, capacity());
+				for (size_type i = 0; i < new_size; i++)
+					_alloc.construct(new_v + i, this->_v[i]);
+				for (size_type i = new_size; i < new_capacity; i++)
+					_alloc.construct(new_v + i, 0);
+				for (size_type i = 0; i < this->size(); i++)
+					_alloc.destroy(this->_v + i);
+				_alloc.deallocate(this->_v, capacity());
 				this->_v = new_v;
 				this->_v_start = new_v;
+				this->_v_end = _v_start + new_size + 1;
 				this->_v_end_alloc = _v_start + new_capacity;
 				return *this;
 			}

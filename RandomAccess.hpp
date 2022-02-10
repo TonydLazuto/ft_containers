@@ -59,15 +59,15 @@ namespace ft
 				return *this;
 			}
 			
-			RandomAccessIterator operator+(difference_type n)
+			RandomAccessIterator operator+(difference_type n) const
 			{
 				return (this->_itor + n);
 			}
-			RandomAccessIterator operator-(difference_type n)
+			RandomAccessIterator operator-(difference_type n) const
 			{
 				return (this->_itor - n);
 			}
-			difference_type operator-(RandomAccessIterator const &rhs)
+			difference_type operator-(RandomAccessIterator const &rhs) const
 			{
 				return (this->_itor - rhs._itor);
 			}
