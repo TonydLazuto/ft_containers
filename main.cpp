@@ -55,17 +55,44 @@ int main(int argc, char** argv) {
 	// }
 	// const int seed = atoi(argv[1]);
 	// srand(seed);
-	std::vector<int> true_vector;
-	for (int i = 0; i < 5; i++)
-		true_vector.push_back(i);
+	// std::vector<int> true_vector;
+	// for (int i = 0; i < 5; i++)
+	// 	true_vector.push_back(i);
 	
-	ft::Vector<int> vector (true_vector.begin(), true_vector.end());
-	for (int i = 0; i < vector.size(); i++)
-		std::cout << "vector["<<i<<"]: " << vector[i] << std::endl;
+	// ft::Vector<int> vector (true_vector);
+	// for (int i = 0; i < vector.size(); i++)
+	// 	std::cout << "vector["<<i<<"]: " << vector[i] << std::endl;
+
+	// std::cout << "size: " << vector.size() << std::endl;
 
 	// vector.reserve(10);
+	// std::cout << "capacity: " << vector.capacity() << std::endl;
+	// std::cout << "size: " << vector.size() << std::endl;
+	// vector.resize(40);
+	// std::cout << "capacity: " << vector.capacity() << std::endl;
+	// std::cout << "size: " << vector.size() << std::endl;
+	// for (int i = 0; i < vector.size(); i++)
+	// 	std::cout << "vector["<<i<<"]: " << vector[i] << std::endl;
 	// std::cout << vector[6] << std::endl;
-	std::cout << vector.at(6) << std::endl;
+	// std::cout << vector.at(6) << std::endl;
+
+	ft::Vector<int> first;
+	ft::Vector<int> second;
+	ft::Vector<int> third;
+
+	first.assign (7,100);             // 7 ints with a value of 100
+
+	second.assign (first.begin()+1,first.end()-1); // the 5 central values of first
+
+	int myints[] = {1776,7,4};
+	third.assign (myints,myints+3);   // assigning from array.
+
+	for (int i = 0; i < first.size(); i++)
+		std::cout << "first["<<i<<"]: " << first[i] << std::endl;
+	for (int i = 0; i < second.size(); i++)
+		std::cout << "second["<<i<<"]: " << second[i] << std::endl;
+	for (int i = 0; i < third.size(); i++)
+		std::cout << "third["<<i<<"]: " << third[i] << std::endl;
 	(void)argc;
 	(void)argv;
 	

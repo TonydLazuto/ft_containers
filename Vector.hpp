@@ -147,7 +147,7 @@ namespace ft
 				else if (n > size())
 				{
 					if (n > capacity())
-						realloc(capacity() * 2);
+						realloc(n);
 					for (size_type it = size(); it < n; it++)
 						push_back(val);
 				}
@@ -205,10 +205,39 @@ namespace ft
 
 			const_reference back(void) const { return const_cast<const_iterator>(*(this->_v_end - 1)); }
 
-			// template <class InputIterator>
-  			// void assign (InputIterator first, InputIterator last);
+			template <class InputIterator>
+  				void assign (InputIterator first, InputIterator last,
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+				{
+					pointer			new_v = NULL;
+					difference_type	diff = last - first;
+					size_type		old_size = this->size();
 
-			// void assign (size_type n, const value_type& val);
+					if (diff >= old_size)
+						new_v = _alloc.allocate(diff);
+					else
+						new_v = _alloc.allocate(this->capacity());	
+					for (int i = 0; i < diff; i++)
+					{
+						_alloc.construct(new_v + i, *first);
+						if (old_size > 0 && old_size < i)
+							_alloc.destroy(_v + i);
+						first++;
+					}
+					while (diff < old_size)
+					{
+						new_v.push_back(_v[diff]);
+						_alloc.destroy(_v + diff);
+						diff++;
+					}
+					// for (int i = 0; i < diff; i++)
+						_alloc.construct(new_v + i, *(_v + i));
+				}
+
+			void assign (size_type n, const value_type& val)
+			{
+				;
+			}
 
 			void push_back (const value_type& val)
 			{
@@ -223,7 +252,6 @@ namespace ft
 				if (size() <= 0)
 					return ;
 				_alloc.destroy(&this->back());
-				// if ()
 				this->_v_end--;
 			}
 
@@ -297,8 +325,8 @@ namespace ft
 				if (this->capacity())
 				{
 					std::cout << "~DESTRUCTOR : DEALLOCATION" << std::endl;
-					if (this->size() > 0)
-						this->_alloc.destroy(_v);
+					while (this->size() != 0)
+						this->_alloc.destroy(&this->back());
 					this->_alloc.deallocate(_v, this->capacity());
 				}
 			}
