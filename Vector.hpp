@@ -6,6 +6,7 @@
 #include <exception>
 #include "RandomAccess.hpp"
 #include "ReverseIterator.hpp"
+#include "IsIntegral.hpp"
 
 namespace ft 
 {
@@ -42,9 +43,9 @@ namespace ft
 			explicit Vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 			{
 				this->_v = _alloc.allocate(0);
-				this->_v_start = NULL;
-				this->_v_end = NULL;
-				this->_v_end_alloc = NULL;
+				this->_v_start = _v;
+				this->_v_end = _v + 1;
+				this->_v_end_alloc = _v;
 			}
 			explicit Vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
@@ -57,48 +58,55 @@ namespace ft
 					this->_v_end = p + 1;
 					this->_v_end_alloc = p;
 				}
-			// template <typename InputIt,
-			// std::enable_if<
-			//     std::is_base_of<std::input_iterator_tag,typename std::iterator_traits<
-			// 						InputIt>::iterator_category
-			//                     >::value,
-			//     bool>::type = true>
+	
 
-			// template <class InputIterator>
-			// vector (InputIterator first, InputIterator last,
-			// 	const allocator_type& alloc = allocator_type(),
-			// 	typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
-
-			// template <class InputIterator>
-			// Vector (InputIterator first, InputIterator last,
-			// const allocator_type& alloc = allocator_type()) : _alloc(alloc)
-			// 	{
-					// if (last - first < 1)
-					// 	throw std::exception();
-					
-					// std::cout << first << std::endl;
-					// std::cout << last << std::endl;
-					// std::cout << &first << std::endl;
-					// std::cout << &last << std::endl;
-					// this->_v_start = first;
-					// difference_type d = last - first;
-					// _v = this->_alloc.allocate(d);
-					// for (int i = 0; i < d - 1; i++)
-					// {
-					// 	// std::cout << first << std::endl;
-					// 	this->_alloc.construct(_v++, *first);
-					// 	first++;
-					// }
-					// this->_v_end = last;
-					// this->_v_end_alloc = last;
-				// }
+			template <class InputIterator>
+			Vector (InputIterator first, InputIterator last,
+				const allocator_type& alloc = allocator_type(),
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+				: _alloc(alloc)
+				{
+					if (last - first < 1)
+					{
+						this->_v = _alloc.allocate(0);
+						this->_v_start = _v;
+						this->_v_end = _v + 1;
+						this->_v_end_alloc = _v;
+						return ;
+					}
+					difference_type diff = last - first;
+					_v = this->_alloc.allocate(diff);
+					this->_v_start = this->_v;
+					for (int i = 0; i < diff; i++)
+					{
+						this->_alloc.construct(&_v[i], *first);
+						first++;
+					}
+					this->_v_end = _v_start + diff + 1;
+					this->_v_end_alloc = _v_start + diff;
+				}
 			virtual ~Vector( void )
 			{
-				// if (_v_end != _v_start)
-				// 	;
+				clear_vector();
 			}
-			// Vector(Vector const & x) {}
-			// Vector& operator=(const Vector& x) {}
+			
+			Vector(Vector const & x)
+			{
+				this->_alloc = x._alloc;
+				this->_v = x._v;
+				this->_v_start = x._v_start;
+				this->_v_end = x._v_end;
+				this->_v_end_alloc = x._v_end_alloc;
+			}
+			Vector& operator=(const Vector& x)
+			{
+				this->_alloc = x._alloc;
+				this->_v = x._v;
+				this->_v_start = x._v_start;
+				this->_v_end = x._v_end;
+				this->_v_end_alloc = x._v_end_alloc;
+				return *this;
+			}
 
 			iterator begin(void) { return _v_start; }
 			const_iterator begin(void) const { return const_cast<const_iterator>(this->_v_start); }
@@ -108,7 +116,12 @@ namespace ft
 					return _v_start;
 				return _v_end;
 			}
-			const_iterator end(void) const { return const_cast<const_iterator>(this->_v_end); }
+			const_iterator end(void) const
+			{
+				if (empty())
+					return _v_start;
+				return const_cast<const_iterator>(this->_v_end);
+			}
 			size_type size(void) const 
 			{
 				return static_cast<size_type>((this->_v_end - 1) - this->_v_start);
@@ -118,7 +131,7 @@ namespace ft
 				return static_cast<size_type>(std::numeric_limits<difference_type>::max());
 			}
 
-			void resize (size_type n, value_type val = value_type())
+			void resize(size_type n, value_type val = value_type())
 			{
 				if (n < size())
 				{
@@ -152,31 +165,27 @@ namespace ft
 
 			reference operator[] (size_type n) { return (this->_v[n]); }
 			const_reference operator[] (size_type n) const { return (const_cast<const_reference>(&this->_v[n])); }
-
+			
+			/**
+			*	throw uncaught exception
+			*	outside a try catch block
+			*/
 			reference at (size_type n)
 			{
-				try // try catch a suupr?
+				if (n >= size())
 				{
-					if (n >= size())
-						throw ValueOutOfRange();
-				}
-				catch(const std::exception& e)
-				{
-					std::cerr << e.what() << std::endl;
+					// clear_vector();						
+					throw ValueOutOfRange();
 				}
 				return (this->_v[n]);
 			}
 
 			const_reference at (size_type n) const
 			{
-				try
+				if (n >= size())
 				{
-					if (n >= size())
-						throw ValueOutOfRange();
-				}
-				catch(const std::exception& e)
-				{
-					std::cerr << e.what() << std::endl;
+					// clear_vector();						
+					throw ValueOutOfRange();
 				}
 				return (const_cast<const_reference>(this->_v[n]));
 			}
@@ -190,11 +199,11 @@ namespace ft
 
 			reference front(void) { return *this->_v_start; }
 
-			// const_reference front(void) const { return const_cast<const_iterator>(&this->_v_start); }
+			const_reference front(void) const { return const_cast<const_iterator>(*(this->_v_end - 1)); }
 
 			reference back(void) { return (*(this->_v_end - 1)); }
 
-			// const_reference back(void) const { return const_cast<const_iterator>(&this->_v_end); }
+			const_reference back(void) const { return const_cast<const_iterator>(*(this->_v_end - 1)); }
 
 			// template <class InputIterator>
   			// void assign (InputIterator first, InputIterator last);
@@ -214,7 +223,7 @@ namespace ft
 				if (size() <= 0)
 					return ;
 				_alloc.destroy(&this->back());
-				if ()
+				// if ()
 				this->_v_end--;
 			}
 
@@ -260,9 +269,9 @@ namespace ft
 		private:
 			allocator_type	_alloc;
 			pointer			_v;
-			iterator		_v_start;
-			iterator		_v_end;
-			iterator		_v_end_alloc;
+			pointer			_v_start;
+			pointer			_v_end;
+			pointer			_v_end_alloc;
 
 			Vector&	realloc(size_t new_capacity)
 			{
@@ -281,6 +290,17 @@ namespace ft
 				this->_v_end = _v_start + new_size + 1;
 				this->_v_end_alloc = _v_start + new_capacity;
 				return *this;
+			}
+
+			void	clear_vector(void)
+			{
+				if (this->capacity())
+				{
+					std::cout << "~DESTRUCTOR : DEALLOCATION" << std::endl;
+					if (this->size() > 0)
+						this->_alloc.destroy(_v);
+					this->_alloc.deallocate(_v, this->capacity());
+				}
 			}
 	};
 }
