@@ -63,6 +63,12 @@ namespace ft
 			// 						InputIt>::iterator_category
 			//                     >::value,
 			//     bool>::type = true>
+
+			// template <class InputIterator>
+			// vector (InputIterator first, InputIterator last,
+			// 	const allocator_type& alloc = allocator_type(),
+			// 	typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+
 			// template <class InputIterator>
 			// Vector (InputIterator first, InputIterator last,
 			// const allocator_type& alloc = allocator_type()) : _alloc(alloc)
@@ -149,7 +155,7 @@ namespace ft
 
 			reference at (size_type n)
 			{
-				try
+				try // try catch a suupr?
 				{
 					if (n >= size())
 						throw ValueOutOfRange();
@@ -205,12 +211,11 @@ namespace ft
 
 			void pop_back(void)
 			{
-				iterator save;
 				if (size() <= 0)
 					return ;
-				save = size() == 1 ? this->_v : this->_v_end - 1;
-				_alloc.destroy(this->_v_end);
-				this->_v_end = save;
+				_alloc.destroy(&this->back());
+				if ()
+				this->_v_end--;
 			}
 
 			// iterator insert (iterator position, const value_type& val);
