@@ -13,7 +13,7 @@ namespace ft
 			T*	_itor;
 
 		public:
-			typedef typename ft::Iterator<ft::random_access_iterator_tag, T>::iterator_category	iterator_category;
+			typedef typename ft::Iterator<ft::random_access_iterator_tag, T>::iterator_category		iterator_category;
 			typedef typename ft::Iterator<ft::random_access_iterator_tag, T>::value_type			value_type;
 			typedef typename ft::Iterator<ft::random_access_iterator_tag, T>::difference_type		difference_type;
 			typedef T*																				pointer;
@@ -32,7 +32,7 @@ namespace ft
 				return *this;
 			}
 
-			RandomAccessIterator* operator*(void) { return (*this->_itor); }
+			value_type operator*(void) { return (*this->_itor); }
 			pointer operator->(void) { return &(this->operator*()); }
 
 			RandomAccessIterator operator++(void)

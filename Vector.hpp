@@ -42,7 +42,7 @@ namespace ft
 
 			explicit Vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 			{
-				this->_v = _alloc.allocate(0);
+				this->_v = _alloc.allocate(1);
 				this->_v_start = _v;
 				this->_v_end = _v + 1;
 				this->_v_end_alloc = _v;
@@ -87,7 +87,9 @@ namespace ft
 				}
 			virtual ~Vector( void )
 			{
-				clear_vector();
+				clear();
+				if (this->capacity())
+					this->_alloc.deallocate(_v, this->capacity());
 			}
 			
 			Vector(Vector const & x)
@@ -109,19 +111,16 @@ namespace ft
 			}
 
 			iterator begin(void) { return _v_start; }
-			const_iterator begin(void) const { return const_cast<const_iterator>(this->_v_start); }
+			reverse_iterator rbegin(void) { return (_v_end == _v_start ? _v_end : _v_end - 1); }
+			
 			iterator end(void)
 			{
 				if (empty())
 					return _v_start;
 				return _v_end;
 			}
-			const_iterator end(void) const
-			{
-				if (empty())
-					return _v_start;
-				return const_cast<const_iterator>(this->_v_end);
-			}
+			reverse_iterator rend(void) { return _v_start; }
+			
 			size_type size(void) const 
 			{
 				return static_cast<size_type>((this->_v_end - 1) - this->_v_start);
@@ -154,6 +153,7 @@ namespace ft
 			}
 			size_type capacity(void) const
 			{
+				// std::cout << "capacity" << std::endl;
 				return static_cast<size_type>(this->_v_end_alloc - this->_v);
 			}
 			bool empty(void) const { return (this->size() == 0 ? true : false); }
@@ -174,7 +174,7 @@ namespace ft
 			{
 				if (n >= size())
 				{
-					// clear_vector();						
+					// clear();
 					throw ValueOutOfRange();
 				}
 				return (this->_v[n]);
@@ -184,7 +184,7 @@ namespace ft
 			{
 				if (n >= size())
 				{
-					// clear_vector();						
+					// clear();
 					throw ValueOutOfRange();
 				}
 				return (const_cast<const_reference>(this->_v[n]));
@@ -209,40 +209,38 @@ namespace ft
   				void assign (InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 				{
-					pointer			new_v = NULL;
 					difference_type	diff = last - first;
-					size_type		old_size = this->size();
 
-					if (diff >= old_size)
-						new_v = _alloc.allocate(diff);
-					else
-						new_v = _alloc.allocate(this->capacity());	
+					this->clear();
+					std::cout << "diff: "<< diff << std::endl;
+					std::cout << "this->capacity: "<< capacity() << std::endl;
+					if (diff > this->capacity())
+					{
+						realloc(diff);
+					}
 					for (int i = 0; i < diff; i++)
 					{
-						_alloc.construct(new_v + i, *first);
-						if (old_size > 0 && old_size < i)
-							_alloc.destroy(_v + i);
+						std::cout << "first: " << *first << std::endl;
+						_alloc.construct(_v + i, *first);
 						first++;
 					}
-					while (diff < old_size)
-					{
-						new_v.push_back(_v[diff]);
-						_alloc.destroy(_v + diff);
-						diff++;
-					}
-					// for (int i = 0; i < diff; i++)
-						_alloc.construct(new_v + i, *(_v + i));
 				}
 
 			void assign (size_type n, const value_type& val)
 			{
-				;
+					this->clear();
+					if (n > this->capacity())
+						realloc(n);
+					for (int i = 0; i < n; i++)
+						_alloc.construct(_v + i, val);
 			}
 
 			void push_back (const value_type& val)
 			{
 				if (size() >= capacity())
 					realloc(capacity() * 2);
+				if (capacity() == 0)
+					realloc(1);
 				this->_v[this->size()] = val;
 				this->_v_end++;
 			}
@@ -268,7 +266,17 @@ namespace ft
 
 			// void swap (Vector& x);
 
-			// void clear(void);
+			void clear(void)
+			{
+				if (this->capacity())
+				{
+					while (this->size() != 0)
+					{
+						this->_alloc.destroy(&this->back());
+						this->_v_end--;
+					}
+				}
+			}
 
 			// allocator_type get_allocator(void) const;
 			
@@ -304,8 +312,11 @@ namespace ft
 			Vector&	realloc(size_t new_capacity)
 			{
 				size_type	new_size = new_capacity < this->size() ? new_capacity : this->size();
+				std::cout << "new_capacity: " << new_capacity << std::endl;
 				pointer		new_v = _alloc.allocate(new_capacity);
+				std::cout << "HELLO" << std::endl;
 
+				std::cout << "realloc" << std::endl;
 				for (size_type i = 0; i < new_size; i++)
 					_alloc.construct(new_v + i, this->_v[i]);
 				for (size_type i = new_size; i < new_capacity; i++)
@@ -319,17 +330,7 @@ namespace ft
 				this->_v_end_alloc = _v_start + new_capacity;
 				return *this;
 			}
-
-			void	clear_vector(void)
-			{
-				if (this->capacity())
-				{
-					std::cout << "~DESTRUCTOR : DEALLOCATION" << std::endl;
-					while (this->size() != 0)
-						this->_alloc.destroy(&this->back());
-					this->_alloc.deallocate(_v, this->capacity());
-				}
-			}
+			
 	};
 }
 

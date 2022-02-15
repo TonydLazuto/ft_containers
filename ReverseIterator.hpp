@@ -24,7 +24,7 @@ namespace ft
 			explicit ReverseIterator(Iter x) : _itor(x) {}
 			virtual ~ReverseIterator( void );
 			template < class U >
-			ReverseIterator (const ReverseIterator< U > &src) : _itor(src.base()) {}
+			ReverseIterator (const ReverseIterator &src) : _itor(src.base()) {}
 
 			ReverseIterator& operator=(ReverseIterator const & rhs);
 
