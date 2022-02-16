@@ -28,9 +28,10 @@ namespace ft
 
 			ReverseIterator& operator=(ReverseIterator const & rhs);
 
-			iterator_type base(void)const{ return _itor; } //_itor iterator value
+			iterator_type base(void) const { return _itor; }
 
-			reference operator*(void) const {
+			reference operator*(void) const
+			{
 				Iter tmp = _itor;
 				return (*(--tmp));
 			}
@@ -48,8 +49,13 @@ namespace ft
 				--_itor;
 				return tmp;
 			}
-			ReverseIterator& operator--(void) { ++_itor; return *this; } // note: not – –
-			ReverseIterator operator--(int) {
+			ReverseIterator& operator--(void)
+			{
+				++_itor;
+				return *this;
+			}
+			ReverseIterator operator--(int)
+			{
 				ReverseIterator tmp = _itor;
 				++_itor;
 				return tmp;

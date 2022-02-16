@@ -2,10 +2,11 @@
 namespace ft 
 {
 	template <bool is_integral, typename T>
-		struct is_integral_res {
+		struct is_integral_res
+		{
 			typedef T type;
 			static const bool value = is_integral;
-			};
+		};
 
 	template <typename>
 		struct is_integral_type : public is_integral_res<false, bool> {};

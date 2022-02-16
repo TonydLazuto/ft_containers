@@ -33,7 +33,7 @@ namespace ft
 			BiderectionalIterator operator++(void)
 			{
 				BiderectionalIterator tmp = *this;
-				++(*(this->_itor));
+				this->_itor++;
 				return tmp;
 			}
 			BiderectionalIterator& operator++(int)
@@ -45,7 +45,7 @@ namespace ft
 			BiderectionalIterator operator--(void)
 			{
 				BiderectionalIterator tmp = *this;
-				--(*(this->_itor));
+				this->_itor--;
 				return tmp;
 			}
 			BiderectionalIterator& operator--(int)
@@ -54,7 +54,6 @@ namespace ft
 				return *this;
 			}
 
-			
 			bool operator==(BiderectionalIterator const &rhs) { return (this->_itor == rhs._itor); }
 			bool operator!=(BiderectionalIterator const &rhs) { return (this->_itor != rhs._itor); }
 	};

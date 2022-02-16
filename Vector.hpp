@@ -40,19 +40,19 @@ namespace ft
 			typedef typename Alloc::pointer pointer;
 			typedef typename Alloc::const_pointer const_pointer;
 
-			explicit Vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc)
+			explicit Vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 			{
 				this->_v = _alloc.allocate(1);
 				this->_v_start = _v;
 				this->_v_end = _v + 1;
-				this->_v_end_alloc = _v;
+				this->_v_end_alloc = _v + 1;
 			}
 			explicit Vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 				{
 					_v = _alloc.allocate(n);
+					this->_v_start = this->_v;
 					pointer p = _v;
-					this->_v_start = p;
 					while (p < _v + n)
 						_alloc.construct(p++, val);
 					this->_v_end = p + 1;
@@ -68,10 +68,10 @@ namespace ft
 				{
 					if (last - first < 1)
 					{
-						this->_v = _alloc.allocate(0);
+						this->_v = _alloc.allocate(1);
 						this->_v_start = _v;
 						this->_v_end = _v + 1;
-						this->_v_end_alloc = _v;
+						this->_v_end_alloc  = _v + 1;
 						return ;
 					}
 					difference_type diff = last - first;
@@ -117,7 +117,7 @@ namespace ft
 			{
 				if (empty())
 					return _v_start;
-				return _v_end;
+				return (_v_end - 1);
 			}
 			reverse_iterator rend(void) { return _v_start; }
 			
@@ -163,8 +163,8 @@ namespace ft
 					realloc(n);
 			}
 
-			reference operator[] (size_type n) { return (this->_v[n]); }
-			const_reference operator[] (size_type n) const { return (const_cast<const_reference>(&this->_v[n])); }
+			reference operator[] (size_type n) { return (*(this->_v + n)); }
+			const_reference operator[] (size_type n) const { return (const_cast<const_reference>(*(this->_v + n))); }
 			
 			/**
 			*	throw uncaught exception
@@ -199,7 +199,7 @@ namespace ft
 
 			reference front(void) { return *this->_v_start; }
 
-			const_reference front(void) const { return const_cast<const_iterator>(*(this->_v_end - 1)); }
+			const_reference front(void) const { return const_cast<const_iterator>(*this->_v_start); }
 
 			reference back(void) { return (*(this->_v_end - 1)); }
 
@@ -212,18 +212,14 @@ namespace ft
 					difference_type	diff = last - first;
 
 					this->clear();
-					std::cout << "diff: "<< diff << std::endl;
-					std::cout << "this->capacity: "<< capacity() << std::endl;
-					if (diff > this->capacity())
-					{
+					if (static_cast<size_type>(diff) > this->capacity())
 						realloc(diff);
-					}
 					for (int i = 0; i < diff; i++)
 					{
-						std::cout << "first: " << *first << std::endl;
 						_alloc.construct(_v + i, *first);
 						first++;
 					}
+					this->_v_end = _v + diff + 1;
 				}
 
 			void assign (size_type n, const value_type& val)
@@ -233,6 +229,7 @@ namespace ft
 						realloc(n);
 					for (int i = 0; i < n; i++)
 						_alloc.construct(_v + i, val);
+					this->_v_end = _v + n + 1;
 			}
 
 			void push_back (const value_type& val)
@@ -264,7 +261,10 @@ namespace ft
 
 			// iterator erase (iterator first, iterator last);
 
-			// void swap (Vector& x);
+			void swap (Vector& x)
+			{
+				;
+			}
 
 			void clear(void)
 			{
@@ -312,11 +312,9 @@ namespace ft
 			Vector&	realloc(size_t new_capacity)
 			{
 				size_type	new_size = new_capacity < this->size() ? new_capacity : this->size();
-				std::cout << "new_capacity: " << new_capacity << std::endl;
+				// std::cout << "realloc new_capacity: " << new_capacity << std::endl;
 				pointer		new_v = _alloc.allocate(new_capacity);
-				std::cout << "HELLO" << std::endl;
 
-				std::cout << "realloc" << std::endl;
 				for (size_type i = 0; i < new_size; i++)
 					_alloc.construct(new_v + i, this->_v[i]);
 				for (size_type i = new_size; i < new_capacity; i++)
