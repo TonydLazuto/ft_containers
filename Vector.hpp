@@ -111,7 +111,12 @@ namespace ft
 			}
 
 			iterator begin(void) { return _v_start; }
-			reverse_iterator rbegin(void) { return (_v_end == _v_start ? _v_end : _v_end - 1); }
+			reverse_iterator rbegin(void)
+			{
+				if (_v_end == _v_start)
+					return reverse_iterator(_v_end);
+				return reverse_iterator(_v_end - 1);
+			}
 			
 			iterator end(void)
 			{
@@ -119,7 +124,7 @@ namespace ft
 					return _v_start;
 				return (_v_end - 1);
 			}
-			reverse_iterator rend(void) { return _v_start; }
+			reverse_iterator rend(void) { return reverse_iterator(_v_start); }
 			
 			size_type size(void) const 
 			{
@@ -257,13 +262,55 @@ namespace ft
 			// template <class InputIterator>
 			// void insert (iterator position, InputIterator first, InputIterator last);
 
-			// iterator erase (iterator position);
+			iterator erase (iterator position)
+			{
+				if (position >= this->end() || this->size() <= 0)
+					throw ValueOutOfRange();
+				pointer 	new_v = _alloc.allocate(this->capacity());
+				pointer 	cpy_v = new_v;
+				iterator	it = this->begin();
 
-			// iterator erase (iterator first, iterator last);
+				for (int i = 0; i < this->size() - 1; i++)
+				{
+					if (it != position)
+						_alloc.construct(cpy_v++, *it);
+					_alloc.destroy(&_v[i]);
+					it++;
+				}
+				size_type old_alloc = this->capacity();
+				this->_v_end = _v_start + this->size();
+				_alloc.deallocate(_v, this->capacity());
+				this->_v = new_v;
+				this->_v_start = new_v;
+				this->_v_end_alloc = new_v + old_alloc;
+				std::cout << "size(): " << size() << std::endl;
+				return (position + 1);
+			}
+
+			iterator erase (iterator first, iterator last)
+			{
+				;
+			}
 
 			void swap (Vector& x)
 			{
-				;
+				pointer tmp_v = x._v;
+				pointer tmp_v_start = x._v_start;
+				pointer tmp_v_end = x._v_end;
+				pointer tmp_v_end_alloc = x._v_end_alloc;
+				allocator_type tmp_alloc = x._alloc;
+
+				x._v = this->_v;
+				x._v_start = this->_v_start;
+				x._v_end = this->_v_end;
+				x._v_end_alloc = this->_v_end_alloc;
+				x._alloc = this->_alloc;
+
+				this->_v = tmp_v;
+				this->_v_start = tmp_v_start;
+				this->_v_end = tmp_v_end;
+				this->_v_end_alloc = tmp_v_end_alloc;
+				this->_alloc = tmp_alloc;
 			}
 
 			void clear(void)
