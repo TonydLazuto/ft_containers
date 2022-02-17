@@ -67,6 +67,10 @@ namespace ft
 			{
 				return (this->_itor - n);
 			}
+			difference_type operator-(RandomAccessIterator const &rhs) const
+			{
+					return (this->_itor - rhs._itor);
+			}
 
 			RandomAccessIterator operator+=(difference_type n)
 			{

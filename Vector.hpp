@@ -4,9 +4,12 @@
 #include <iostream>
 #include <memory>
 #include <exception>
+#include <iterator>
 #include "RandomAccess.hpp"
 #include "ReverseIterator.hpp"
 #include "IsIntegral.hpp"
+
+#include <unistd.h>
 
 namespace ft 
 {
@@ -51,10 +54,10 @@ namespace ft
 				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 				{
 					_v = _alloc.allocate(n);
-					this->_v_start = this->_v;
 					pointer p = _v;
 					while (p < _v + n)
 						_alloc.construct(p++, val);
+					this->_v_start = this->_v;
 					this->_v_end = p + 1;
 					this->_v_end_alloc = p;
 				}
@@ -158,7 +161,6 @@ namespace ft
 			}
 			size_type capacity(void) const
 			{
-				// std::cout << "capacity" << std::endl;
 				return static_cast<size_type>(this->_v_end_alloc - this->_v);
 			}
 			bool empty(void) const { return (this->size() == 0 ? true : false); }
@@ -171,10 +173,6 @@ namespace ft
 			reference operator[] (size_type n) { return (*(this->_v + n)); }
 			const_reference operator[] (size_type n) const { return (const_cast<const_reference>(*(this->_v + n))); }
 			
-			/**
-			*	throw uncaught exception
-			*	outside a try catch block
-			*/
 			reference at (size_type n)
 			{
 				if (n >= size())
@@ -255,41 +253,102 @@ namespace ft
 				this->_v_end--;
 			}
 
-			// iterator insert (iterator position, const value_type& val);
+			iterator insert (iterator position, const value_type& val)
+			{
+				difference_type pos = position - this->begin();
 
-			// void insert (iterator position, size_type n, const value_type& val);
+				if (position > this->end() || this->size() <= 0)
+					throw ValueOutOfRange();
+				if (this->size() == this->capacity())
+					realloc(capacity() * 2);
+				for (iterator it = this->end(); it != this->begin() + pos; it--)
+				{
+					_alloc.construct(&*it, *(it - 1));
+					_alloc.destroy(&(*(it - 1)));
+				}
+				_alloc.construct((_v_start + pos), val);
+				this->_v_end++;
+				return (this->begin() + pos);
+			}
 
-			// template <class InputIterator>
-			// void insert (iterator position, InputIterator first, InputIterator last);
+			void insert (iterator position, size_type n, const value_type& val)
+			{
+				difference_type pos = position - this->begin();
+
+				if (position > this->end() || this->size() <= 0)// || position + n > this->end()
+					throw ValueOutOfRange();
+				if (this->size() + n >= this->capacity())
+					realloc(capacity() + n);
+				for (iterator it = this->end(); it != this->begin() + pos; it--)
+				{
+					_alloc.construct(&(*(it - 1 + n)), *(it - 1));
+					_alloc.destroy(&(*(it - 1)));
+				}
+				for (int i = 0; i < n; i++)
+				{
+					_alloc.construct(&this->front() + pos + i, val);
+				}
+				this->_v_end += n;
+			}
+
+			template <class InputIterator>
+			void insert (iterator position, InputIterator first, InputIterator last,
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+			{
+				difference_type pos = position - this->begin();
+				difference_type n = last - first;
+
+				if (position > this->end() || this->size() <= 0)
+					throw ValueOutOfRange();
+				if (this->size() + n >= this->capacity())
+					realloc(capacity() + n);
+				for (iterator it = this->end(); it != this->begin() + pos; it--)
+				{
+					_alloc.construct(&(*(it - 1 + n)), *(it - 1));
+					_alloc.destroy(&(*(it - 1)));
+				}
+				for (int i = 0; i < n; i++)
+				{
+					_alloc.construct(&this->front() + pos + i, *first);
+					first++;
+				}
+				this->_v_end += n;
+			}
 
 			iterator erase (iterator position)
 			{
 				if (position >= this->end() || this->size() <= 0)
 					throw ValueOutOfRange();
-				pointer 	new_v = _alloc.allocate(this->capacity());
-				pointer 	cpy_v = new_v;
-				iterator	it = this->begin();
 
-				for (int i = 0; i < this->size() - 1; i++)
+				_alloc.destroy(&(*position));
+				for (iterator it = position; it < this->end(); it++)
 				{
-					if (it != position)
-						_alloc.construct(cpy_v++, *it);
-					_alloc.destroy(&_v[i]);
-					it++;
+					_alloc.construct(&(*it), *(it + 1));
+					_alloc.destroy(&(*(it + 1)));
 				}
-				size_type old_alloc = this->capacity();
-				this->_v_end = _v_start + this->size();
-				_alloc.deallocate(_v, this->capacity());
-				this->_v = new_v;
-				this->_v_start = new_v;
-				this->_v_end_alloc = new_v + old_alloc;
-				std::cout << "size(): " << size() << std::endl;
+				this->_v_end--;
 				return (position + 1);
 			}
 
 			iterator erase (iterator first, iterator last)
 			{
-				;
+				iterator	cpy_last = last;
+				difference_type	diff = last - first;
+
+				if (last >= this->end() || this->size() <= 0)
+					throw ValueOutOfRange();
+
+				for (iterator it = first; it < this->end(); it++)
+				{
+					_alloc.destroy(&(*(it)));
+					if (cpy_last < this->end())
+					{
+						_alloc.construct(&(*it), *cpy_last);
+						cpy_last++;
+					}
+				}
+				this->_v_end = this->_v + size() - diff + 1;
+				return (last);
 			}
 
 			void swap (Vector& x)
@@ -325,7 +384,7 @@ namespace ft
 				}
 			}
 
-			// allocator_type get_allocator(void) const;
+			allocator_type get_allocator(void) const { return this->_alloc; }
 			
 			// template <class T, class Alloc>
 			// bool operator==(const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
@@ -359,7 +418,6 @@ namespace ft
 			Vector&	realloc(size_t new_capacity)
 			{
 				size_type	new_size = new_capacity < this->size() ? new_capacity : this->size();
-				// std::cout << "realloc new_capacity: " << new_capacity << std::endl;
 				pointer		new_v = _alloc.allocate(new_capacity);
 
 				for (size_type i = 0; i < new_size; i++)
@@ -371,8 +429,8 @@ namespace ft
 				_alloc.deallocate(this->_v, capacity());
 				this->_v = new_v;
 				this->_v_start = new_v;
-				this->_v_end = _v_start + new_size + 1;
-				this->_v_end_alloc = _v_start + new_capacity;
+				this->_v_end = new_v + new_size + 1;
+				this->_v_end_alloc = new_v + new_capacity;
 				return *this;
 			}
 			

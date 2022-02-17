@@ -76,25 +76,33 @@ int main(int argc, char** argv) {
 	// std::cout << vector[6] << std::endl;
 	// std::cout << vector.at(6) << std::endl;
 
-	ft::Vector<int> myvector;
+	ft::Vector<int> myvector (3,100);
+	ft::Vector<int>::iterator it;
 
-	// set some values (from 1 to 10)
-	for (int i=1; i<=10; i++) myvector.push_back(i);
+	it = myvector.begin();
+	it = myvector.insert ( it + 2, 200 );
 
-	// erase the 6th element
-	std::cout << "capcity: " << myvector.capacity() << std::endl;
-	std::cout << "size: " << myvector.size() << std::endl;
-	myvector.erase (myvector.begin()+5);
+	std::cout << *it << std::endl;
+	myvector.insert (it, 2, 300);
 
-	// erase the first 3 elements:
-	// myvector.erase (myvector.begin(),myvector.begin()+3);
-	std::cout << "capcity: " << myvector.capacity() << std::endl;
-	std::cout << "size: " << myvector.size() << std::endl;
+	// "it" no longer valid, get a new one:
+	it = myvector.begin();
+
+	std::vector<int> anothervector (2,400);
+	myvector.insert (it+2,anothervector.begin(),anothervector.end());
+
+	int myarray [] = { 501,502,503 };
+	myvector.insert (myvector.begin(), myarray, myarray+3);
 
 	std::cout << "myvector contains:";
-	for (unsigned i=0; i<myvector.size(); ++i)
+	for (int i = 0; i < myvector.size(); i++)
 		std::cout << ' ' << myvector[i];
+
+	// for (it=myvector.begin(); it<myvector.end(); it++)
+	// std::cout << ' ' << *it;
 	std::cout << '\n';
+
+
 
 	(void)argc;
 	(void)argv;
