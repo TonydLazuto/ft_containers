@@ -60,13 +60,13 @@ namespace ft
 				++_itor;
 				return tmp;
 			}
-			ReverseIterator operator+(difference_type n) const { return (reverse_iterator(_itor - n)); }
+			ReverseIterator operator+(difference_type n) const { return (ReverseIterator(_itor - n)); }
 			ReverseIterator&operator+=(difference_type n)
 			{
 				_itor -= n;
 				return (*this);
 			}
-			ReverseIterator operator-(difference_type n) const { return (reverse_iterator(_itor + n)); }
+			ReverseIterator operator-(difference_type n) const { return (ReverseIterator(_itor + n)); }
 			ReverseIterator&operator-=(difference_type n)
 			{
 				_itor += n;

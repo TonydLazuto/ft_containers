@@ -2,8 +2,6 @@
 # define ITERATORTRAITS_HPP
 
 #include <iostream>
-#include <cstddef>
-#include "Iterator.hpp"
 #include "RandomAccess.hpp"
 
 namespace ft 
