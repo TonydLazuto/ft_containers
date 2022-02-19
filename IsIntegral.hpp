@@ -44,12 +44,4 @@ namespace ft
 	template <typename T>
 		struct is_integral : public is_integral_type<T> {};
 
-	template<bool Cond, class T = void>
-		struct enable_if {};
-
-	template<class T>
-		struct enable_if<true, T>
-		{
-			typedef T type;
-		};
 }

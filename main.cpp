@@ -76,31 +76,118 @@ int main(int argc, char** argv) {
 	// std::cout << vector[6] << std::endl;
 	// std::cout << vector.at(6) << std::endl;
 
-	ft::Vector<int> myvector (3,100);
-	ft::Vector<int>::iterator it;
+	// ft::Vector<int> myvector (3,100);
+	// ft::Vector<int>::iterator it;
 
-	it = myvector.begin();
-	it = myvector.insert ( it + 2, 200 );
+	// it = myvector.begin();
+	// it = myvector.insert ( it + 2, 200 );
 
-	std::cout << *it << std::endl;
-	myvector.insert (it, 2, 300);
+	// std::cout << *it << std::endl;
+	// myvector.insert (it, 2, 300);
 
-	// "it" no longer valid, get a new one:
-	it = myvector.begin();
+	// // "it" no longer valid, get a new one:
+	// it = myvector.begin();
 
-	std::vector<int> anothervector (2,400);
-	myvector.insert (it+2,anothervector.begin(),anothervector.end());
+	// std::vector<int> anothervector (2,400);
+	// myvector.insert (it+2,anothervector.begin(),anothervector.end());
 
-	int myarray [] = { 501,502,503 };
-	myvector.insert (myvector.begin(), myarray, myarray+3);
+	// int myarray [] = { 501,502,503 };
+	// myvector.insert (myvector.begin(), myarray, myarray+3);
 
-	std::cout << "myvector contains:";
-	for (int i = 0; i < myvector.size(); i++)
-		std::cout << ' ' << myvector[i];
+	// std::cout << "myvector contains:";
+	// for (int i = 0; i < myvector.size(); i++)
+	// 	std::cout << ' ' << myvector[i];
 
 	// for (it=myvector.begin(); it<myvector.end(); it++)
 	// std::cout << ' ' << *it;
-	std::cout << '\n';
+	// std::cout << '\n';
+	class B {
+		public:
+			char *l;
+			int i;
+			B():l(nullptr), i(1) {};
+			B(const int &ex) {
+				this->i = ex;
+				this->l = new char('a');
+			};
+			virtual ~B() {
+				delete this->l;
+				this->l = nullptr;
+			};
+	};
+
+	class A : public B {
+		public:
+		A():B(){};
+		A(const B* ex){
+			this->l = new char(*(ex->l));
+			this->i = ex->i;
+			if (ex->i == -1) throw "n";
+		}
+		~A() {
+			delete this->l;
+			this->l = nullptr;
+		};
+	};
+
+	int val = 600;
+	std::vector<int> vector;
+	vector.assign(2600 * val, 1);
+
+	std::vector<int> v;
+    v.push_back(*(vector.insert(vector.end() - 800 * val, 44)));
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    std::unique_ptr<B> k2(new B(3));
+    std::unique_ptr<B> k3(new B(4));
+    std::unique_ptr<B> k4(new B(-1));
+    std::vector<A> vv;
+    std::vector<B*> v1;
+
+    v1.push_back(&(*k2));
+    v1.push_back(&(*k3));
+    v1.push_back(&(*k4));
+    try { vv.insert(vv.begin(), v1.begin(), v1.end()); }
+    catch (...) {
+    	v.push_back(vv.size());
+    	v.push_back(vv.capacity());
+    }
+
+	std::cout << "vector contains:";
+	for (int i = 0; i < v.size(); i++)
+		std::cout << ' ' << v[i];
+	std::cout << std::endl;
+
+
+	ft::Vector<int> vector2;
+	vector2.assign(2600 * val, 1);
+
+	ft::Vector<int> v2;
+    v2.push_back(*(vector2.insert(vector2.end() - 800 * val, 44)));
+    v2.push_back(vector2.size());
+    v2.push_back(vector2.capacity());
+    std::unique_ptr<B> k5(new B(3));
+    std::unique_ptr<B> k6(new B(4));
+    std::unique_ptr<B> k7(new B(-1));
+    ft::Vector<A> vv2;
+    ft::Vector<B*> v1_bis;
+
+    v1_bis.push_back(&(*k5));
+    v1_bis.push_back(&(*k6));
+    v1_bis.push_back(&(*k7));
+    try { vv2.insert(vv2.begin(), v1_bis.begin(), v1_bis.end()); }
+    catch (...) {
+    	v2.push_back(vv2.size());
+    	v2.push_back(vv2.capacity());
+    }
+
+
+// std::cout << &*v2.rbegin() << std::endl;
+	std::cout << "vector contains:";
+	for (int i = 0; i < v2.size(); i++)
+		std::cout << ' ' << v2[i];
+	std::cout << std::endl;
+
 
 
 
