@@ -14,7 +14,7 @@
 namespace ft 
 {
 	template <typename T, class Alloc = std::allocator<T> >
-	class vector
+	class Vector
 	{
 		public:
 			class ValueOutOfRange : public std::exception
@@ -24,7 +24,7 @@ namespace ft
 					virtual ~ValueOutOfRange( void ) throw() {}
 					virtual const char* what() const throw()
 					{
-						return "Error: try to reach a value greater than the vector size";
+						return "Error: try to reach a value greater than the Vector size";
 					}
 			};
 			typedef	T value_type;
@@ -43,15 +43,15 @@ namespace ft
 			typedef typename Alloc::pointer pointer;
 			typedef typename Alloc::const_pointer const_pointer;
 
-			explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc)
+			explicit Vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 			{
-				this->_v = _alloc.allocate(1);
+				this->_v = NULL;
 				this->_v_start = NULL;
 				this->_v_end = NULL;
 				this->_v_end_alloc = NULL;
 			}
 
-			explicit vector (size_type n, const value_type& val = value_type(),
+			explicit Vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 				{
 					_v = _alloc.allocate(n);
@@ -63,9 +63,8 @@ namespace ft
 					this->_v_end_alloc = p;
 				}
 	
-
 			template <class InputIterator>
-			vector (InputIterator first, InputIterator last,
+			Vector (InputIterator first, InputIterator last,
 				const allocator_type& alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 				: _alloc(alloc)
@@ -89,14 +88,15 @@ namespace ft
 					this->_v_end = _v_start + diff + 1;
 					this->_v_end_alloc = _v_start + diff;
 				}
-			virtual ~vector( void )
+
+			virtual ~Vector( void )
 			{
 				clear();
 				if (this->capacity())
 					this->_alloc.deallocate(_v, this->capacity());
 			}
 			
-			vector(vector const & x)
+			Vector(Vector const & x)
 			{
 				this->_alloc = x._alloc;
 				this->_v = x._v;
@@ -104,7 +104,7 @@ namespace ft
 				this->_v_end = x._v_end;
 				this->_v_end_alloc = x._v_end_alloc;
 			}
-			vector& operator=(const vector& x)
+			Vector& operator=(const Vector& x)
 			{
 				this->_alloc = x._alloc;
 				this->_v = x._v;
@@ -119,41 +119,41 @@ namespace ft
 			const_iterator begin(void) const { return _v_start; }
 			reverse_iterator rbegin(void)
 			{
-				if (_v_end == _v_start)
+				// if (_v_end == _v_start)
 					return reverse_iterator(_v_end);
-				return reverse_iterator(_v_end - 1);
+				// return reverse_iterator(_v_end - 1);
 			}
 			const_reverse_iterator rbegin(void) const
 			{
-				if (_v_end == _v_start)
+				// if (_v_end == _v_start)
 					return reverse_iterator(_v_end);
-				return reverse_iterator(_v_end - 1);
+				// return reverse_iterator(_v_end - 1);
 			}
 			
 			iterator end(void)
 			{
 				if (empty())
 					return _v_start;
-				return (_v_end - 1);
+				return (_v_end);
 			}
 			const_iterator end(void) const
 			{
 				if (empty())
 					return _v_start;
-				return (_v_end - 1);
+				return (_v_end);
 			}
 			reverse_iterator rend(void) { return reverse_iterator(_v_start); }
 			const_reverse_iterator rend(void) const { return reverse_iterator(_v_start); }
 			
 			size_type size(void) const 
 			{
-				if (!this->_v_end)
-					return 0;
-				return static_cast<size_type>((this->_v_end - 1) - this->_v_start);
+				// if (!this->_v_end)
+				// 	return 0;
+				return static_cast<size_type>(this->_v_end - this->_v_start);
 			}
 			size_type max_size(void) const
 			{
-				return static_cast<size_type>(std::numeric_limits<difference_type>::max() / 2);
+				return (_alloc.max_size());
 			}
 
 			void resize(size_type n, value_type val = value_type())
@@ -281,7 +281,7 @@ namespace ft
 					realloc(capacity() * 2);
 				if (capacity() == 0)
 					realloc(1);
-				this->_v[this->size()] = val;
+				_alloc.construct(_end, val);
 				this->_v_end++;
 			}
 
@@ -301,6 +301,8 @@ namespace ft
 				// 	throw ValueOutOfRange();
 				if (this->size() + 1 > this->capacity())
 					realloc(capacity() * 2);
+				for (size_type i = 0; i < pos; i++)
+						_alloc.construct(_end - i, *(_end - i - 1));
 				for (iterator it = this->end(); it != this->begin() + pos; it--)
 				{
 					_alloc.construct(&*it, *(it - 1));
@@ -397,7 +399,7 @@ namespace ft
 				return (last);
 			}
 
-			void swap (vector& x)
+			void swap (Vector& x)
 			{
 				pointer tmp_v = x._v;
 				pointer tmp_v_start = x._v_start;
@@ -440,18 +442,19 @@ namespace ft
 			pointer			_v_end;
 			pointer			_v_end_alloc;
 
-			vector&	realloc(size_t new_capacity)
+			Vector&	realloc(size_t new_capacity)
 			{
 				size_type	new_size = new_capacity < this->size() ? new_capacity : this->size();
 				pointer		new_v = _alloc.allocate(new_capacity);
 
 				for (size_type i = 0; i < new_size; i++)
 					_alloc.construct(new_v + i, this->_v[i]);
-				for (size_type i = new_size; i < new_capacity; i++)
-					_alloc.construct(new_v + i, 0);
+				// for (size_type i = new_size; i < new_capacity; i++)
+				// 	_alloc.construct(new_v + i, 0);
 				for (size_type i = 0; i < this->size(); i++)
 					_alloc.destroy(this->_v + i);
-				_alloc.deallocate(this->_v, capacity());
+				if (this->_v_start)
+					_alloc.deallocate(this->_v, capacity());
 				this->_v = new_v;
 				this->_v_start = new_v;
 				this->_v_end = new_v + new_size + 1;
@@ -462,43 +465,43 @@ namespace ft
 	};
 
 	template <class T, class Alloc>
-	bool operator==(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+	bool operator==(const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
 	{
 		return (lhs == rhs);
 	}
 
 	template <class T, class Alloc>
-	bool operator!=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+	bool operator!=(const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
 	{
 		return (lhs != rhs);
 	}
 
 	template <class T, class Alloc>
-	bool operator<(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+	bool operator<(const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
 	{
 		return (lhs < rhs);
 	}
 
 	template <class T, class Alloc>
-	bool operator<=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+	bool operator<=(const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
 	{
 		return (lhs <= rhs);
 	}
 
 	template <class T, class Alloc>
-	bool operator>(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+	bool operator>(const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
 	{
 		return (lhs > rhs);
 	}
 
 	template <class T, class Alloc>
-	bool operator>=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+	bool operator>=(const Vector<T, Alloc>& lhs, const Vector<T, Alloc>& rhs)
 	{
 		return (lhs >= rhs);
 	}
 
 	template <class T, class Alloc>
-	void swap (vector<T, Alloc>& x, vector<T, Alloc>& y)
+	void swap (Vector<T, Alloc>& x, Vector<T, Alloc>& y)
 	{
 		x.swap(y);
 	}

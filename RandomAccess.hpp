@@ -2,20 +2,20 @@
 # define RANDOMACCESS_HPP
 
 #include <iostream>
-#include "Iterator.hpp"
+#include <iterator>
 
 namespace ft 
 {
 	template <class T>
-	class RandomAccessIterator : public ft::Iterator<ft::bidirectional_iterator_tag, T>
+	class RandomAccessIterator : public std::iterator<std::random_access_iterator_tag, T>
 	{
 		private:
 			T*	_itor;
 
 		public:
-			typedef typename ft::Iterator<ft::random_access_iterator_tag, T>::iterator_category		iterator_category;
-			typedef typename ft::Iterator<ft::random_access_iterator_tag, T>::value_type			value_type;
-			typedef typename ft::Iterator<ft::random_access_iterator_tag, T>::difference_type		difference_type;
+			typedef typename std::iterator<std::random_access_iterator_tag, T>::iterator_category		iterator_category;
+			typedef typename std::iterator<std::random_access_iterator_tag, T>::value_type			value_type;
+			typedef typename std::iterator<std::random_access_iterator_tag, T>::difference_type		difference_type;
 			typedef T*																				pointer;
 			typedef T&																				reference;
 

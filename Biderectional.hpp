@@ -2,22 +2,22 @@
 # define BIDERECTIONALITERATOR_HPP
 
 #include <iostream>
-#include "Iterator.hpp"
+#include <iterator>
 
 namespace ft 
 {
 	template <class T>
-	class BiderectionalIterator : public ft::Iterator<ft::bidirectional_iterator_tag, T>
+	class BiderectionalIterator : public std::iterator<std::bidirectional_iterator_tag, T>
 	{
 		private:
 			T*	_itor;
 		
 		public:
-			typedef typename ft::Iterator<ft::bidirectional_iterator_tag, T>::iterator_category	iterator_category;
-			typedef typename ft::Iterator<ft::bidirectional_iterator_tag, T>::value_type		value_type;
-			typedef typename ft::Iterator<ft::bidirectional_iterator_tag, T>::difference_type	difference_type;
-			typedef typename ft::Iterator<ft::bidirectional_iterator_tag, T>::pointer			pointer;
-			typedef typename ft::Iterator<ft::bidirectional_iterator_tag, T>::reference			reference;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::iterator_category	iterator_category;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::value_type		value_type;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::difference_type	difference_type;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::pointer			pointer;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::reference			reference;
 
 			BiderectionalIterator( void ) {}
 			BiderectionalIterator( BiderectionalIterator itor ) : _itor(itor) {}
