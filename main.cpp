@@ -10,7 +10,7 @@
 // #else
 	// #include <map.hpp>
 	// #include <stack.hpp>
-	#include <Vector.hpp>
+	#include "Vector.hpp"
 // #endif
 
 #include <stdlib.h>
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 	// }
 	// const int seed = atoi(argv[1]);
 	// srand(seed);
-	// std::vector<int> true_vector;
+	// ft::Vector<int> true_vector;
 	// for (int i = 0; i < 5; i++)
 	// 	true_vector.push_back(i);
 	
@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
 	// for (int i = 0; i < vector.size(); i++)
 	// 	std::cout << "vector["<<i<<"]: " << vector[i] << std::endl;
 
-	// std::cout << "size: " << vector.size() << std::endl;
+	// std::cout << "size: " << true_vector.size() << std::endl;
 
 	// vector.reserve(10);
 	// std::cout << "capacity: " << vector.capacity() << std::endl;
@@ -76,28 +76,28 @@ int main(int argc, char** argv) {
 	// std::cout << vector[6] << std::endl;
 	// std::cout << vector.at(6) << std::endl;
 
-	// ft::Vector<int> myvector (3,100);
-	// ft::Vector<int>::iterator it;
+	ft::Vector<int> myvector (0);
+	ft::Vector<int>::iterator it;
 
-	// it = myvector.begin();
-	// it = myvector.insert ( it + 2, 200 );
+	it = myvector.begin();
+	it = myvector.insert ( it, 200 );
 
 	// std::cout << *it << std::endl;
-	// myvector.insert (it, 2, 300);
+	// myvector.insert (it + 2, 2, 300);
 
-	// // "it" no longer valid, get a new one:
+	// "it" no longer valid, get a new one:
 	// it = myvector.begin();
 
 	// std::vector<int> anothervector (2,400);
-	// myvector.insert (it+2,anothervector.begin(),anothervector.end());
+	// myvector.insert (it+6,anothervector.begin(),anothervector.end());
 
 	// int myarray [] = { 501,502,503 };
 	// myvector.insert (myvector.begin(), myarray, myarray+3);
 
-	// std::cout << "myvector contains:";
-	// for (int i = 0; i < myvector.size(); i++)
-	// 	std::cout << ' ' << myvector[i];
-	// std::cout << std::endl;
+	std::cout << "myvector contains:";
+	for (size_t i = 0; i < myvector.size(); i++)
+		std::cout << ' ' << myvector[i];
+	std::cout << std::endl;
 
 // 	class B {
 // 		public:

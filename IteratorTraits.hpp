@@ -2,7 +2,6 @@
 # define ITERATORTRAITS_HPP
 
 #include <iostream>
-#include "RandomAccess.hpp"
 
 namespace ft 
 {
