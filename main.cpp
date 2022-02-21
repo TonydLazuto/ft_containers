@@ -76,28 +76,77 @@ int main(int argc, char** argv) {
 	// std::cout << vector[6] << std::endl;
 	// std::cout << vector.at(6) << std::endl;
 
-	std::vector<int> myvector (4, 100);
-	std::vector<int>::iterator it;
+	const int size = 5;
+	ft::vector<int> vct(size);
+	ft::vector<int>::iterator it_ = vct.begin();
+	ft::vector<int>::reverse_iterator it(it_);
 
-	it = myvector.begin();
-	it = myvector.insert ( it, 200 );
+	for (int i = 0; i < size; ++i)
+		vct[i] = (i + 1) * 5;
+	std::cout << vct.size() << std::endl;
 
-	// std::cout << *it << std::endl;
-	myvector.insert (it + 2, 2, 300);
+	std::cout << "vct contains:";
+	for (size_t i = 0; i < vct.size(); i++)
+		std::cout << ' ' << vct[i];
+	std::cout << std::endl;
 
-	// "it" no longer valid, get a new one:
-	it = myvector.begin();
+	std::cout << (it_ == it.base()) << std::endl;
+	std::cout << (it_ == (it + 3).base()) << std::endl;
 
-	std::vector<int> anothervector (2,400);
-	myvector.insert (it+6,anothervector.begin(),anothervector.end());
+	std::cout << *(it.base() + 1) << std::endl;
+	std::cout << *(it - 3) << std::endl;
+	std::cout << *(it - 3).base() << std::endl;
+	it -= 3;
+	std::cout << *it.base() << std::endl;
+
+	std::cout << "TEST OFFSET" << std::endl;
+	std::cout << *(it) << std::endl;
+	std::cout << *(it).base() << std::endl;
+	std::cout << *(it - 0) << std::endl;
+	std::cout << *(it - 0).base() << std::endl;
+	std::cout << *(it - 1).base() << std::endl;
+
+	// ft::vector<int> myvector (4, 100);
+	// ft::vector<int>::iterator it;
+
+	// it = myvector.begin();
+	// it = myvector.insert ( it, 200 );
+
+	// myvector.insert (it + 2, 2, 300);
+
+	// it = myvector.begin();
+
+	// std::vector<int> anothervector (2,400);
+	// myvector.insert (it+6,anothervector.begin(),anothervector.end());
 
 	// int myarray [] = { 501,502,503 };
 	// myvector.insert (myvector.begin(), myarray, myarray+3);
 
-	std::cout << "myvector contains:";
-	for (size_t i = 0; i < myvector.size(); i++)
-		std::cout << ' ' << myvector[i];
-	std::cout << std::endl;
+	// std::cout << "myvector contains:";
+	// for (size_t i = 0; i < myvector.size(); i++)
+	// 	std::cout << ' ' << myvector[i];
+	// std::cout << std::endl;
+
+	// std::vector<int> thevector (4, 100);
+	// std::vector<int>::iterator it2;
+
+	// it2 = thevector.begin();
+	// it2 = thevector.insert ( it2, 200 );
+
+	// thevector.insert (it2 + 2, 2, 300);
+
+	// it2 = thevector.begin();
+
+	// std::vector<int> anothervector2 (2,400);
+	// thevector.insert (it2+6,anothervector2.begin(),anothervector2.end());
+
+	// int myarray2 [] = { 501,502,503 };
+	// thevector.insert (thevector.begin(), myarray2, myarray2+3);
+
+	// std::cout << "thevector contains:";
+	// for (size_t i = 0; i < thevector.size(); i++)
+	// 	std::cout << ' ' << thevector[i];
+	// std::cout << std::endl;
 
 // 	class B {
 // 		public:
