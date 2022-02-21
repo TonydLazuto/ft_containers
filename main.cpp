@@ -76,20 +76,20 @@ int main(int argc, char** argv) {
 	// std::cout << vector[6] << std::endl;
 	// std::cout << vector.at(6) << std::endl;
 
-	ft::Vector<int> myvector (0);
-	ft::Vector<int>::iterator it;
+	std::vector<int> myvector (4, 100);
+	std::vector<int>::iterator it;
 
 	it = myvector.begin();
 	it = myvector.insert ( it, 200 );
 
 	// std::cout << *it << std::endl;
-	// myvector.insert (it + 2, 2, 300);
+	myvector.insert (it + 2, 2, 300);
 
 	// "it" no longer valid, get a new one:
-	// it = myvector.begin();
+	it = myvector.begin();
 
-	// std::vector<int> anothervector (2,400);
-	// myvector.insert (it+6,anothervector.begin(),anothervector.end());
+	std::vector<int> anothervector (2,400);
+	myvector.insert (it+6,anothervector.begin(),anothervector.end());
 
 	// int myarray [] = { 501,502,503 };
 	// myvector.insert (myvector.begin(), myarray, myarray+3);

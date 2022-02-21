@@ -21,18 +21,17 @@ namespace ft
 			typedef typename ft::IteratorTraits<Iter>::reference			reference;
 
 			ReverseIterator( void ) : _itor() {}
-			explicit ReverseIterator(Iter x) : _itor(x) {}
-			virtual ~ReverseIterator( void );
-			template < class U >
-			ReverseIterator (const ReverseIterator &src) : _itor(src.base()) {}
+			explicit ReverseIterator(iterator_type x) : _itor(x) {}
+			virtual ~ReverseIterator( void ) {}
 
-			ReverseIterator& operator=(ReverseIterator const & rhs);
+			template < class U >
+			ReverseIterator (const ReverseIterator<Iter> &rev) : _itor(rev.base()) {}
 
 			iterator_type base(void) const { return _itor; }
 
 			reference operator*(void) const
 			{
-				Iter tmp = _itor;
+				iterator_type tmp = _itor;
 				return (*(--tmp));
 			}
 			pointer operator->(void) const { return &(operator*()); }
@@ -60,13 +59,17 @@ namespace ft
 				++_itor;
 				return tmp;
 			}
-			ReverseIterator operator+(difference_type n) const { return (ReverseIterator(_itor - n)); }
+			ReverseIterator operator+(difference_type n) const {
+				return (ReverseIterator(_itor - n));
+			}
 			ReverseIterator&operator+=(difference_type n)
 			{
 				_itor -= n;
 				return (*this);
 			}
-			ReverseIterator operator-(difference_type n) const { return (ReverseIterator(_itor + n)); }
+			ReverseIterator operator-(difference_type n) const {
+				return (ReverseIterator(_itor + n));
+			}
 			ReverseIterator&operator-=(difference_type n)
 			{
 				_itor += n;

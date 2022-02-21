@@ -32,6 +32,7 @@ namespace ft
 				return *this;
 			}
 
+			pointer base() const { return this->_itor; }
 			reference operator*(void) { return (*this->_itor); }
 			pointer operator->(void) { return &(this->operator*()); }
 
