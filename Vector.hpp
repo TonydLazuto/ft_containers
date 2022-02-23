@@ -187,7 +187,7 @@ namespace ft
 				{
 					throw std::out_of_range("");
 				}
-				return (this->_v[n]);
+				return ((*this)[n]);
 			}
 
 			const_reference at (size_type n) const
@@ -196,7 +196,7 @@ namespace ft
 				{
 					throw std::out_of_range("");
 				}
-				return (const_cast<const_reference>(this->_v[n]));
+				return (const_cast<const_reference>((*this)[n]));
 			}
 
 			/*

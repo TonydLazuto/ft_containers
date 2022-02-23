@@ -76,35 +76,71 @@ int main(int argc, char** argv) {
 	// std::cout << vector[6] << std::endl;
 	// std::cout << vector.at(6) << std::endl;
 
-	const int size = 5;
-	ft::vector<int> vct(size);
-	ft::vector<int>::iterator it_ = vct.begin();
-	ft::vector<int>::reverse_iterator it(it_);
+	std::vector<int> vct(10);
+	std::vector<int> vct2;
 
-	for (int i = 0; i < size; ++i)
-		vct[i] = (i + 1) * 5;
-	std::cout << vct.size() << std::endl;
-
-	std::cout << "vct contains:";
+	for (unsigned long int i = 0; i < vct.size(); ++i)
+		vct[i] = (vct.size() - i) * 3;
+	vct2.insert(vct2.end(), 42);
+	vct2.insert(vct2.begin(), 2, 21);
+	std::cout << "size: " << vct.size() << std::endl;
+	std::cout << "capacity: " << vct.capacity() << std::endl;
+	std::cout << "max_size: " << vct.max_size() << std::endl << std::endl;
+	std::cout << "Content is:" << std::endl;
 	for (size_t i = 0; i < vct.size(); i++)
-		std::cout << ' ' << vct[i];
-	std::cout << std::endl;
+		std::cout << vct[i] << std::endl;
+	std::cout << "###############################################" << std::endl;
 
-	std::cout << (it_ == it.base()) << std::endl;
-	std::cout << (it_ == (it + 3).base()) << std::endl;
+	vct2.insert(vct2.end() - 2, 42);
+	std::cout << "size: " << vct2.size() << std::endl;
+	std::cout << "capacity: " << vct2.capacity() << std::endl;
+	std::cout << "max_size: " << vct.max_size() << std::endl << std::endl;
+	std::cout << "Content is:" << std::endl;
+	for (size_t i = 0; i < vct2.size(); i++)
+		std::cout << vct2[i] << std::endl;
+	std::cout << "###############################################" << std::endl;
 
-	std::cout << *(it.base() + 1) << std::endl;
-	std::cout << *(it - 3) << std::endl;
-	std::cout << *(it - 3).base() << std::endl;
-	it -= 3;
-	std::cout << *it.base() << std::endl;
+	
 
-	std::cout << "TEST OFFSET" << std::endl;
-	std::cout << *(it) << std::endl;
-	std::cout << *(it).base() << std::endl;
-	std::cout << *(it - 0) << std::endl;
-	std::cout << *(it - 0).base() << std::endl;
-	std::cout << *(it - 1).base() << std::endl;
+	vct2.insert(vct2.end(), 2, 84);
+	std::cout << "size: " << vct2.size() << std::endl;
+	std::cout << "capacity: " << vct2.capacity() << std::endl;
+	std::cout << "max_size: " << vct.max_size() << std::endl << std::endl;
+	std::cout << "Content is:" << std::endl;
+	for (size_t i = 0; i < vct2.size(); i++)
+		std::cout << vct2[i] << std::endl;
+	std::cout << "###############################################" << std::endl;
+
+
+	vct2.resize(4);
+	std::cout << "size: " << vct2.size() << std::endl;
+	std::cout << "capacity: " << vct2.capacity() << std::endl;
+	std::cout << "max_size: " << vct.max_size() << std::endl << std::endl;
+	std::cout << "Content is:" << std::endl;
+	for (size_t i = 0; i < vct2.size(); i++)
+		std::cout << vct2[i] << std::endl;
+	std::cout << "###############################################" << std::endl;
+
+
+	vct2.insert(vct2.begin() + 2, vct.begin(), vct.end());
+	vct.clear();
+	std::cout << "size: " << vct2.size() << std::endl;
+	std::cout << "capacity: " << vct2.capacity() << std::endl;
+	std::cout << "max_size: " << vct.max_size() << std::endl << std::endl;
+	std::cout << "Content is:" << std::endl;
+	for (size_t i = 0; i < vct2.size(); i++)
+		std::cout << vct2[i] << std::endl;
+	std::cout << "###############################################" << std::endl;
+
+
+	std::cout << "size: " << vct.size() << std::endl;
+	std::cout << "capacity: " << vct.capacity() << std::endl;
+	std::cout << "max_size:" << vct.max_size() << std::endl;
+	std::cout << "Content is:" << std::endl;
+	for (size_t i = 0; i < vct.size(); i++)
+		std::cout << vct[i] << std::endl;
+	std::cout << "###############################################" << std::endl;
+
 
 	// ft::vector<int> myvector (4, 100);
 	// ft::vector<int>::iterator it;
