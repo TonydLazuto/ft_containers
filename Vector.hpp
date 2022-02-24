@@ -75,7 +75,7 @@ namespace ft
 			vector (InputIterator first, InputIterator last,
 				const allocator_type& alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
-				: _alloc(alloc)
+				: _alloc(alloc), _v(NULL), _v_start(NULL), _v_end(NULL), _v_end_alloc(NULL)
 				{
 					difference_type diff = 0;
 					InputIterator first_cpy = first;
@@ -85,13 +85,7 @@ namespace ft
 						first_cpy++;
 					}
 					if (diff == 0)
-					{
-						this->_v = NULL;
-						this->_v_start = NULL;
-						this->_v_end = NULL;
-						this->_v_end_alloc  = NULL;
 						return ;
-					}
 					_v = this->_alloc.allocate(diff);
 					this->_v_start = this->_v;
 					for (difference_type i = 0; i < diff; i++)
@@ -101,6 +95,7 @@ namespace ft
 					}
 					this->_v_end = _v_start + diff;
 					this->_v_end_alloc = _v_start + diff;
+					this->insert(this->begin(), first, last);
 				}
 
 			virtual ~vector( void )
@@ -112,7 +107,6 @@ namespace ft
 			vector(const vector& x)
 			{
 				this->_alloc = x._alloc;
-
 				this->insert(this->begin(), x.begin(), x.end());
 			}
 			vector& operator=(const vector& x)
@@ -163,7 +157,7 @@ namespace ft
 				if (n == 0)
 					this->clear();
 				else if (n < this->size())
-					erase(this->begin() + n - 1, this->end());
+					erase(this->begin() + n, this->end());
 				else if (n > this->size())
 					insert(this->end(), n - this->size(), val);
 			}
@@ -228,13 +222,13 @@ namespace ft
 					insert(this->begin(), first, last);
 				}
 
-			void assign (size_type n, const value_type& val)
+			void assign(size_type n, const value_type& val)
 			{
 				erase(this->begin(), end());
 				insert(this->begin(), n, val);
 			}
 
-			void push_back (const value_type& val)
+			void push_back(const value_type& val)
 			{
 				if (capacity() == 0)
 					realloc(1);
@@ -250,7 +244,7 @@ namespace ft
 				this->_v_end--;
 			}
 
-			iterator insert (iterator position, const value_type& val)
+			iterator insert(iterator position, const value_type& val)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
 
@@ -284,7 +278,7 @@ namespace ft
 				return (iterator(this->_v_start + pos));
 			}
 
-			void insert (iterator position, size_type n, const value_type& val)
+			void insert(iterator position, size_type n, const value_type& val)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
 				// if (position > this->end() || this->size() < 0)
@@ -325,7 +319,7 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			void insert (iterator position, InputIterator first, InputIterator last,
+			void insert(iterator position, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
@@ -380,7 +374,7 @@ namespace ft
 				}
 			}
 
-			iterator erase (iterator position)
+			iterator erase(iterator position)
 			{
 				// if (position >= this->end() || this->size() <= 0)
 					// throw ValueOutOfRange();
@@ -389,15 +383,15 @@ namespace ft
 				_alloc.destroy(&(*position));
 				if (this->size() > 1)
 				{
-					for (size_type i = this->size() - 1; i > pos; i--)
-						_alloc.construct(_v + i - 1, *(_v + i));
+					for (size_type i = pos; i < this->size() - 1; i++)
+						_alloc.construct(_v + i, *(_v + i + 1));
 					_alloc.destroy(&this->back());
 				}
 				this->_v_end--;
-				return (position + 1);
+				return (position);
 			}
 
-			iterator erase (iterator first, iterator last)
+			iterator erase(iterator first, iterator last)
 			{
 				// if (last >= this->end() || this->size() <= 0)
 					// throw ValueOutOfRange();
@@ -405,19 +399,18 @@ namespace ft
 				size_type fpos = static_cast<size_type>(first - this->begin());
 
 				if (len == 0)
-					return (last);
-				for (size_type i = fpos; i < fpos + len; i++)
-					_alloc.destroy(_v + i);
-				for (size_type i = this->size() - 1; i > fpos + len; i--)
+					return (first);
+				for (size_type i = fpos; i < this->size(); ++i)
 				{
-					_alloc.construct(_v + i - len + 1, *(_v + i));
-					_alloc.destroy(&this->back());
+					if (i <= fpos + len)
+						_alloc.construct(_v + i, *(_v + i + len));
+					_alloc.destroy(_v + i + len);
 				}
 				this->_v_end -= len;
-				return (last);
+				return (first);
 			}
 
-			void swap (vector& x)
+			void swap(vector& x)
 			{
 				pointer tmp_v = x._v;
 				pointer tmp_v_start = x._v_start;

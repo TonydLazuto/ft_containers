@@ -22,13 +22,11 @@ namespace ft
 			RandomAccessIterator( void ) : _itor(NULL) {}
 			RandomAccessIterator(pointer itor) : _itor(itor) {}
 			virtual ~RandomAccessIterator( void ) {}
-			RandomAccessIterator(RandomAccessIterator const & src)
-			{
-				this->_itor = src._itor;
-			}
+			RandomAccessIterator(RandomAccessIterator const & src): _itor(src._itor) {}
 			RandomAccessIterator& operator=(RandomAccessIterator const & rhs)
 			{
-				this->_itor = rhs._itor;
+				if (*this != rhs)
+					this->_itor = rhs._itor;
 				return *this;
 			}
 
@@ -39,25 +37,27 @@ namespace ft
 			RandomAccessIterator operator++(void)
 			{
 				RandomAccessIterator tmp = *this;
-				this->_itor++;
+				tmp._itor = ++this->_itor;
 				return tmp;
 			}
-			RandomAccessIterator& operator++(int)
+			RandomAccessIterator operator++(int)
 			{
-				this->_itor++;
-				return *this;
+				RandomAccessIterator tmp = *this;
+				tmp._itor = this->_itor++;
+				return tmp;
 			}
 			
 			RandomAccessIterator operator--(void)
 			{
 				RandomAccessIterator tmp = *this;
-				this->_itor--;
+				tmp._itor = --this->_itor;
 				return tmp;
 			}
-			RandomAccessIterator& operator--(int)
+			RandomAccessIterator operator--(int)
 			{
-				this->_itor--;
-				return *this;
+				RandomAccessIterator tmp = *this;
+				tmp._itor = this->_itor--;
+				return tmp;
 			}
 			
 			RandomAccessIterator operator+(difference_type n) const
@@ -94,8 +94,7 @@ namespace ft
 
 	template <typename T>
 	typename ft::RandomAccessIterator<T>::difference_type
-	operator==(const ft::RandomAccessIterator<T> lhs,
-				const ft::RandomAccessIterator<T> rhs)
+	operator==(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() == rhs.base());
 	}
@@ -103,16 +102,14 @@ namespace ft
 	/* For iterator == const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
-	operator==(const ft::RandomAccessIterator<T_L> lhs,
-				const ft::RandomAccessIterator<T_R> rhs)
+	operator==(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() == rhs.base());
 	}
 
 	template <typename T>
 	typename ft::RandomAccessIterator<T>::difference_type
-	operator!=(const ft::RandomAccessIterator<T> lhs,
-				const ft::RandomAccessIterator<T> rhs)
+	operator!=(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() != rhs.base());
 	}
@@ -120,16 +117,14 @@ namespace ft
 	/* For iterator != const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
-	operator!=(const ft::RandomAccessIterator<T_L> lhs,
-				const ft::RandomAccessIterator<T_R> rhs)
+	operator!=(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() != rhs.base());
 	}
 
 	template <typename T>
 	typename ft::RandomAccessIterator<T>::difference_type
-	operator<(const ft::RandomAccessIterator<T> lhs,
-				const ft::RandomAccessIterator<T> rhs)
+	operator<(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() < rhs.base());
 	}
@@ -137,16 +132,14 @@ namespace ft
 	/* For iterator < const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
-	operator<(const ft::RandomAccessIterator<T_L> lhs,
-				const ft::RandomAccessIterator<T_R> rhs)
+	operator<(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() < rhs.base());
 	}
 
 	template <typename T>
 	typename ft::RandomAccessIterator<T>::difference_type
-	operator<=(const ft::RandomAccessIterator<T> lhs,
-				const ft::RandomAccessIterator<T> rhs)
+	operator<=(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() <= rhs.base());
 	}
@@ -154,16 +147,14 @@ namespace ft
 	/* For iterator <= const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
-	operator<=(const ft::RandomAccessIterator<T_L> lhs,
-				const ft::RandomAccessIterator<T_R> rhs)
+	operator<=(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() <= rhs.base());
 	}
 
 	template <typename T>
 	typename ft::RandomAccessIterator<T>::difference_type
-	operator>(const ft::RandomAccessIterator<T> lhs,
-				const ft::RandomAccessIterator<T> rhs)
+	operator>(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() > rhs.base());
 	}
@@ -171,16 +162,14 @@ namespace ft
 	/* For iterator > const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
-	operator>(const ft::RandomAccessIterator<T_L> lhs,
-				const ft::RandomAccessIterator<T_R> rhs)
+	operator>(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() > rhs.base());
 	}
 
 	template <typename T>
 	typename ft::RandomAccessIterator<T>::difference_type
-	operator>=(const ft::RandomAccessIterator<T> lhs,
-				const ft::RandomAccessIterator<T> rhs)
+	operator>=(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() >= rhs.base());
 	}
@@ -188,23 +177,20 @@ namespace ft
 	/* For iterator >= const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
-	operator>=(const ft::RandomAccessIterator<T_L> lhs,
-				const ft::RandomAccessIterator<T_R> rhs)
+	operator>=(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() >= rhs.base());
 	}
 
 	template<typename T>
-	ft::RandomAccessIterator<T> operator+(
-	typename ft::RandomAccessIterator<T>::difference_type n,
-	typename ft::RandomAccessIterator<T>& rai)
+	ft::RandomAccessIterator<T>
+	operator+(typename ft::RandomAccessIterator<T>::difference_type n, typename ft::RandomAccessIterator<T>& rai)
 	{
 		return (&(*rai) + n);
 	}
 	template <typename T>
 	typename ft::RandomAccessIterator<T>::difference_type
-	operator-(const ft::RandomAccessIterator<T> lhs,
-				const ft::RandomAccessIterator<T> rhs)
+	operator-(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() - rhs.base());
 	}
@@ -212,8 +198,7 @@ namespace ft
 	/* For iterator - const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
-	operator-(const ft::RandomAccessIterator<T_L> lhs,
-				const ft::RandomAccessIterator<T_R> rhs)
+	operator-(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() - rhs.base());
 	}

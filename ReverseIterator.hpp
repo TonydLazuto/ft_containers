@@ -37,26 +37,28 @@ namespace ft
 			pointer operator->(void) const { return &(operator*()); }
 			reference operator[](difference_type n) const { return (this->base()[-n - 1]); }
 
-			ReverseIterator& operator++(void)
-			{
-				--_itor;
-				return *this;
-			}
 			ReverseIterator operator++(int)
 			{
 				ReverseIterator tmp = *this;
-				++(*this);
+				tmp._itor = this->_itor--;
 				return tmp;
 			}
-			ReverseIterator& operator--(void)
+			ReverseIterator operator++(void)
 			{
-				++_itor;
-				return *this;
+				ReverseIterator tmp = *this;
+				tmp._itor = --this->_itor;
+				return tmp;
 			}
 			ReverseIterator operator--(int)
 			{
 				ReverseIterator tmp = *this;
-				--(*this);
+				tmp._itor = this->_itor++;
+				return tmp;
+			}
+			ReverseIterator operator--(void)
+			{
+				ReverseIterator tmp = *this;
+				tmp._itor = ++this->_itor;
 				return tmp;
 			}
 			ReverseIterator operator+(difference_type n) const {
