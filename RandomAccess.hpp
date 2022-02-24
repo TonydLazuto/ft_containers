@@ -99,7 +99,6 @@ namespace ft
 		return (lhs.base() == rhs.base());
 	}
 
-	/* For iterator == const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
 	operator==(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
@@ -114,7 +113,6 @@ namespace ft
 		return (lhs.base() != rhs.base());
 	}
 
-	/* For iterator != const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
 	operator!=(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
@@ -129,7 +127,6 @@ namespace ft
 		return (lhs.base() < rhs.base());
 	}
 
-	/* For iterator < const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
 	operator<(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
@@ -144,7 +141,6 @@ namespace ft
 		return (lhs.base() <= rhs.base());
 	}
 
-	/* For iterator <= const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
 	operator<=(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
@@ -159,7 +155,6 @@ namespace ft
 		return (lhs.base() > rhs.base());
 	}
 
-	/* For iterator > const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
 	operator>(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
@@ -174,7 +169,6 @@ namespace ft
 		return (lhs.base() >= rhs.base());
 	}
 
-	/* For iterator >= const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
 	operator>=(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
@@ -195,7 +189,6 @@ namespace ft
 		return (lhs.base() - rhs.base());
 	}
 
-	/* For iterator - const_iterator */
 	template<typename T_L, typename T_R>
 	typename ft::RandomAccessIterator<T_L>::difference_type
 	operator-(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)

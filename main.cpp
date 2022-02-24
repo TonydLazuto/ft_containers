@@ -46,16 +46,7 @@ public:
 };
 */
 
-template <typename Ite_1, typename Ite_2>
-void ft_eq_ope(const Ite_1 &first, const Ite_2 &second, const bool redo = 1)
-{
-	std::cout << (first < second) << std::endl;
-	std::cout << (first <= second) << std::endl;
-	std::cout << (first > second) << std::endl;
-	std::cout << (first >= second) << std::endl;
-	if (redo)
-		ft_eq_ope(second, first, 0);
-}
+
 
 void	printSize(ft::vector<int> const &vct)
 {
@@ -98,9 +89,7 @@ int main(int argc, char** argv) {
 	// 	std::cout << "vector["<<i<<"]: " << vector[i] << std::endl;
 	// std::cout << vector[6] << std::endl;
 	// std::cout << vector.at(6) << std::endl;
-
-int		main(void)
-{
+/*
 	const int size = 5;
 	ft::vector<int> vct(size);
 	ft::vector<int>::iterator it_0(vct.begin());
@@ -113,7 +102,7 @@ int		main(void)
 
 	for (int i = size; it_0 != it_1; --i)
 		*it_0++ = i;
-	printSize(vct, 1);
+	printSize(vct);
 	it_0 = vct.begin();
 	cit_1 = vct.end();
 	it_mid = it_0 + 3;
@@ -138,7 +127,32 @@ int		main(void)
 	ft_eq_ope(it_1, cit_0);
 	ft_eq_ope(it_1 - 3, cit_mid);
 	ft_eq_ope(it_mid, cit_1 - 3);
+*/
 
+	ft::vector<int> vct(7);
+
+	for (unsigned long int i = 0; i < vct.size(); ++i)
+	{
+		vct.at(i) = (vct.size() - i) * 3;
+		std::cout << "vct.at(): " << vct.at(i) << " | ";
+		std::cout << "vct[]: " << vct[i] << std::endl;
+	}
+	printSize(vct);
+
+	ft::vector<int> const vct_c(vct);
+
+	std::cout << "front(): " << vct.front() << " " << vct_c.front() << std::endl;
+	std::cout << "back(): " << vct.back() << " " <<  vct_c.back() << std::endl;
+
+	try {
+		vct.at(10) = 42;
+	}
+	catch (std::out_of_range &e) {
+		std::cout << "Catch out_of_range exception!" << std::endl;
+	}
+	catch (std::exception &e) {
+		std::cout << "Catch exception: " << e.what() << std::endl;
+	}
 
 
 	// ft::vector<int> myvector (4, 100);
