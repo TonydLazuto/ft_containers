@@ -68,7 +68,7 @@ namespace ft
 					}
 					this->_v_start = this->_v;
 					this->_v_end = p;
-					this->_v_end_alloc = p;
+					this->_v_end_alloc = p-1;
 				}
 	
 			template <class InputIterator>
@@ -79,22 +79,22 @@ namespace ft
 				{
 					difference_type diff = 0;
 					InputIterator first_cpy = first;
+					if (diff == 0)
+						return ;
 					while (first_cpy != last)
 					{
 						diff++;
 						first_cpy++;
 					}
-					if (diff == 0)
-						return ;
 					_v = this->_alloc.allocate(diff);
 					this->_v_start = this->_v;
-					for (difference_type i = 0; i < diff; i++)
-					{
-						this->_alloc.construct(&_v[i], *first);
-						first++;
-					}
+					// for (difference_type i = 0; i < diff; i++)
+					// {
+					// 	this->_alloc.construct(&_v[i], *first);
+					// 	first++;
+					// }
 					this->_v_end = _v_start + diff;
-					this->_v_end_alloc = _v_start + diff;
+					this->_v_end_alloc = _v_start + diff -1;
 					this->insert(this->begin(), first, last);
 				}
 
@@ -400,11 +400,17 @@ namespace ft
 
 				if (len == 0)
 					return (first);
-				for (size_type i = fpos; i < this->size(); ++i)
+				for (size_type i = fpos; i < fpos + len; ++i)
 				{
-					if (i <= fpos + len)
+					_alloc.construct(_v + i, *(_v + i + len));
+				}
+				for (size_type i = fpos + len ; i < size(); ++i)
+				{
+					if (i + len < size())
+					{
 						_alloc.construct(_v + i, *(_v + i + len));
-					_alloc.destroy(_v + i + len);
+						_alloc.destroy(_v + i + len);
+					}
 				}
 				this->_v_end -= len;
 				return (first);

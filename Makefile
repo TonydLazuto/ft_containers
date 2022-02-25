@@ -4,7 +4,7 @@ NAME		=	ft_containers
 
 CC			=	c++
 
-CFLAGS		=	-std=c++98 -Wall -Wextra -Werror -pedantic -I. -fsanitize=address
+CFLAGS		=	-Wall -Wextra -Werror -pedantic -std=c++98
 
 RM			=	/bin/rm -f
 
