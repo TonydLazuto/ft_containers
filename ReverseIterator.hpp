@@ -156,7 +156,8 @@ namespace ft
 			{ return (lhs.base() - rhs.base()); }
 
 	template <class Iterator_L, class Iterator_R>
-		bool operator-(const ft::ReverseIterator<Iterator_L>& lhs,
+		typename ft::ReverseIterator<Iterator_L>::difference_type
+		operator-(const ft::ReverseIterator<Iterator_L>& lhs,
 		const ft::ReverseIterator<Iterator_R>& rhs)
 		{ return (lhs.base() - rhs.base()); }
 }

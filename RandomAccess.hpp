@@ -13,7 +13,7 @@ namespace ft
 			T*	_itor;
 
 		public:
-			typedef typename std::iterator<std::random_access_iterator_tag, T>::iterator_category		iterator_category;
+			typedef typename std::iterator<std::random_access_iterator_tag, T>::iterator_category	iterator_category;
 			typedef typename std::iterator<std::random_access_iterator_tag, T>::value_type			value_type;
 			typedef typename std::iterator<std::random_access_iterator_tag, T>::difference_type		difference_type;
 			typedef T*																				pointer;
@@ -93,84 +93,84 @@ namespace ft
 	};
 
 	template <typename T>
-	typename ft::RandomAccessIterator<T>::difference_type
+	bool
 	operator==(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() == rhs.base());
 	}
 
 	template<typename T_L, typename T_R>
-	typename ft::RandomAccessIterator<T_L>::difference_type
+	bool
 	operator==(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() == rhs.base());
 	}
 
 	template <typename T>
-	typename ft::RandomAccessIterator<T>::difference_type
+	bool
 	operator!=(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() != rhs.base());
 	}
 
 	template<typename T_L, typename T_R>
-	typename ft::RandomAccessIterator<T_L>::difference_type
+	bool
 	operator!=(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() != rhs.base());
 	}
 
 	template <typename T>
-	typename ft::RandomAccessIterator<T>::difference_type
+	bool
 	operator<(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() < rhs.base());
 	}
 
 	template<typename T_L, typename T_R>
-	typename ft::RandomAccessIterator<T_L>::difference_type
+	bool
 	operator<(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() < rhs.base());
 	}
 
 	template <typename T>
-	typename ft::RandomAccessIterator<T>::difference_type
+	bool
 	operator<=(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() <= rhs.base());
 	}
 
 	template<typename T_L, typename T_R>
-	typename ft::RandomAccessIterator<T_L>::difference_type
+	bool
 	operator<=(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() <= rhs.base());
 	}
 
 	template <typename T>
-	typename ft::RandomAccessIterator<T>::difference_type
+	bool
 	operator>(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() > rhs.base());
 	}
 
 	template<typename T_L, typename T_R>
-	typename ft::RandomAccessIterator<T_L>::difference_type
+	bool
 	operator>(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() > rhs.base());
 	}
 
 	template <typename T>
-	typename ft::RandomAccessIterator<T>::difference_type
+	bool
 	operator>=(const ft::RandomAccessIterator<T> lhs, const ft::RandomAccessIterator<T> rhs)
 	{
 		return (lhs.base() >= rhs.base());
 	}
 
 	template<typename T_L, typename T_R>
-	typename ft::RandomAccessIterator<T_L>::difference_type
+	bool
 	operator>=(const ft::RandomAccessIterator<T_L> lhs, const ft::RandomAccessIterator<T_R> rhs)
 	{
 		return (lhs.base() >= rhs.base());
