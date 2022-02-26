@@ -58,6 +58,12 @@ namespace ft
 			explicit vector (size_type n, const value_type& val = value_type(),
 				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 				{
+					this->_v = NULL;
+					this->_v_start = NULL;
+					this->_v_end = NULL;
+					this->_v_end_alloc = NULL;
+					if (!n)
+						return ;
 					_v = _alloc.allocate(n);
 					pointer p = _v;
 					while (p < _v + n)
@@ -76,25 +82,23 @@ namespace ft
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 				: _alloc(alloc), _v(NULL), _v_start(NULL), _v_end(NULL), _v_end_alloc(NULL)
 				{
-					difference_type diff = 0;
-					InputIterator first_cpy = first;
-					while (first_cpy != last)
-					{
-						diff++;
-						first_cpy++;
-					}
+					size_type diff = &*last - &*first;
+
+					this->_v = NULL;
+					this->_v_start = NULL;
+					this->_v_end = NULL;
+					this->_v_end_alloc = NULL;
 					if (diff == 0)
 						return ;
+					else if (diff < 0)
+						throw std::out_of_range("");
 					_v = this->_alloc.allocate(diff);
 					this->_v_start = this->_v;
-					for (difference_type i = 0; i < diff; i++)
-					{
-						this->_alloc.construct(&_v[i], *first);
-						first++;
-					}
+					for (size_type i = 0; i < diff; i++)
+						this->_alloc.construct(_v + i, *first++);
 					this->_v_end = _v_start + diff;
 					this->_v_end_alloc = _v_start + diff;
-					this->insert(this->begin(), first, last);
+					// this->insert(this->begin(), first, last);
 				}
 
 			virtual ~vector( void )
@@ -231,7 +235,7 @@ namespace ft
 
 			void assign(size_type n, const value_type& val)
 			{
-				erase(this->begin(), end());
+				erase(this->begin(), this->end());
 				insert(this->begin(), n, val);
 			}
 
@@ -330,14 +334,10 @@ namespace ft
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
-				size_type n = 0;
-				InputIterator first_cpy = first;
-				while (first_cpy != last)
-				{
-					n++;
-					first_cpy++;
-				}
+				size_type n = &*last - &*first;
 
+				// if (n < 0)
+				// 	throw std::out_of_range("");
 				// if (position > this->end() || this->size() < 0)
 				// 	throw ValueOutOfRange();
 				if (this->size() + n > this->capacity())
@@ -405,20 +405,55 @@ namespace ft
 				size_type len = static_cast<size_type>(last - first);
 				size_type fpos = static_cast<size_type>(first - this->begin());
 
+				
 				if (len == 0)
 					return (first);
-				for (size_type i = fpos; i < fpos + len; ++i)
+
+				size_type last_erase = static_cast<size_type>(last - this->begin());
+				size_type new_end_pos = this->size();
+				size_type old_size = this->size();
+				//insert all elements left after last until the end
+				if (_v + last_erase < &(*this->end()))
 				{
-					_alloc.construct(_v + i, *(_v + i + len));
+					new_end_pos = this->size() - len;
+					this->insert(_v + fpos, last, this->end());
 				}
-				for (size_type i = fpos + len ; i < size(); ++i)
+				for (size_type i = new_end_pos; i < old_size; i++)
 				{
-					if (i + len < size())
-					{
-						_alloc.construct(_v + i, *(_v + i + len));
-						_alloc.destroy(_v + i + len);
-					}
+					_alloc.destroy(_v + i);
 				}
+				
+				/*
+				
+					1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+					
+					begin() + 3, begin() + 6
+					3, 6
+					len = 3
+					last_erase = 6
+					new_end pos = 0
+size() - len - 1;
+					new_end pos = 15
+					insert(3, 7, 16);
+
+
+					7 8 9 10 11 12 13 14 15
+					1 2 7 8 9 10 11 12 13 14 15! 12 13 14 15
+
+				*/
+
+				// for (size_type i = fpos; i < fpos + len; ++i)
+				// {
+				// 	_alloc.construct(_v + i, *(_v + i + len));
+				// }
+				// for (size_type i = fpos + len ; i < size(); ++i)
+				// {
+				// 	if (i + len < size())
+				// 	{
+				// 		_alloc.construct(_v + i, *(_v + i + len));
+				// 		_alloc.destroy(_v + i + len);
+				// 	}
+				// }
 				this->_v_end -= len;
 				return (first);
 			}

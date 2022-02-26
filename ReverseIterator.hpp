@@ -157,13 +157,13 @@ namespace ft
 		typename ft::ReverseIterator<Iterator>::difference_type
 		operator- (const ft::ReverseIterator<Iterator>& lhs,
 			const ft::ReverseIterator<Iterator>& rhs)
-			{ return (rhs.base() - lhs.base()); }
+			{ return (lhs.base() - rhs.base()); }
 
 	template <class Iterator_L, class Iterator_R>
 		typename ft::ReverseIterator<Iterator_L>::difference_type
 		operator-(const ft::ReverseIterator<Iterator_L>& lhs,
 		const ft::ReverseIterator<Iterator_R>& rhs)
-		{ return (rhs.base() - lhs.base()); }
+		{ return (lhs.base() - rhs.base()); }
 }
 
 #endif
