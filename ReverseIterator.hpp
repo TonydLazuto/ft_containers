@@ -23,6 +23,12 @@ namespace ft
 			ReverseIterator( void ) : _itor() {}
 			explicit ReverseIterator(iterator_type x) : _itor(x) {}
 			virtual ~ReverseIterator( void ) {}
+			ReverseIterator& operator=(ReverseIterator const & rhs)
+			{
+				if (*this != rhs)
+					this->_itor = rhs._itor;
+				return *this;
+			}
 
 			template < class Myiter >
 			ReverseIterator (const ReverseIterator<Myiter> &rev) : _itor(rev.base()) {}
@@ -62,7 +68,7 @@ namespace ft
 			ReverseIterator operator+(difference_type n) const {
 				return (ReverseIterator(_itor - n));
 			}
-			ReverseIterator&operator+=(difference_type n)
+			ReverseIterator& operator+=(difference_type n)
 			{
 				_itor -= n;
 				return (*this);
@@ -70,7 +76,7 @@ namespace ft
 			ReverseIterator operator-(difference_type n) const {
 				return (ReverseIterator(_itor + n));
 			}
-			ReverseIterator&operator-=(difference_type n)
+			ReverseIterator& operator-=(difference_type n)
 			{
 				_itor += n;
 				return (*this);

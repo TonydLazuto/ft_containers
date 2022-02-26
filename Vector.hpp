@@ -106,11 +106,19 @@ namespace ft
 			vector(const vector& x)
 			{
 				this->_alloc = x._alloc;
+				this->_v = NULL;
+				this->_v_start = NULL;
+				this->_v_end = NULL;
+				this->_v_end_alloc = NULL;
 				this->insert(this->begin(), x.begin(), x.end());
 			}
 			vector& operator=(const vector& x)
 			{
 				this->_alloc = x._alloc;
+				this->_v = NULL;
+				this->_v_start = NULL;
+				this->_v_end = NULL;
+				this->_v_end_alloc = NULL;
 				this->clear();
 				this->insert(this->begin(), x.begin(), x.end());
 				return *this;

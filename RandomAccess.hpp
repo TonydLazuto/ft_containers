@@ -67,12 +67,12 @@ namespace ft
 				return (this->_itor - n);
 			}
 
-			RandomAccessIterator operator+=(difference_type n)
+			RandomAccessIterator& operator+=(difference_type n)
 			{
 				this->_itor += n;
 				return *this;
 			}
-			RandomAccessIterator operator-=(difference_type n)
+			RandomAccessIterator& operator-=(difference_type n)
 			{
 				this->_itor -= n;
 				return *this;
