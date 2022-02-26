@@ -7,7 +7,7 @@ namespace ft
 {
 
 	template <class Iterator>
-	class IteratorTraits
+	struct IteratorTraits
 	{
 		public:
 			IteratorTraits( void ) {}
@@ -26,7 +26,7 @@ namespace ft
 	};
 
 	template <class T>
-	class IteratorTraits<T*>
+	struct IteratorTraits<T*>
 	{
 		protected:
 
@@ -46,7 +46,7 @@ namespace ft
 	};
 
 	template <class T>
-	class IteratorTraits<const T*>
+	struct IteratorTraits<const T*>
 	{
 		protected:
 

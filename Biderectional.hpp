@@ -58,19 +58,6 @@ namespace ft
 			bool operator!=(BiderectionalIterator const &rhs) { return (this->_itor != rhs._itor); }
 	};
 
-	template <class BidirectionalIterator>
-	void reverse(BidirectionalIterator first, BidirectionalIterator last) {
-		typename iterator_traits<BidirectionalIterator>::difference_type n =
-			distance(first, last);
-		--n;
-		while(n > 0) {
-			typename iterator_traits<BidirectionalIterator>::value_type
-			tmp = *first;
-			*first++ = *--last;
-			*last = tmp;
-			n -= 2;
-		}
-	}
 }
 
 #endif

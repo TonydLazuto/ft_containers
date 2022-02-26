@@ -41,7 +41,6 @@ namespace ft
 			typedef typename ft::RandomAccessIterator<const T> const_iterator;
 			typedef typename ft::ReverseIterator<iterator> reverse_iterator;
 			typedef typename ft::ReverseIterator<const_iterator> const_reverse_iterator;
-			// typedef typename ft::IteratorTraits<iterator>::difference_type difference_type;
 
 			typedef typename Alloc::reference reference;
 			typedef typename Alloc::const_reference const_reference;
@@ -68,7 +67,7 @@ namespace ft
 					}
 					this->_v_start = this->_v;
 					this->_v_end = p;
-					this->_v_end_alloc = p-1;
+					this->_v_end_alloc = p;
 				}
 	
 			template <class InputIterator>
@@ -79,22 +78,22 @@ namespace ft
 				{
 					difference_type diff = 0;
 					InputIterator first_cpy = first;
-					if (diff == 0)
-						return ;
 					while (first_cpy != last)
 					{
 						diff++;
 						first_cpy++;
 					}
+					if (diff == 0)
+						return ;
 					_v = this->_alloc.allocate(diff);
 					this->_v_start = this->_v;
-					// for (difference_type i = 0; i < diff; i++)
-					// {
-					// 	this->_alloc.construct(&_v[i], *first);
-					// 	first++;
-					// }
+					for (difference_type i = 0; i < diff; i++)
+					{
+						this->_alloc.construct(&_v[i], *first);
+						first++;
+					}
 					this->_v_end = _v_start + diff;
-					this->_v_end_alloc = _v_start + diff -1;
+					this->_v_end_alloc = _v_start + diff;
 					this->insert(this->begin(), first, last);
 				}
 

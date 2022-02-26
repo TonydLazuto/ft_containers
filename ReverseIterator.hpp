@@ -43,11 +43,10 @@ namespace ft
 				tmp._itor = this->_itor--;
 				return tmp;
 			}
-			ReverseIterator operator++(void)
+			ReverseIterator& operator++(void)
 			{
-				ReverseIterator tmp = *this;
-				tmp._itor = --this->_itor;
-				return tmp;
+				--this->_itor;
+				return *this;
 			}
 			ReverseIterator operator--(int)
 			{
@@ -55,11 +54,10 @@ namespace ft
 				tmp._itor = this->_itor++;
 				return tmp;
 			}
-			ReverseIterator operator--(void)
+			ReverseIterator& operator--(void)
 			{
-				ReverseIterator tmp = *this;
-				tmp._itor = ++this->_itor;
-				return tmp;
+				++this->_itor;
+				return *this;
 			}
 			ReverseIterator operator+(difference_type n) const {
 				return (ReverseIterator(_itor - n));
@@ -147,19 +145,19 @@ namespace ft
 		ft::ReverseIterator<Iterator>
 		operator+ (typename ft::ReverseIterator<Iterator>::difference_type n,
 			const ft::ReverseIterator<Iterator>& rev_it)
-			{ return (rev_it + n); }
+			{ return (ft::ReverseIterator<Iterator> (rev_it - n)); }
 
 	template <class Iterator>
 		typename ft::ReverseIterator<Iterator>::difference_type
 		operator- (const ft::ReverseIterator<Iterator>& lhs,
 			const ft::ReverseIterator<Iterator>& rhs)
-			{ return (lhs.base() - rhs.base()); }
+			{ return (rhs.base() - lhs.base()); }
 
 	template <class Iterator_L, class Iterator_R>
 		typename ft::ReverseIterator<Iterator_L>::difference_type
 		operator-(const ft::ReverseIterator<Iterator_L>& lhs,
 		const ft::ReverseIterator<Iterator_R>& rhs)
-		{ return (lhs.base() - rhs.base()); }
+		{ return (rhs.base() - lhs.base()); }
 }
 
 #endif
