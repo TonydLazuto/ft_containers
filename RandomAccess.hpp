@@ -36,11 +36,14 @@ namespace ft
 
 			RandomAccessIterator& operator++(void)
 			{
-				++this->_itor;
+				this->_itor++;
 				return *this;
 			}
 			RandomAccessIterator operator++(int)
 			{
+				// RandomAccessIterator tmp(*this);
+				// operator++();
+				// return (tmp);
 				RandomAccessIterator tmp = *this;
 				tmp._itor = this->_itor++;
 				return tmp;
@@ -48,7 +51,7 @@ namespace ft
 			
 			RandomAccessIterator& operator--(void)
 			{
-				--this->_itor;
+				this->_itor--;
 				return *this;
 			}
 			RandomAccessIterator operator--(int)
@@ -79,6 +82,7 @@ namespace ft
 			}
 
 			reference operator[](difference_type n) { return (*(this->_itor + n)); }
+			// return (*(operator+(n)));
 
 			operator RandomAccessIterator<const T> () const { return (RandomAccessIterator<const T>(this->_itor)); }
 			
@@ -180,6 +184,7 @@ namespace ft
 		typename ft::RandomAccessIterator<T>& rai)
 	{
 		return (&(*rai) + n);
+		// return (&*(rai + n));
 	}
 	template <typename T>
 	typename ft::RandomAccessIterator<T>::difference_type
