@@ -64,6 +64,8 @@ namespace ft
 					this->_v_end_alloc = NULL;
 					if (!n)
 						return ;
+					else if (n < 0)
+						return ;
 					_v = _alloc.allocate(n);
 					pointer p = _v;
 					while (p < _v + n)
@@ -82,16 +84,17 @@ namespace ft
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 				: _alloc(alloc), _v(NULL), _v_start(NULL), _v_end(NULL), _v_end_alloc(NULL)
 				{
-					size_type diff = &*last - &*first;
+					size_type diff = 0;
+					InputIterator first_cpy = first;
 
 					this->_v = NULL;
 					this->_v_start = NULL;
 					this->_v_end = NULL;
 					this->_v_end_alloc = NULL;
-					if (diff == 0)
+					for (; first_cpy != last; first_cpy++)
+						diff++;
+					if (!diff)
 						return ;
-					else if (diff < 0)
-						throw std::out_of_range("");
 					_v = this->_alloc.allocate(diff);
 					this->_v_start = this->_v;
 					for (size_type i = 0; i < diff; i++)
@@ -334,10 +337,10 @@ namespace ft
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
-				size_type n = &*last - &*first;
-
-				// if (n < 0)
-				// 	throw std::out_of_range("");
+				size_type n = 0;
+				InputIterator first_cpy = first;
+				for (; first_cpy != last; ++first_cpy)
+					n++;
 				// if (position > this->end() || this->size() < 0)
 				// 	throw ValueOutOfRange();
 				if (this->size() + n > this->capacity())
@@ -405,55 +408,21 @@ namespace ft
 				size_type len = static_cast<size_type>(last - first);
 				size_type fpos = static_cast<size_type>(first - this->begin());
 
-				
 				if (len == 0)
-					return (first);
-
-				size_type last_erase = static_cast<size_type>(last - this->begin());
-				size_type new_end_pos = this->size();
-				size_type old_size = this->size();
-				//insert all elements left after last until the end
-				if (_v + last_erase < &(*this->end()))
+						return (first);
+				for (size_type i = fpos; i < fpos + len; ++i)
 				{
-					new_end_pos = this->size() - len;
-					this->insert(_v + fpos, last, this->end());
+					_alloc.construct(_v + i, *(_v + i + len));
 				}
-				for (size_type i = new_end_pos; i < old_size; i++)
+				for (size_type i = fpos + len ; i < size(); ++i)
 				{
-					_alloc.destroy(_v + i);
+					if (i + len < size())
+					{
+						_alloc.construct(_v + i, *(_v + i + len));
+						_alloc.destroy(_v + i + len);
+					}
 				}
-				
-				/*
-				
-					1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-					
-					begin() + 3, begin() + 6
-					3, 6
-					len = 3
-					last_erase = 6
-					new_end pos = 0
-size() - len - 1;
-					new_end pos = 15
-					insert(3, 7, 16);
-
-
-					7 8 9 10 11 12 13 14 15
-					1 2 7 8 9 10 11 12 13 14 15! 12 13 14 15
-
-				*/
-
-				// for (size_type i = fpos; i < fpos + len; ++i)
-				// {
-				// 	_alloc.construct(_v + i, *(_v + i + len));
-				// }
-				// for (size_type i = fpos + len ; i < size(); ++i)
-				// {
-				// 	if (i + len < size())
-				// 	{
-				// 		_alloc.construct(_v + i, *(_v + i + len));
-				// 		_alloc.destroy(_v + i + len);
-				// 	}
-				// }
+			
 				this->_v_end -= len;
 				return (first);
 			}

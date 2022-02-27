@@ -41,9 +41,6 @@ namespace ft
 			}
 			RandomAccessIterator operator++(int)
 			{
-				// RandomAccessIterator tmp(*this);
-				// operator++();
-				// return (tmp);
 				RandomAccessIterator tmp = *this;
 				tmp._itor = this->_itor++;
 				return tmp;
@@ -82,16 +79,9 @@ namespace ft
 			}
 
 			reference operator[](difference_type n) { return (*(this->_itor + n)); }
-			// return (*(operator+(n)));
 
 			operator RandomAccessIterator<const T> () const { return (RandomAccessIterator<const T>(this->_itor)); }
-			
-			// bool operator==(RandomAccessIterator const &rhs) { return (this->_itor == rhs._itor); }
-			// bool operator!=(RandomAccessIterator const &rhs) { return (this->_itor != rhs._itor); }
-			// bool operator<(RandomAccessIterator const &rhs) { return (this->_itor < rhs._itor); }
-			// bool operator>(RandomAccessIterator const &rhs) { return (this->_itor > rhs._itor); }
-			// bool operator<=(RandomAccessIterator const &rhs) { return (this->_itor <= rhs._itor); }
-			// bool operator>=(RandomAccessIterator const &rhs) { return (this->_itor >= rhs._itor); }
+
 	};
 
 	template <typename T>
@@ -183,8 +173,7 @@ namespace ft
 	operator+(typename ft::RandomAccessIterator<T>::difference_type n,
 		typename ft::RandomAccessIterator<T>& rai)
 	{
-		return (&(*rai) + n);
-		// return (&*(rai + n));
+		return (&*(rai + n));
 	}
 	template <typename T>
 	typename ft::RandomAccessIterator<T>::difference_type
