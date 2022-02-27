@@ -69,6 +69,289 @@ void	printSize(ft::vector<int> const &vct)
 }
 
 int main(int argc, char** argv) {
+
+	ft::vector<int> JOHN;
+	ft::vector<int> BOB(5, 8);
+	std::cout << "BOB(5, 8) : ";
+	ft::vector<int> MIKE(BOB);
+
+
+	// RESIZE
+	size_t	bob_resize = 2;
+	std::cout << "\nRESIZE\n";
+	std::cout << "1" << std::endl;
+	printSize(BOB);
+	BOB.resize(bob_resize);
+	printSize(BOB);
+	std::cout << "2" << std::endl;
+
+	size_t	mike_resize = 9;
+	bob_resize = 0;
+	
+	BOB.resize(bob_resize);
+	std::cout << "3" << std::endl;
+	std::cout << "BOB is empty now ? " << BOB.empty() << '\n';
+	MIKE.resize(mike_resize, 3);
+
+
+	// RESERVE
+	std::cout << "\nRESERVE\n";
+
+	size_t	john_reserve = 5;
+	size_t	bob_reserve = 3;
+	size_t	mike_reserve = 83;
+
+	JOHN.reserve(john_reserve);
+	BOB.reserve(bob_reserve);
+	MIKE.reserve(mike_reserve);
+
+
+	//AT
+	std::cout << "\nAT\n";
+	try
+	{
+		std::cout << MIKE.at(2) << '\n';
+		// std::cout << MIKE.at(87) << '\n';
+	}
+	catch (std::out_of_range& oor)
+	{
+		(void)oor;
+		std::cout << "OOR error caught\n";
+	}
+
+	//ASSIGN
+	std::cout << "\nASSIGN\n";
+	BOB.assign(42, 7);
+
+	//ASSIGN RANGE
+	std::cout << "\nASSIGN RANGE\n";
+	ft::vector<int>	assign_range;
+	assign_range.assign(8, 5);
+	assign_range.assign(BOB.begin() + 1, BOB.end() - 2);
+
+	//EMPTY
+	std::cout << "\nEMPTY\n";
+	std::cout << "BOB is empty ? " << BOB.empty() << '\n';
+	std::cout << "BOB at(41) : " << BOB.at(41) << '\n';
+
+	//PUSH/POP_BACK
+	std::cout << "\nPUSH/POP_BACK\n";
+	BOB.push_back(53);
+	std::cout << "last elem of BOB : " << BOB.back() << '\n';
+	BOB.pop_back();
+	std::cout << "last elem of BOB : " << BOB.back() << '\n';
+
+	//INSERT
+	std::cout << "\nINSERT\n";
+	ft::vector<int>	insert_in_me;
+	for (int i = 0; i < 15; i++)
+		insert_in_me.push_back(i);
+	for (size_t i = 0; i < insert_in_me.size(); i++)
+		std::cout << insert_in_me.at(i) << ' ';
+	std::cout << '\n';
+
+	ft::vector<int>::iterator	tmp;
+	tmp = insert_in_me.begin() + 4;
+	insert_in_me.insert(tmp, 8, 42);
+	for (size_t i = 0; i < insert_in_me.size(); i++)
+		std::cout << insert_in_me.at(i) << ' ';
+	std::cout << '\n';
+
+	ft::vector<int>::const_iterator const_it(insert_in_me.begin());
+	std::cout << "Const it : " << std::endl;
+	std::cout << *const_it << '\n';
+//	*const_it = 89; // Does not compile because it's a const_iterator
+
+
+	//INSERT
+	std::cout << "\nINSERT\n";
+	ft::vector<int>	std_insert_in_me;
+	for (int i = 0; i < 15; i++)
+		std_insert_in_me.push_back(i);
+	for (size_t i = 0; i < std_insert_in_me.size(); i++)
+		std::cout << std_insert_in_me.at(i) << ' ';
+	std::cout << '\n';
+
+	ft::vector<int>::iterator	std_tmp;
+	std_tmp = std_insert_in_me.begin() + 4;
+	std_insert_in_me.insert(std_tmp, 8, 42);
+	for (size_t i = 0; i < std_insert_in_me.size(); i++)
+		std::cout << std_insert_in_me.at(i) << ' ';
+	std::cout << '\n';
+
+
+	//INSERT RANGE
+	std::cout << "\nINSERT RANGE\n";
+	ft::vector<int>	insert_bis;
+	for (int i = 0; i < 7; i++)
+		insert_bis.push_back(3 * i);
+	for (size_t i = 0; i < insert_bis.size(); i++)
+		std::cout << insert_bis[i] << ' ';
+	std::cout << '\n';
+
+	insert_bis.insert(insert_bis.begin() + 5, insert_in_me.begin(), insert_in_me.end());
+	for (size_t i = 0; i < insert_bis.size(); i++)
+		std::cout << insert_bis[i] << ' ';
+	std::cout << '\n';
+
+
+	//ERASE
+	std::cout << "\nERASE\n";
+	ft::vector<int>	erase_in_me;
+	for (int i = 0; i < 15; i++)
+		erase_in_me.push_back(2 * i);
+	for (size_t i = 0; i < erase_in_me.size(); i++)
+	{
+		if (erase_in_me[i] < 10)
+			std::cout << ' ';
+		std::cout << erase_in_me.at(i) << ' ';
+	}
+	std::cout << '\n';
+
+	erase_in_me.erase(erase_in_me.begin() + 7);
+	for (size_t i = 0; i < erase_in_me.size(); i++)
+	{
+		if (erase_in_me[i] < 10)
+			std::cout << ' ';
+		std::cout << erase_in_me.at(i) << ' ';
+	}
+	std::cout << '\n';
+
+	erase_in_me.erase(erase_in_me.begin() + 2, erase_in_me.begin() + 6);
+	for (size_t i = 0; i < erase_in_me.size(); i++)
+	{
+		if (erase_in_me[i] < 10)
+			std::cout << ' ';
+		std::cout << erase_in_me.at(i) << ' ';
+	}
+	std::cout << '\n';
+
+	//SWAP
+	std::cout << "\nSWAP\n";
+	BOB.swap(MIKE);
+	/*
+
+
+
+
+	*/
+	std::cout << "Size of JOHN " << JOHN.size() << std::endl;
+	if (JOHN.capacity() >= JOHN.size())
+		std::cout << "Capacity of JOHN is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 272\n";
+	std::cout << "Size of BOB " << BOB.size() << std::endl;
+	if (BOB.capacity() >= BOB.size())
+		std::cout << "Capacity of BOB is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 277\n";
+	std::cout << "Size of MIKE " << MIKE.size() << std::endl;
+	if (MIKE.capacity() >= MIKE.size())
+		std::cout << "Capacity of MIKE is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 282\n";
+	for (size_t i = 0; i < MIKE.size(); i++)
+		std::cout << MIKE[i] << ' ';
+	std::cout << std::endl;
+
+	MIKE.swap(JOHN);
+	/*
+
+
+
+
+	*/
+	std::cout << "Size of JOHN " << JOHN.size() << std::endl;
+	if (JOHN.capacity() >= JOHN.size())
+		std::cout << "Capacity of JOHN is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 298\n";
+	std::cout << "Size of BOB " << BOB.size() << std::endl;
+	if (BOB.capacity() >= BOB.size())
+		std::cout << "Capacity of BOB is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 303\n";
+	std::cout << "Size of MIKE " << MIKE.size() << std::endl;
+	if (MIKE.capacity() >= MIKE.size())
+		std::cout << "Capacity of MIKE is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 308\n";
+	for (size_t i = 0; i < MIKE.size(); i++)
+		std::cout << MIKE[i] << ' ';
+	std::cout << std::endl;
+
+	//CLEAR
+	std::cout << "\nCLEAR\n";
+	JOHN.clear();
+	MIKE.clear();
+	/*
+
+
+
+	
+	*/
+	std::cout << "Size of JOHN " << JOHN.size() << std::endl;
+	if (JOHN.capacity() >= JOHN.size())
+		std::cout << "Capacity of JOHN is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 327\n";
+	std::cout << "Size of BOB " << BOB.size() << std::endl;
+	if (BOB.capacity() >= BOB.size())
+		std::cout << "Capacity of BOB is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 332\n";
+	std::cout << "Size of MIKE " << MIKE.size() << std::endl;
+	if (MIKE.capacity() >= MIKE.size())
+		std::cout << "Capacity of MIKE is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 337\n";
+	for (size_t i = 0; i < MIKE.size(); i++)
+		std::cout << MIKE[i] << ' ';
+	std::cout << std::endl;
+
+	//NON MEMBER Functions
+	std::cout << "\nNON MEMBER functions\n";
+	swap(BOB, MIKE);
+	/*
+
+
+
+
+	*/
+	std::cout << "Size of JOHN " << JOHN.size() << std::endl;
+	if (JOHN.capacity() >= JOHN.size())
+		std::cout << "Capacity of JOHN is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 355\n";
+	std::cout << "Size of BOB " << BOB.size() << std::endl;
+	if (BOB.capacity() >= BOB.size())
+		std::cout << "Capacity of BOB is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 360\n";
+	std::cout << "Size of MIKE " << MIKE.size() << std::endl;
+	if (MIKE.capacity() >= MIKE.size())
+		std::cout << "Capacity of MIKE is sufficient\n";
+	else
+		std::cerr << "THERE IS A PROBLEM ON LINE 365\n";
+	for (size_t i = 0; i < MIKE.size(); i++)
+		std::cout << MIKE[i] << ' ';
+	std::cout << std::endl;
+	
+	//RELATIONAL OPERATORS
+	std::cout << "\nRELATIONAL OPERATORS\n";
+	ft::vector<int> MIKE_2(MIKE);
+	std::cout << "MIKE and BOB are equal ? " << (MIKE == BOB) << '\n';
+	std::cout << "MIKE and MIKE_2 are equal ? " << (MIKE == MIKE_2) << '\n';
+
+	std::cout << "\nReal ft::Vector\n";
+	ft::vector<int> real;
+	real.assign(5, 7);
+	for (ft::vector<int>::iterator it = real.begin(); it != real.end(); it++)
+		std::cout << *it << " ";
+	std::cout << '\n';
+
+	std::cout << std::endl;
+
 	// if (argc != 2)
 	// {
 	// 	std::cerr << "Usage: ./test seed" << std::endl;
@@ -98,81 +381,7 @@ int main(int argc, char** argv) {
 	// 	std::cout << "vector["<<i<<"]: " << vector[i] << std::endl;
 	// std::cout << vector[6] << std::endl;
 	// std::cout << vector.at(6) << std::endl;
-/*
-	const int size = 5;
-	ft::vector<int> vct(size);
-	ft::vector<int>::iterator it_0(vct.begin());
-	ft::vector<int>::iterator it_1(vct.end());
-	ft::vector<int>::iterator it_mid;
-
-	ft::vector<int>::const_iterator cit_0 = vct.begin();
-	ft::vector<int>::const_iterator cit_1;
-	ft::vector<int>::const_iterator cit_mid;
-
-	for (int i = size; it_0 != it_1; --i)
-		*it_0++ = i;
-	printSize(vct);
-	it_0 = vct.begin();
-	cit_1 = vct.end();
-	it_mid = it_0 + 3;
-	cit_mid = it_0 + 3; cit_mid = cit_0 + 3; cit_mid = it_mid;
-
-	std::cout << std::boolalpha;
-	std::cout << ((it_0 + 3 == cit_0 + 3) && (cit_0 + 3 == it_mid)) << std::endl;
-
-	std::cout << "\t\tft_eq_ope:" << std::endl;
-	// regular it
-	ft_eq_ope(it_0 + 3, it_mid);
-	ft_eq_ope(it_0, it_1);
-	ft_eq_ope(it_1 - 3, it_mid);
-	// const it
-	ft_eq_ope(cit_0 + 3, cit_mid);
-	ft_eq_ope(cit_0, cit_1);
-	ft_eq_ope(cit_1 - 3, cit_mid);
-	// both it
-	ft_eq_ope(it_0 + 3, cit_mid);
-	ft_eq_ope(it_mid, cit_0 + 3);
-	ft_eq_ope(it_0, cit_1);
-	ft_eq_ope(it_1, cit_0);
-	ft_eq_ope(it_1 - 3, cit_mid);
-	ft_eq_ope(it_mid, cit_1 - 3);
-*/
-
-	ft::vector<int> vct(5);
-	ft::vector<int>::iterator it = vct.begin(), ite = vct.end();
-
-	std::cout << "len: " << (ite - it) << std::endl;
-	for (; it != ite; ++it)
-		*it = (ite - it);
-
-	it = vct.begin();
-	ft::vector<int> vct_range(it, --(--ite));
-	for (int i = 0; it != ite; ++it)
-		*it = ++i * 5;
-	printSize(vct);
 	
-	it = vct.begin();
-	ft::vector<int> vct_copy(vct);
-	for (int i = 0; it != ite; ++it)
-		*it = ++i * 7;
-	vct_copy.push_back(42);
-	vct_copy.push_back(21);
-
-	std::cout << "\t-- PART ONE --" << std::endl;
-	printSize(vct);
-	printSize(vct_range);
-	printSize(vct_copy);
-
-	vct = vct_copy;
-	vct_copy = vct_range;
-	vct_range.clear();
-
-	std::cout << "\t-- PART TWO --" << std::endl;
-	printSize(vct);
-	printSize(vct_range);
-	printSize(vct_copy);
-
-
 	// ft::vector<int> myvector (4, 100);
 	// ft::vector<int>::iterator it;
 

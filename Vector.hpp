@@ -384,48 +384,80 @@ namespace ft
 				}
 			}
 
-			iterator erase(iterator position)
-			{
-				// if (position >= this->end() || this->size() <= 0)
-					// throw ValueOutOfRange();
-				size_type pos = static_cast<size_type>(position - this->begin());
+			// iterator erase(iterator position)
+			// {
+			// 	// if (position >= this->end() || this->size() <= 0)
+			// 		// throw ValueOutOfRange();
+			// 	size_type pos = static_cast<size_type>(position - this->begin());
 
-				_alloc.destroy(&(*position));
-				if (this->size() > 1)
-				{
-					for (size_type i = pos; i < this->size() - 1; i++)
-						_alloc.construct(_v + i, *(_v + i + 1));
-					_alloc.destroy(&this->back());
-				}
-				this->_v_end--;
-				return (position);
-			}
+			// 	_alloc.destroy(&(*position));
+			// 	if (this->size() > 1)
+			// 	{
+			// 		for (size_type i = pos; i < this->size() - 1; i++)
+			// 			_alloc.construct(_v + i, *(_v + i + 1));
+			// 		_alloc.destroy(&this->back());
+			// 	}
+			// 	this->_v_end--;
+			// 	return (position);
+			// }
 
-			iterator erase(iterator first, iterator last)
-			{
-				// if (last >= this->end() || this->size() <= 0)
-					// throw ValueOutOfRange();
-				size_type len = static_cast<size_type>(last - first);
-				size_type fpos = static_cast<size_type>(first - this->begin());
+			// iterator erase(iterator first, iterator last)
+			// {
+			// 	// if (last >= this->end() || this->size() <= 0)
+			// 		// throw ValueOutOfRange();
+			// 	size_type len = static_cast<size_type>(last - first);
+			// 	size_type fpos = static_cast<size_type>(first - this->begin());
+				
+			// 	if (&*first == _v_start && &*last == _v_end)
+			// 		this->clear();
+			// 	else if (&*first == _v_start)
+			// 		first = erase_start(first, last, len);
+			// 	else if (&*last == _v_end)
+			// 		first = erase_end(first, last, &fpos, len);
+			// 	else
+			// 		first = erase_middle(first, last, &fpos, len);
 
-				if (len == 0)
-						return (first);
-				for (size_type i = fpos; i < fpos + len; ++i)
-				{
-					_alloc.construct(_v + i, *(_v + i + len));
-				}
-				for (size_type i = fpos + len ; i < size(); ++i)
-				{
-					if (i + len < size())
-					{
-						_alloc.construct(_v + i, *(_v + i + len));
-						_alloc.destroy(_v + i + len);
-					}
-				}
-			
-				this->_v_end -= len;
-				return (first);
-			}
+			// 	if (len != 0)
+			// 		this->_v_end -= len;
+			// 	return (first);
+			// }
+
+			// iterator erase_start(iterator first, iterator last, size_type len)
+			// {
+			// 	size_type	i = len;
+			// 	size_type	j = 0;
+
+			// 	for ( ; i < size(); ++i)
+			// 		_alloc.construct(_v + j++, *(_v + i));
+			// 	// if (j < len)
+
+			// 	// else
+
+			// 	for ( ; j < len; ++j)
+			// 		_alloc.destroy(_v + j);
+			// }
+			// iterator erase_end(iterator first, iterator last
+			// 	, size_type *fpos, size_type len)
+			// {
+			// 	for (size_type i = *fpos + len; i < size(); ++i)
+			// 		_alloc.destroy(_v + i);
+			// }
+			// iterator erase_middle(iterator first, iterator last
+			// 	, size_type *fpos, size_type len)
+			// {
+			// 	for (size_type i = *fpos; i < *fpos + len; ++i)
+			// 	{
+			// 		_alloc.construct(_v + i, *(_v + i + len));
+			// 	}
+			// 	for (size_type i = *fpos + len ; i < size(); ++i)
+			// 	{
+			// 		if (i + len < size())
+			// 		{
+			// 			_alloc.construct(_v + i, *(_v + i + len));
+			// 			_alloc.destroy(_v + i + len);
+			// 		}
+			// 	};
+			// }
 
 			void swap(vector& x)
 			{
