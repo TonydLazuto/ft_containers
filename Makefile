@@ -4,27 +4,29 @@ NAME		=	ft_containers
 
 CC			=	c++
 
-CFLAGS		=	-Wall -Wextra -Werror -pedantic -std=c++98
+CFLAGS		=	-Wall -Wextra -Werror -pedantic -std=c++98 -g3
 
-RM			=	/bin/rm -f
+RM			=	/bin/rm -rf
 
 OBJ_DIR		=	obj
 
 SRCS		=	main.cpp
 
-OBJS		=	$(addprefix $(OBJ_DIR)/,$(SRCS:.cpp=.o))
+OBJS		=	$(patsubst %.cpp, $(OBJ_DIR)/%.o, $(SRCS))
 
 all: 			$(NAME)
 
-$(NAME): 		$(OBJS)
+$(NAME): 		$(OBJ_DIR) $(OBJS)
 				$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
 
-$(OBJ_DIR)/%.o:	%.cpp
-				@mkdir -p $(OBJ_DIR)
+$(OBJ_DIR):
+				@mkdir -p $@
+
+$(OBJS) : $(OBJ_DIR)/%.o: %.cpp
 				$(CC) $(CFLAGS) -c $< -o $@
 
 clean:			
-				rm -rf $(OBJ_DIR)
+				$(RM) $(OBJ_DIR)
 
 fclean:			clean
 				$(RM) $(NAME)
