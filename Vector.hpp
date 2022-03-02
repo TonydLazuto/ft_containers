@@ -264,28 +264,19 @@ namespace ft
 
 				if (this->size() + 1 > this->capacity())
 				{
+					size_type	new_capacity = 1;
 					size_type	new_size = this->size() + 1;
-					size_type	new_capacity = this->capacity() ? this->capacity() * 2 : 1;
-					pointer		new_v = _alloc.allocate(new_capacity);
+					pointer		new_v = insert_alloc(new_size, &new_capacity);
 
-					for (size_type i = 0; i < pos; i++)
-						_alloc.construct(new_v + i, this->_v[i]);
-					for (size_type i = this->size(); i > pos ; i--)
-						_alloc.construct(new_v + i, *(this->_v + i - 1));
+					insert_start_values(new_v, pos);
 					_alloc.construct(new_v + pos, val);
-					for (size_type i = 0; i < this->size(); i++)
-						_alloc.destroy(this->_v + i);
-					_alloc.deallocate(this->_v, capacity());
-
-					this->_v = new_v;
-					this->_v_start = new_v;
-					this->_v_end = new_v + new_size;
-					this->_v_end_alloc = new_v + new_capacity;
+					insert_end_values(new_v, 1, pos);
+					insert_destroy_old_vec();
+					insert_init_new_vec(new_v, new_size, new_capacity);
 				}
 				else
 				{
-					for (size_type i = this->size(); i > pos ; i--)
-						_alloc.construct(this->_v + i, *(this->_v + i - 1));
+					insert_end_values(NULL, 1, pos);
 					_alloc.construct(this->_v + pos, val);
 					this->_v_end++;
 				}
@@ -299,38 +290,26 @@ namespace ft
 				// 	throw ValueOutOfRange();
 				if (this->size() + n > this->capacity())
 				{
+					size_type	new_capacity = n;
 					size_type	new_size = this->size() + n;
-					size_type	new_capacity;
-					if (this->capacity())
-						new_capacity = new_size > this->capacity() * 2 ? new_size : this->capacity() * 2;
-					else
-						new_capacity = n;
-					pointer		new_v = _alloc.allocate(new_capacity);
+					pointer		new_v = insert_alloc(new_size, &new_capacity);
 
-					for (size_type i = 0; i < pos; i++)
-						_alloc.construct(new_v + i, this->_v[i]);
-					for (size_type i = this->size(); i > pos; i--)
-						_alloc.construct(new_v + i + n - 1, *(this->_v + i - 1));
+					insert_start_values(new_v, pos);
 					for (size_type i = pos; i < pos + n; i++)
 						_alloc.construct(new_v + i, val);
-					for (size_type i = 0; i < this->size(); i++)
-						_alloc.destroy(this->_v + i);
-					_alloc.deallocate(this->_v, capacity());
-
-					this->_v = new_v;
-					this->_v_start = new_v;
-					this->_v_end = new_v + new_size;
-					this->_v_end_alloc = new_v + new_capacity;
+					insert_end_values(new_v, n, pos);
+					insert_destroy_old_vec();
+					insert_init_new_vec(new_v, new_size, new_capacity);
 				}
 				else
 				{
-					for (size_type i = this->size(); i > pos; i--)
-						_alloc.construct(this->_v + i + n - 1, *(this->_v + i - 1));
+					insert_end_values(NULL, n, pos);
 					for (size_type i = pos; i < pos + n; i++)
 						_alloc.construct(this->_v + i, val);
 					this->_v_end += n;
 				}
 			}
+			
 
 			template <class InputIterator>
 			void insert(iterator position, InputIterator first, InputIterator last,
@@ -345,36 +324,23 @@ namespace ft
 				// 	throw ValueOutOfRange();
 				if (this->size() + n > this->capacity())
 				{
+					size_type	new_capacity = n;
 					size_type	new_size = this->size() + n;
-					size_type	new_capacity;
-					if (this->capacity())
-						new_capacity = new_size > this->capacity() * 2 ? new_size : this->capacity() * 2;
-					else
-						new_capacity = n;
-					pointer		new_v = _alloc.allocate(new_capacity);
+					pointer		new_v = insert_alloc(new_size, &new_capacity);
 
-					for (size_type i = 0; i < pos; i++)
-						_alloc.construct(new_v + i, this->_v[i]);
-					for (size_type i = this->size(); i > pos; i--)
-						_alloc.construct(new_v + i + n - 1, *(this->_v + i - 1));
+					insert_start_values(new_v, pos);
 					for (size_type i = pos; i < pos + n; i++)
 					{
 						_alloc.construct(new_v + i, *first);
 						first++;
 					}
-					for (size_type i = 0; i < this->size(); i++)
-						_alloc.destroy(this->_v + i);
-					_alloc.deallocate(this->_v, capacity());
-
-					this->_v = new_v;
-					this->_v_start = new_v;
-					this->_v_end = new_v + new_size;
-					this->_v_end_alloc = new_v + new_capacity;
+					insert_end_values(new_v, n, pos);
+					insert_destroy_old_vec();
+					insert_init_new_vec(new_v, new_size, new_capacity);
 				}
 				else
 				{
-					for (size_type i = this->size(); i > pos; i--)
-						_alloc.construct(this->_v + i + n - 1, *(this->_v + i - 1));
+					insert_end_values(NULL, n, pos);
 					for (size_type i = pos; i < pos + n; i++)
 					{
 						_alloc.construct(this->_v + i, *first);
@@ -383,6 +349,27 @@ namespace ft
 					this->_v_end += n;
 				}
 			}
+
+			void	insert_start_values(pointer new_v, size_type pos)
+			{
+				for (size_type i = 0; i < pos; i++)
+					_alloc.construct(new_v + i, *(this->_v + i));
+			}
+			void	insert_destroy_old_vec(void)
+			{
+				// for (size_type i = 0; i < this->size(); i++)
+				// 	_alloc.destroy(this->_v + i);
+				_alloc.deallocate(this->_v, capacity());
+			}
+
+			void	insert_end_values(pointer new_v, size_type n, size_type pos)
+			{
+				pointer my_v = new_v != NULL ? new_v : this->_v;
+
+				for (size_type i = this->size(); i > pos; i--)
+					_alloc.construct(my_v + i + n - 1, *(this->_v + i - 1));
+			}
+
 
 			iterator erase(iterator position)
 			{
@@ -408,40 +395,32 @@ namespace ft
 				size_type len = static_cast<size_type>(last - first);
 				size_type fpos = static_cast<size_type>(first - this->begin());
 				
-				if (&*first == _v_start && &*last == _v_end)
-					erase_start(len);
-				else if (&*first == _v_start)
-					erase_start(len);
+				if (&*first == _v_start)
+					erase_start(&fpos, len);
 				else if (&*last == _v_end)
 					erase_end(&fpos, len);
 				else
 					erase_middle(&fpos, len);
 
+				// bool select_erase[3] = {
+				// 	&*first == _v_start,
+				// 	&*last == _v_end,
+				// 	true
+				// };
+
+				// EraseMemFn ft_erase[] = {
+				// 	&vector::erase_start(&fpos, len),
+				// 	&vector::erase_end(&fpos, len),
+				// 	&vector::erase_middle(&fpos, len)
+				// };
+				// int i = 0;
+				// while (!select_erase[i])
+				// 	i++;
+				// (this->*ft_erase[i])(&fpos, len);
+
 				if (len != 0)
 					this->_v_end -= len;
 				return (first);
-			}
-
-			void	erase_start(size_type len)
-			{
-				size_type	i = len;
-				size_type	j = 0;
-
-				for ( ; i < size(); ++i)
-					_alloc.construct(_v + j++, *(_v + i));
-				for ( ; j < len; ++j)
-					_alloc.destroy(_v + j);
-			}
-			void	erase_end(size_type *fpos, size_type len)
-			{
-				for (size_type i = *fpos + len; i < size(); ++i)
-					_alloc.destroy(_v + i);
-			}
-			void	erase_middle(size_type *fpos, size_type len)
-			{
-				for (; *fpos < len; (*fpos)++)
-					_alloc.construct(_v + *fpos, *(_v + *fpos + len));
-				erase_end(fpos, len);
 			}
 
 			void swap(vector& x)
@@ -508,7 +487,53 @@ namespace ft
 				this->_v_end_alloc = new_v + new_capacity;
 				return *this;
 			}
+
+			void	erase_start(size_type *fpos, size_type len)
+			{
+				size_type	i = len;
+				size_type	j = *fpos;
+
+				for ( ; i < size(); ++i)
+					_alloc.construct(_v + j++, *(_v + i));
+				for ( ; j < len; ++j)
+					_alloc.destroy(_v + j);
+			}
+			void	erase_end(size_type *fpos, size_type len)
+			{
+				for (size_type i = *fpos + len; i < size(); ++i)
+					_alloc.destroy(_v + i);
+			}
+			void	erase_middle(size_type *fpos, size_type len)
+			{
+				for (; *fpos < len; (*fpos)++)
+					_alloc.construct(_v + *fpos, *(_v + *fpos + len));
+				erase_end(fpos, len);
+			}
+
+			pointer	insert_alloc(size_type new_size, size_type *new_capacity)
+			{
+				size_type	double_cap = this->capacity() * 2;
+				
+				if (this->capacity())
+				{
+					if (new_size > double_cap)
+						*new_capacity = new_size;
+					else
+						*new_capacity = double_cap;
+				}
+				return (_alloc.allocate(*new_capacity));
+			}
+
+			void	insert_init_new_vec(pointer new_v, size_type new_size,
+						size_type new_capacity)
+			{
+				this->_v = new_v;
+				this->_v_start = new_v;
+				this->_v_end = new_v + new_size;
+				this->_v_end_alloc = new_v + new_capacity;
+			}
 			
+			// typedef void (vector::*EraseMemFn)( size_type, size_type );
 	};
 
 	template <class T, class Alloc>
