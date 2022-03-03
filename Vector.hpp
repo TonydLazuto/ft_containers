@@ -306,10 +306,7 @@ namespace ft
 
 					init_start_values(new_v, pos);
 					for (size_type i = pos; i < pos + n; i++)
-					{
-						_alloc.construct(new_v + i, *first);
-						first++;
-					}
+						_alloc.construct(new_v + i, *first++);
 					init_end_values(new_v, n, pos);
 					destroy_old_vec();
 					init_pointers(new_v, new_size, new_capacity);
@@ -318,10 +315,7 @@ namespace ft
 				{
 					init_end_values(NULL, n, pos);
 					for (size_type i = pos; i < pos + n; i++)
-					{
-						_alloc.construct(this->_v + i, *first);
-						first++;
-					}
+						_alloc.construct(this->_v + i, *first++);
 					this->_v_end += n;
 				}
 			}
@@ -447,8 +441,7 @@ namespace ft
 
 				for (size_type i = 0; i < new_size; i++)
 					_alloc.construct(new_v + i, *(this->_v + i));
-				for (size_type i = 0; i < this->size(); i++)
-					_alloc.destroy(this->_v + i);
+				this->clear();
 				if (this->_v)
 					_alloc.deallocate(this->_v, capacity());
 				init_pointers(new_v, new_size, new_capacity);
@@ -458,12 +451,11 @@ namespace ft
 			void	erase_start(size_type *fpos, size_type len)
 			{
 				size_type	i = len;
-				size_type	j = *fpos;
 
 				for ( ; i < size(); ++i)
-					_alloc.construct(_v + j++, *(_v + i));
-				for ( ; j < len; ++j)
-					_alloc.destroy(_v + j);
+					_alloc.construct(_v + (*fpos)++, *(_v + i));
+				for ( ; *fpos < len; ++(*fpos))
+					_alloc.destroy(_v + *fpos);
 			}
 			void	erase_end(size_type *fpos, size_type len)
 			{
