@@ -31,6 +31,16 @@ namespace ft
 						return "Error: try to reach a value greater than the vector size";
 					}
 			};
+			class ReserveException : public std::exception
+			{
+				public:
+					ReserveException( void ) throw() {}
+					virtual ~ReserveException( void ) throw() {}
+					virtual const char* what() const throw()
+					{
+						return "vector::reserve";
+					}
+			};
 			typedef	T value_type;
 			typedef Alloc allocator_type;
 
@@ -96,12 +106,16 @@ namespace ft
 
 			vector& operator=(const vector& x)
 			{
+				size_type save_capacity = capacity();
+				
 				if (this->size())
 					this->clear();
 				if (this->capacity())
 					_alloc.deallocate(_v, this->capacity());
 				init_pointers(0, 0, 0);
 				this->insert(this->begin(), x.begin(), x.end());
+				if (capacity() < save_capacity)
+					_v_end_alloc = _v + save_capacity;
 				return *this;
 			}
 
@@ -147,7 +161,11 @@ namespace ft
 				else if (n < this->size())
 					erase(this->begin() + n, this->end());
 				else if (n > this->size())
+				{
+					if (n > size() * 2)
+						reserve(n);
 					insert(this->end(), n - this->size(), val);
+				}
 			}
 			size_type capacity(void) const
 			{
@@ -160,11 +178,9 @@ namespace ft
 				pointer		new_v;
 
 				if (n > max_size())
-					throw std::exception();
+					throw ReserveException();
 				if (n > capacity())
 				{
-					if (n < capacity() * 2)
-						n = capacity() * 2;
 					new_v = _alloc.allocate(n);
 					for (size_type i = 0; i < save_size; i++)
 						_alloc.construct(new_v + i, *(this->_v + i));
@@ -407,16 +423,10 @@ namespace ft
 
 			void clear(void)
 			{
-				// virer tmp_size + use pop_back();
-				size_type tmp_size = this->size();
 				if (this->capacity())
 				{
-					while (tmp_size != 0)
-					{
-						this->_alloc.destroy(&this->back());
-						this->_v_end--;
-						tmp_size--;
-					}
+					while (size() != 0)
+						this->pop_back();
 				}
 			}
 
@@ -458,10 +468,9 @@ namespace ft
 
 			pointer	insert_alloc(size_type new_size, size_type *new_capacity)
 			{
-				if (new_size < capacity() * 2)
-					*new_capacity = capacity() * 2;
-				else
-					*new_capacity = new_size;
+				*new_capacity = new_size;
+				if (size() && new_size < capacity() * 2)
+					*new_capacity = size() * 2;					
 				return (_alloc.allocate(*new_capacity));
 			}
 
