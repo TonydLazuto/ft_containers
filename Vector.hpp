@@ -156,10 +156,22 @@ namespace ft
 			bool empty(void) const { return (this->size() == 0 ? true : false); }
 			void reserve (size_type n)
 			{
+				size_type	save_size = this->size();
+				pointer		new_v;
+
 				if (n > max_size())
 					throw std::exception();
 				if (n > capacity())
-					realloc(n);
+				{
+					if (n < capacity() * 2)
+						n = capacity() * 2;
+					new_v = _alloc.allocate(n);
+					for (size_type i = 0; i < save_size; i++)
+						_alloc.construct(new_v + i, *(this->_v + i));
+					this->clear();
+					_alloc.deallocate(this->_v, capacity());
+					init_pointers(new_v, save_size, n);
+				}
 			}
 
 			reference operator[] (size_type n) { return (*(this->_v + n)); }
@@ -221,9 +233,9 @@ namespace ft
 			void push_back(const value_type& val)
 			{
 				if (capacity() == 0)
-					realloc(1);
+					reserve(1);
 				else if (size() >= capacity())
-					realloc(capacity() * 2);
+					reserve(capacity() * 2);
 				_alloc.construct(_v_end, val);
 				this->_v_end++;
 			}
@@ -309,6 +321,7 @@ namespace ft
 						_alloc.construct(new_v + i, *first++);
 					init_end_values(new_v, n, pos);
 					destroy_old_vec();
+
 					init_pointers(new_v, new_size, new_capacity);
 				}
 				else
@@ -413,6 +426,7 @@ namespace ft
 
 			void clear(void)
 			{
+				// virer tmp_size
 				size_type tmp_size = this->size();
 				if (this->capacity())
 				{
@@ -433,20 +447,6 @@ namespace ft
 			pointer			_v;
 			pointer			_v_end;
 			pointer			_v_end_alloc;
-
-			vector&	realloc(size_t new_capacity)
-			{
-				size_type	new_size = new_capacity < this->size() ? new_capacity : this->size();
-				pointer		new_v = _alloc.allocate(new_capacity);
-
-				for (size_type i = 0; i < new_size; i++)
-					_alloc.construct(new_v + i, *(this->_v + i));
-				this->clear();
-				if (this->_v)
-					_alloc.deallocate(this->_v, capacity());
-				init_pointers(new_v, new_size, new_capacity);
-				return *this;
-			}
 
 			void	erase_start(size_type *fpos, size_type len)
 			{
@@ -470,15 +470,10 @@ namespace ft
 
 			pointer	insert_alloc(size_type new_size, size_type *new_capacity)
 			{
-				size_type	double_cap = this->capacity() * 2;
-				
-				if (this->capacity())
-				{
-					if (new_size > double_cap)
-						*new_capacity = new_size;
-					else
-						*new_capacity = double_cap;
-				}
+				if (new_size < capacity() * 2)
+					*new_capacity = capacity() * 2;
+				else
+					*new_capacity = new_size;
 				return (_alloc.allocate(*new_capacity));
 			}
 
