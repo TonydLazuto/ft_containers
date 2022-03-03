@@ -47,61 +47,40 @@ namespace ft
 			typedef typename Alloc::pointer pointer;
 			typedef typename Alloc::const_pointer const_pointer;
 
-			explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc)
-			{
-				this->_v = NULL;
-				this->_v_start = NULL;
-				this->_v_end = NULL;
-				this->_v_end_alloc = NULL;
-			}
+			explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc),
+				_v(NULL), _v_end(NULL), _v_end_alloc(NULL) {}
 
 			explicit vector (size_type n, const value_type& val = value_type(),
-				const allocator_type& alloc = allocator_type()) : _alloc(alloc)
+				const allocator_type& alloc = allocator_type()) : _alloc(alloc),
+					_v(NULL), _v_end(NULL), _v_end_alloc(NULL)
 				{
-					this->_v = NULL;
-					this->_v_start = NULL;
-					this->_v_end = NULL;
-					this->_v_end_alloc = NULL;
 					if (!n)
 						return ;
 					else if (n < 0)
 						return ;
 					_v = _alloc.allocate(n);
-					pointer p = _v;
-					while (p < _v + n)
-					{
-						_alloc.construct(p, val);
-						p++;
-					}
-					this->_v_start = this->_v;
-					this->_v_end = p;
-					this->_v_end_alloc = p;
+					for (size_type i = 0; i < n; i++)
+						_alloc.construct(_v + i, val);
+					init_pointers(this->_v, n, n);
 				}
 	
 			template <class InputIterator>
 			vector (InputIterator first, InputIterator last,
 				const allocator_type& alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
-				: _alloc(alloc), _v(NULL), _v_start(NULL), _v_end(NULL), _v_end_alloc(NULL)
+				: _alloc(alloc), _v(NULL), _v_end(NULL), _v_end_alloc(NULL)
 				{
 					size_type diff = 0;
 					InputIterator first_cpy = first;
 
-					this->_v = NULL;
-					this->_v_start = NULL;
-					this->_v_end = NULL;
-					this->_v_end_alloc = NULL;
 					for (; first_cpy != last; first_cpy++)
 						diff++;
 					if (!diff)
 						return ;
 					_v = this->_alloc.allocate(diff);
-					this->_v_start = this->_v;
 					for (size_type i = 0; i < diff; i++)
 						this->_alloc.construct(_v + i, *first++);
-					this->_v_end = _v_start + diff;
-					this->_v_end_alloc = _v_start + diff;
-					// this->insert(this->begin(), first, last);
+					init_pointers(this->_v, diff, diff);
 				}
 
 			virtual ~vector( void )
@@ -110,30 +89,24 @@ namespace ft
 				this->_alloc.deallocate(_v, this->capacity());
 			}
 			
-			vector(const vector& x)
+			vector(const vector& x) : _v(NULL), _v_end(NULL), _v_end_alloc(NULL)
 			{
-				this->_v = NULL;
-				this->_v_start = NULL;
-				this->_v_end = NULL;
-				this->_v_end_alloc = NULL;		
 				this->insert(this->begin(), x.begin(), x.end());
 			}
+
 			vector& operator=(const vector& x)
 			{
 				if (this->size())
 					this->clear();
 				if (this->capacity())
 					_alloc.deallocate(_v, this->capacity());
-				this->_v = NULL;
-				this->_v_start = NULL;
-				this->_v_end = NULL;
-				this->_v_end_alloc = NULL;
+				init_pointers(0, 0, 0);
 				this->insert(this->begin(), x.begin(), x.end());
 				return *this;
 			}
 
-			iterator begin(void) { return _v_start; }
-			const_iterator begin(void) const { return _v_start; }
+			iterator begin(void) { return _v; }
+			const_iterator begin(void) const { return _v; }
 			reverse_iterator rbegin(void)
 			{
 				return (reverse_iterator(_v_end));
@@ -146,21 +119,21 @@ namespace ft
 			iterator end(void)
 			{
 				if (empty())
-					return _v_start;
+					return _v;
 				return (_v_end);
 			}
 			const_iterator end(void) const
 			{
 				if (empty())
-					return _v_start;
+					return _v;
 				return (_v_end);
 			}
-			reverse_iterator rend(void) { return (reverse_iterator(_v_start)); }
-			const_reverse_iterator rend(void) const { return (reverse_iterator(_v_start)); }
+			reverse_iterator rend(void) { return (reverse_iterator(_v)); }
+			const_reverse_iterator rend(void) const { return (reverse_iterator(_v)); }
 			
 			size_type size(void) const 
 			{
-				return static_cast<size_type>(this->_v_end - this->_v_start);
+				return static_cast<size_type>(this->_v_end - this->_v);
 			}
 			size_type max_size(void) const
 			{
@@ -183,6 +156,8 @@ namespace ft
 			bool empty(void) const { return (this->size() == 0 ? true : false); }
 			void reserve (size_type n)
 			{
+				if (n > max_size())
+					throw std::exception();
 				if (n > capacity())
 					realloc(n);
 			}
@@ -215,9 +190,9 @@ namespace ft
 				if an index is out of range (try catch)
 			 */
 
-			reference front(void) { return *this->_v_start; }
+			reference front(void) { return *this->_v; }
 
-			const_reference front(void) const { return *this->_v_start; }
+			const_reference front(void) const { return *this->_v; }
 
 			reference back(void)
 			{
@@ -233,13 +208,13 @@ namespace ft
   				void assign (InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 				{
-					erase(this->begin(), this->end());
+					this->clear();
 					insert(this->begin(), first, last);
 				}
 
 			void assign(size_type n, const value_type& val)
 			{
-				erase(this->begin(), this->end());
+				this->clear();
 				insert(this->begin(), n, val);
 			}
 
@@ -269,19 +244,19 @@ namespace ft
 					size_type	new_size = this->size() + 1;
 					pointer		new_v = insert_alloc(new_size, &new_capacity);
 
-					insert_start_values(new_v, pos);
+					init_start_values(new_v, pos);
 					_alloc.construct(new_v + pos, val);
-					insert_end_values(new_v, 1, pos);
-					insert_destroy_old_vec();
-					insert_init_new_vec(new_v, new_size, new_capacity);
+					init_end_values(new_v, 1, pos);
+					destroy_old_vec();
+					init_pointers(new_v, new_size, new_capacity);
 				}
 				else
 				{
-					insert_end_values(NULL, 1, pos);
+					init_end_values(NULL, 1, pos);
 					_alloc.construct(this->_v + pos, val);
 					this->_v_end++;
 				}
-				return (iterator(this->_v_start + pos));
+				return (iterator(this->_v + pos));
 			}
 
 			void insert(iterator position, size_type n, const value_type& val)
@@ -295,16 +270,16 @@ namespace ft
 					size_type	new_size = this->size() + n;
 					pointer		new_v = insert_alloc(new_size, &new_capacity);
 
-					insert_start_values(new_v, pos);
+					init_start_values(new_v, pos);
 					for (size_type i = pos; i < pos + n; i++)
 						_alloc.construct(new_v + i, val);
-					insert_end_values(new_v, n, pos);
-					insert_destroy_old_vec();
-					insert_init_new_vec(new_v, new_size, new_capacity);
+					init_end_values(new_v, n, pos);
+					destroy_old_vec();
+					init_pointers(new_v, new_size, new_capacity);
 				}
 				else
 				{
-					insert_end_values(NULL, n, pos);
+					init_end_values(NULL, n, pos);
 					for (size_type i = pos; i < pos + n; i++)
 						_alloc.construct(this->_v + i, val);
 					this->_v_end += n;
@@ -329,19 +304,19 @@ namespace ft
 					size_type	new_size = this->size() + n;
 					pointer		new_v = insert_alloc(new_size, &new_capacity);
 
-					insert_start_values(new_v, pos);
+					init_start_values(new_v, pos);
 					for (size_type i = pos; i < pos + n; i++)
 					{
 						_alloc.construct(new_v + i, *first);
 						first++;
 					}
-					insert_end_values(new_v, n, pos);
-					insert_destroy_old_vec();
-					insert_init_new_vec(new_v, new_size, new_capacity);
+					init_end_values(new_v, n, pos);
+					destroy_old_vec();
+					init_pointers(new_v, new_size, new_capacity);
 				}
 				else
 				{
-					insert_end_values(NULL, n, pos);
+					init_end_values(NULL, n, pos);
 					for (size_type i = pos; i < pos + n; i++)
 					{
 						_alloc.construct(this->_v + i, *first);
@@ -351,19 +326,19 @@ namespace ft
 				}
 			}
 
-			void	insert_start_values(pointer new_v, size_type pos)
+			void	init_start_values(pointer new_v, size_type pos)
 			{
 				for (size_type i = 0; i < pos; i++)
 					_alloc.construct(new_v + i, *(this->_v + i));
 			}
-			void	insert_destroy_old_vec(void)
+			void	destroy_old_vec(void)
 			{
 				// for (size_type i = 0; i < this->size(); i++)
 				// 	_alloc.destroy(this->_v + i);
 				_alloc.deallocate(this->_v, capacity());
 			}
 
-			void	insert_end_values(pointer new_v, size_type n, size_type pos)
+			void	init_end_values(pointer new_v, size_type n, size_type pos)
 			{
 				pointer my_v = new_v != NULL ? new_v : this->_v;
 
@@ -396,7 +371,7 @@ namespace ft
 				size_type len = static_cast<size_type>(last - first);
 				size_type fpos = static_cast<size_type>(first - this->begin());
 				
-				if (&*first == _v_start)
+				if (&*first == _v)
 					erase_start(&fpos, len);
 				else if (&*last == _v_end)
 					erase_end(&fpos, len);
@@ -404,7 +379,7 @@ namespace ft
 					erase_middle(&fpos, len);
 
 				// bool select_erase[3] = {
-				// 	&*first == _v_start,
+				// 	&*first == _v,
 				// 	&*last == _v_end,
 				// 	true
 				// };
@@ -427,19 +402,16 @@ namespace ft
 			void swap(vector& x)
 			{
 				pointer tmp_v = x._v;
-				pointer tmp_v_start = x._v_start;
 				pointer tmp_v_end = x._v_end;
 				pointer tmp_v_end_alloc = x._v_end_alloc;
 				allocator_type tmp_alloc = x._alloc;
 
 				x._v = this->_v;
-				x._v_start = this->_v_start;
 				x._v_end = this->_v_end;
 				x._v_end_alloc = this->_v_end_alloc;
 				x._alloc = this->_alloc;
 
 				this->_v = tmp_v;
-				this->_v_start = tmp_v_start;
 				this->_v_end = tmp_v_end;
 				this->_v_end_alloc = tmp_v_end_alloc;
 				this->_alloc = tmp_alloc;
@@ -465,7 +437,6 @@ namespace ft
 		private:
 			allocator_type	_alloc;
 			pointer			_v;
-			pointer			_v_start;
 			pointer			_v_end;
 			pointer			_v_end_alloc;
 
@@ -475,17 +446,12 @@ namespace ft
 				pointer		new_v = _alloc.allocate(new_capacity);
 
 				for (size_type i = 0; i < new_size; i++)
-					_alloc.construct(new_v + i, this->_v[i]);
-				// for (size_type i = new_size; i < new_capacity; i++)
-				// 	_alloc.construct(new_v + i, 0);
+					_alloc.construct(new_v + i, *(this->_v + i));
 				for (size_type i = 0; i < this->size(); i++)
 					_alloc.destroy(this->_v + i);
-				if (this->_v_start)
+				if (this->_v)
 					_alloc.deallocate(this->_v, capacity());
-				this->_v = new_v;
-				this->_v_start = new_v;
-				this->_v_end = new_v + new_size;
-				this->_v_end_alloc = new_v + new_capacity;
+				init_pointers(new_v, new_size, new_capacity);
 				return *this;
 			}
 
@@ -506,9 +472,8 @@ namespace ft
 			}
 			void	erase_middle(size_type *fpos, size_type len)
 			{
-				for (; *fpos < len; (*fpos)++)
+				for (; *fpos < size() - len; ++(*fpos))
 					_alloc.construct(_v + *fpos, *(_v + *fpos + len));
-				erase_end(fpos, len);
 			}
 
 			pointer	insert_alloc(size_type new_size, size_type *new_capacity)
@@ -525,11 +490,10 @@ namespace ft
 				return (_alloc.allocate(*new_capacity));
 			}
 
-			void	insert_init_new_vec(pointer new_v, size_type new_size,
+			void	init_pointers(pointer new_v, size_type new_size,
 						size_type new_capacity)
 			{
 				this->_v = new_v;
-				this->_v_start = new_v;
 				this->_v_end = new_v + new_size;
 				this->_v_end_alloc = new_v + new_capacity;
 			}
