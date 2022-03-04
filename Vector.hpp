@@ -21,26 +21,6 @@ namespace ft
 	class vector
 	{
 		public:
-			class ValueOutOfRange : public std::exception
-			{
-				public:
-					ValueOutOfRange( void ) throw() {}
-					virtual ~ValueOutOfRange( void ) throw() {}
-					virtual const char* what() const throw()
-					{
-						return "Error: try to reach a value greater than the vector size";
-					}
-			};
-			class ReserveException : public std::exception
-			{
-				public:
-					ReserveException( void ) throw() {}
-					virtual ~ReserveException( void ) throw() {}
-					virtual const char* what() const throw()
-					{
-						return "vector::reserve";
-					}
-			};
 			typedef	T value_type;
 			typedef Alloc allocator_type;
 
@@ -178,7 +158,7 @@ namespace ft
 				pointer		new_v;
 
 				if (n > max_size())
-					throw ReserveException();
+					throw std::length_error("");
 				if (n > capacity())
 				{
 					new_v = _alloc.allocate(n);
@@ -210,13 +190,6 @@ namespace ft
 				}
 				return (const_cast<const_reference>((*this)[n]));
 			}
-
-			/*
-				Indexing is done by operator[]() and at();
-				operator[]() provides unchecked access,
-				whereas at() does a range check and throws out_of_range
-				if an index is out of range (try catch)
-			 */
 
 			reference front(void) { return *this->_v; }
 
@@ -290,12 +263,13 @@ namespace ft
 			void insert(iterator position, size_type n, const value_type& val)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
-				// if (position > this->end() || this->size() < 0)
-				// 	throw ValueOutOfRange();
+
+				if (n == 0)
+					return ;
 				if (this->size() + n > this->capacity())
 				{
 					size_type	new_capacity = n;
-					size_type	new_size = this->size() + n;
+					size_type	new_size = size() + n;
 					pointer		new_v = insert_alloc(new_size, &new_capacity);
 
 					init_start_values(new_v, pos);
@@ -322,10 +296,9 @@ namespace ft
 				size_type pos = static_cast<size_type>(position - this->begin());
 				size_type n = 0;
 				InputIterator first_cpy = first;
+
 				for (; first_cpy != last; ++first_cpy)
 					n++;
-				// if (position > this->end() || this->size() < 0)
-				// 	throw ValueOutOfRange();
 				if (this->size() + n > this->capacity())
 				{
 					size_type	new_capacity = n;
@@ -351,8 +324,6 @@ namespace ft
 
 			iterator erase(iterator position)
 			{
-				// if (position >= this->end() || this->size() <= 0)
-					// throw ValueOutOfRange();
 				size_type pos = static_cast<size_type>(position - this->begin());
 
 				_alloc.destroy(&*position);
@@ -370,8 +341,6 @@ namespace ft
 
 			iterator erase(iterator first, iterator last)
 			{
-				// if (last >= this->end() || this->size() <= 0)
-					// throw ValueOutOfRange();
 				size_type len = static_cast<size_type>(last - first);
 				size_type fpos = static_cast<size_type>(first - this->begin());
 				
@@ -381,23 +350,6 @@ namespace ft
 					erase_end(&fpos);
 				else
 					erase_middle(&fpos, len);
-
-				// bool select_erase[3] = {
-				// 	&*first == _v,
-				// 	&*last == _v_end,
-				// 	true
-				// };
-
-				// EraseMemFn ft_erase[] = {
-				// 	&vector::erase_start(&fpos, len),
-				// 	&vector::erase_end(&fpos),
-				// 	&vector::erase_middle(&fpos, len)
-				// };
-				// int i = 0;
-				// while (!select_erase[i])
-				// 	i++;
-				// (this->*ft_erase[i])(&fpos, len);
-
 				if (len != 0)
 					this->_v_end -= len;
 				return (first);
@@ -469,8 +421,8 @@ namespace ft
 			pointer	insert_alloc(size_type new_size, size_type *new_capacity)
 			{
 				*new_capacity = new_size;
-				if (size() && new_size < capacity() * 2)
-					*new_capacity = size() * 2;					
+				if (_v && size() && new_size < capacity() * 2)
+					*new_capacity = size() * 2;				
 				return (_alloc.allocate(*new_capacity));
 			}
 
@@ -502,7 +454,6 @@ namespace ft
 				this->_v_end_alloc = new_v + new_capacity;
 			}
 			
-			// typedef void (vector::*EraseMemFn)( size_type, size_type );
 	};
 
 	template <class T, class Alloc>
