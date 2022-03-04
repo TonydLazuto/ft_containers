@@ -48,276 +48,50 @@ public:
 
 
 
-void	printSize(std::vector<int> const &vct)
-{
-	std::cout << "size: " << vct.size() << std::endl;
-	std::cout << "capacity: " << vct.capacity() << std::endl;
-	std::cout << "max_size:" << vct.max_size() << std::endl << std::endl;
-	std::cout << "Content is:" << std::endl;
-	for (unsigned long int i = 0; i < vct.size(); ++i)
-		std::cout << "- " << vct[i] << std::endl;
-	std::cout << "###############################################" << std::endl;
-}
-
-class Awesome {
-
-	public:
-
-		Awesome( void ) : _n( 42 ) { std::cout << "Default constructor" << std::endl; } //should not happen too often or else there is a wrong use of allocator (which calls the copy constructor)
-		Awesome( int n ) : _n( n ) { std::cout << "Int constructor" << std::endl; (void)n; }
-		Awesome( Awesome const &rhs ) : _n( 42 ) { *this = rhs;}
-		virtual ~Awesome(void) {}
-
-		Awesome &operator=( Awesome const & rhs ) { this->_n = rhs._n; return (*this); }
-		bool operator==( Awesome const & rhs ) const { return (this->_n == rhs._n); }
-		bool operator!=( Awesome const & rhs ) const { return (this->_n != rhs._n); }
-		bool operator>( Awesome const & rhs ) const { return (this->_n > rhs._n); }
-		bool operator<( Awesome const & rhs ) const { return (this->_n < rhs._n); }
-		bool operator>=( Awesome const & rhs ) const { return (this->_n >= rhs._n); }
-		bool operator<=( Awesome const & rhs ) const { return (this->_n <= rhs._n); }
-		void operator+=(int rhs){ _n += rhs; }
-		int get( void ) const { return this->_n; }
-
-	private:
-
-		int _n;
-};
-
-std::ostream & operator<<( std::ostream & o, Awesome const & rhs ) { o << rhs.get(); return o; }
-
-template <class T>
-void	print(std::vector<T> &test)
-{
-	typename std::vector<T>::iterator		beg = test.begin();
-	typename std::vector<T>::iterator		end = test.end();
-	std::cout << "size : " << test.size() << ", capacity : " << test.capacity() << std::endl;
-	for (typename std::vector<T>::iterator it = beg; it != end; it++)
-	{
-		std::cout << *it << " ";
-		if (((it - beg) % 10 == 9) && it > beg)
-			std::cout << std::endl;
-	}
-	std::cout << std::endl;
-}
-
-template <class T>
-void	push_pop_back_tests(void)
-{
-	std::cout << std::endl << "PUSH BACK & POP BACK TESTS" << std::endl;
-	std::vector<T> test;
-
-	std::cout << "Empty ? " << test.empty() << " / Capacity : " << test.capacity() << " / Size : " << test.size() << std::endl;
-	for (size_t i = 0; i < 51; i++)
-	{
-		test.push_back(i);
-		std::cout << test.size() << ": " << test.capacity() << " - ";
-		if (!(i % 10) && i != 0)
-			std::cout << std::endl;
-	}
-	print<T>(test);
-	test.pop_back();
-	test.pop_back();
-	test.pop_back();
-	test.pop_back();
-	print<T>(test);
-}
-
-template <class T>
-void	resize_tests(void)
-{
-	std::cout << std::endl << "RESIZE TESTS" << std::endl;
-	std::vector<T> test(12, 12);
-
-	test.resize(72);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.resize(100);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.resize(4170);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.resize(171, 12);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.resize(62);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-}
-
-template <class T>
-void	insert_tests()
-{
-	std::cout << std::endl << "INSERT TESTS" << std::endl;
-	std::vector<T> test(1, 1);
-	std::vector<T> test2(5, 5);
-
-	test.insert(test.begin(), 200, 12);
-	print<T>(test);
-	test.insert(test.begin() + 12, 200, 30);
-	print<T>(test);
-	test.insert(test.end(), 12, 50);
-	print<T>(test);
-	test.insert(test.end() - 1, 0, 60);
-	print<T>(test);
-	test.insert(test.end() - 1, 1, 70);
-	print<T>(test);
-	test.insert(test.begin() + 412, test2.begin(), test2.end());
-	print<T>(test);
-	test.insert(test.begin() + 6, test2.begin(), test2.end());
-	print<T>(test);
-	test.insert(test.end(), test2.begin(), test2.end());
-	print<T>(test);
-}
-
-template <class T>
-void	reserve_tests(void)
-{
-	std::cout << std::endl << "RESERVE TESTS" << std::endl;
-	std::vector<T> test(65, 7);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.reserve(12);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.reserve(66);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.reserve(128);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.reserve(1023);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.reserve(10252);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	try
-	{
-		test.reserve(test.max_size() + 1);
-	}
-	catch(std::length_error &le)
-	{
-		std::cout << "length error" << std::endl;
-	}
-	catch(std::exception &e)
-	{
-		std::cout << "error : " << e.what() << std::endl;
-	}
-	print<T>(test);
-}
-
-template <class T>
-void	copy_swap_tests(void)
-{
-	std::cout << std::endl << "COPY && SWAP TESTS" << std::endl;
-	std::vector<T> test;
-	for (size_t i = 0; i < 50; i++) { test.push_back(i); }
-	std::vector<T> test_copy(test);
-	for (size_t i = 0; i < test_copy.size(); i++) { test_copy[i] += 100; }
-	print<T>(test_copy);
-	std::vector<T> test_range(test.begin() + 20, test.begin() + 30);
-	print<T>(test_range);
-	test_copy.swap(test);
-	print<T>(test);
-	print<T>(test_copy);
-	test_copy.swap(test_range);
-	print<T>(test_range);
-	print<T>(test_copy);
-	test.swap(test_copy);
-	print<T>(test);
-	print<T>(test_copy);
-}
-
-template <class T>
-void	reverse_it_tests(void)
-{
-	std::cout << std::endl << "REVERSE IT TESTS" << std::endl;
-	std::vector<T> test;
-	for (size_t i = 0; i < 12; i++) { test.push_back(i); }
-	typename std::vector<T>::reverse_iterator		revbeg = test.rbegin();
-	for (typename std::vector<T>::reverse_iterator it = revbeg; it != test.rend(); it++)
-	{
-		std::cout << *it << " ";
-		if (!((revbeg - it) % 10) && it != revbeg)
-			std::cout << std::endl;
-	}
-	std::cout << *(test.rbegin() + 2) << std::endl;
-	std::cout << *(test.rend() - 8) << std::endl;
-	std::cout << (test.rbegin() == revbeg) << std::endl;
-	revbeg++;
-	std::cout << *revbeg << std::endl;
-	std::cout << (test.rbegin() == test.rend()) << std::endl;
-	std::cout << (test.rbegin() <= test.rbegin()) << std::endl;
-	std::cout << (test.rbegin() < test.rend()) << std::endl;
-	std::cout << (test.rbegin() >= test.rend()) << std::endl;
-	revbeg += 3;
-	std::cout << *revbeg << std::endl;
-	std::cout << std::endl;
-}
-
-template <class T>
-void	erase_clear_tests(void)
-{
-	std::cout << std::endl << "ERASE && CLEAR TESTS" << std::endl;
-	std::vector<T> test(31, 12);
-	test.erase(test.begin(), test.begin() + 5);
-	print<T>(test);
-	test.erase(test.begin() + 12, test.begin() + 16);
-	print<T>(test);
-	test.clear();
-	print<T>(test);
-}
-
-void	max_size_tests(void)
-{
-	std::cout << std::endl << "MAX SIZE TESTS" << std::endl;
-	std::vector<int> test(31, 12);
-	std::vector<std::string> test2;
-	std::vector<long long int> test3;
-	std::vector<Awesome> test4;
-	std::vector<unsigned int> test5(12, 340);
-	std::cout << test.max_size() << std::endl;
-	std::cout << test2.max_size() << std::endl;
-	std::cout << test3.max_size() << std::endl;
-	std::cout << test4.max_size() << std::endl;
-	std::cout << test5.max_size() << std::endl;
-}
-
-void	awesome_tests(void)
-{
-	std::cout << std::endl << "AWESOME TESTS" << std::endl;
-	std::vector<Awesome> test(21, 12);
-	print<Awesome>(test);
-	std::vector<Awesome> test2;
-	print<Awesome>(test2);
-	test2.push_back(12);
-	test2.push_back(8);
-	test2.push_back(16);
-	print<Awesome>(test2);
-	std::cout << "SAME ?" << (test.begin() + 1 == test2.begin() + 1) << std::endl;
-	test.assign(test2.begin(), test2.end());
-	print<Awesome>(test);
-	test = test2;
-	print<Awesome>(test);
-	std::cout << "SAME ?" << (test.begin() + 1 == test2.begin() + 1) << std::endl;
-	test.insert(test.end(), test2.begin(), test2.end());
-	print<Awesome>(test);
-	test.insert(test.begin(), test2.begin(), test2.end());
-	test2 = test;
-	print<Awesome>(test);
-	std::cout << "end awesome test" << std::endl;
-}
+// void	printSize(std::vector<int> const &vct)
+// {
+// 	std::cout << "size: " << vct.size() << std::endl;
+// 	std::cout << "capacity: " << vct.capacity() << std::endl;
+// 	std::cout << "max_size:" << vct.max_size() << std::endl << std::endl;
+// 	std::cout << "Content is:" << std::endl;
+// 	for (unsigned long int i = 0; i < vct.size(); ++i)
+// 		std::cout << "- " << vct[i] << std::endl;
+// 	std::cout << "###############################################" << std::endl;
+// }
 
 int main(int argc, char** argv) {
 	
 
-	push_pop_back_tests<int>();
-	resize_tests<int>();
-	insert_tests<int>();
-	reserve_tests<int>();
-	copy_swap_tests<int>();
-	reverse_it_tests<int>();
-	erase_clear_tests<int>();
-	max_size_tests();
-	awesome_tests();
-	push_pop_back_tests<Awesome>();
-	resize_tests<Awesome>();
-	// insert_tests<Awesome>();
-	// reserve_tests<Awesome>();
-	// copy_swap_tests<Awesome>();
-	// reverse_it_tests<Awesome>();
-	// erase_clear_tests<Awesome>();
 
+	ft::vector<int>::size_type sz;
+
+	ft::vector<int> foo;
+	sz = foo.capacity();
+	std::cout << "making foo grow:\n";
+	for (int i=0; i<100; ++i) {
+	foo.push_back(i);
+	if (sz!=foo.capacity()) {
+		sz = foo.capacity();
+		std::cout << "capacity changed: " << sz << '\n';
+	}
+	}
+
+	ft::vector<int> bar;
+	sz = bar.capacity();
+	bar.reserve(100);   // this is the only difference with foo above
+	std::cout << "making bar grow:\n";
+	for (int i=0; i<100; ++i) {
+	bar.push_back(i);
+	if (sz!=bar.capacity()) {
+		sz = bar.capacity();
+		std::cout << "capacity changed: " << sz << '\n';
+	}
+	}
+	try
+	{
+	bar.reserve(bar.max_size() * 2);
+	}
+	catch(std::exception& e) { std::cout << e.what(); }
 
 
 	// if (argc != 2)

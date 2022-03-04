@@ -86,16 +86,15 @@ namespace ft
 
 			vector& operator=(const vector& x)
 			{
-				size_type save_capacity = capacity();
-				
+				size_type save_capacity = capacity() > x.capacity() ? capacity() : x.capacity();
 				if (this->size())
+				{
 					this->clear();
-				if (this->capacity())
 					_alloc.deallocate(_v, this->capacity());
-				init_pointers(0, 0, 0);
+				}
+				init_pointers(_v, 0, 0);
+				reserve(save_capacity);
 				this->insert(this->begin(), x.begin(), x.end());
-				if (capacity() < save_capacity)
-					_v_end_alloc = _v + save_capacity;
 				return *this;
 			}
 
@@ -158,14 +157,16 @@ namespace ft
 				pointer		new_v;
 
 				if (n > max_size())
-					throw std::length_error("");
+					throw std::length_error("vector::reserve");
 				if (n > capacity())
 				{
 					new_v = _alloc.allocate(n);
 					for (size_type i = 0; i < save_size; i++)
 						_alloc.construct(new_v + i, *(this->_v + i));
-					this->clear();
-					_alloc.deallocate(this->_v, capacity());
+					if (size())
+						this->clear();
+					if (capacity())
+						_alloc.deallocate(this->_v, capacity());
 					init_pointers(new_v, save_size, n);
 				}
 			}
@@ -209,13 +210,15 @@ namespace ft
   				void assign (InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 				{
-					this->clear();
+					if (size())
+						this->clear();
 					insert(this->begin(), first, last);
 				}
 
 			void assign(size_type n, const value_type& val)
 			{
-				this->clear();
+				if (size())
+					this->clear();
 				insert(this->begin(), n, val);
 			}
 
@@ -377,8 +380,8 @@ namespace ft
 			{
 				if (this->capacity())
 				{
-					while (size() != 0)
-						this->pop_back();
+					for (; _v_end != _v; --_v_end)
+						_alloc.destroy(&back());
 				}
 			}
 
@@ -421,7 +424,7 @@ namespace ft
 			pointer	insert_alloc(size_type new_size, size_type *new_capacity)
 			{
 				*new_capacity = new_size;
-				if (_v && size() && new_size < capacity() * 2)
+				if (size() && new_size < capacity() * 2)
 					*new_capacity = size() * 2;				
 				return (_alloc.allocate(*new_capacity));
 			}
@@ -435,7 +438,8 @@ namespace ft
 			{
 				for (size_type i = 0; i < this->size(); i++)
 					_alloc.destroy(this->_v + i);
-				_alloc.deallocate(this->_v, capacity());
+				if (capacity())
+					_alloc.deallocate(this->_v, capacity());
 			}
 
 			void	init_end_values(pointer new_v, size_type n, size_type pos)
