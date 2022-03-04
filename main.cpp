@@ -4,12 +4,12 @@
 #include <deque>
 // #if 1 //CREATE A REAL STL EXAMPLE
 // 	#include <map>
-// 	#include <stack>
+	#include <stack>
 	#include <vector>
 // 	namespace ft = std;
 // #else
-	// #include <map.hpp>
-	// #include <stack.hpp>
+	// #include "Map.hpp"
+	#include "Stack.hpp"
 	#include "Vector.hpp"
 // #endif
 
@@ -48,50 +48,31 @@ public:
 
 
 
-// void	printSize(std::vector<int> const &vct)
-// {
-// 	std::cout << "size: " << vct.size() << std::endl;
-// 	std::cout << "capacity: " << vct.capacity() << std::endl;
-// 	std::cout << "max_size:" << vct.max_size() << std::endl << std::endl;
-// 	std::cout << "Content is:" << std::endl;
-// 	for (unsigned long int i = 0; i < vct.size(); ++i)
-// 		std::cout << "- " << vct[i] << std::endl;
-// 	std::cout << "###############################################" << std::endl;
-// }
+void	printSize(ft::stack<int> const &stck)
+{
+	std::cout << "size: " << stck.size() << std::endl;
+	std::cout << "Content is:" << std::endl;
+	// for (unsigned long int i = 0; i < stck.size(); ++i)
+	// 	std::cout << "- " << *(stck) << std::endl;
+	// std::cout << "###############################################" << std::endl;
+}
 
 int main(int argc, char** argv) {
 	
 
+	ft::stack<int> stck;
 
-	ft::vector<int>::size_type sz;
+	std::cout << "empty: " << stck.empty() << std::endl;
+	std::cout << "size: " << stck.size() << std::endl;
 
-	ft::vector<int> foo;
-	sz = foo.capacity();
-	std::cout << "making foo grow:\n";
-	for (int i=0; i<100; ++i) {
-	foo.push_back(i);
-	if (sz!=foo.capacity()) {
-		sz = foo.capacity();
-		std::cout << "capacity changed: " << sz << '\n';
-	}
-	}
+	stck.push(41);
+	stck.push(29);
+	stck.push(10);
+	stck.push(42);
+	std::cout << "Added some elements" << std::endl;
 
-	ft::vector<int> bar;
-	sz = bar.capacity();
-	bar.reserve(100);   // this is the only difference with foo above
-	std::cout << "making bar grow:\n";
-	for (int i=0; i<100; ++i) {
-	bar.push_back(i);
-	if (sz!=bar.capacity()) {
-		sz = bar.capacity();
-		std::cout << "capacity changed: " << sz << '\n';
-	}
-	}
-	try
-	{
-	bar.reserve(bar.max_size() * 2);
-	}
-	catch(std::exception& e) { std::cout << e.what(); }
+	std::cout << "empty: " << stck.empty() << std::endl;
+	// printSize(stck);
 
 
 	// if (argc != 2)
