@@ -15,22 +15,21 @@ namespace ft
 			typedef	Container container_type;
 			typedef size_t size_type;
 
-			explicit stack (const container_type& ctnr = container_type()) : _ctnr(ctnr) {}
+			explicit stack (const container_type& ctnr = container_type())
+			: _ctnr(ctnr) {}
 			
 			virtual ~stack( void ) {}
 
 			bool empty() const
 			{
-				if (_ctnr.empty())
-					return (true);
-				return (false);
+				return (_ctnr.empty());
 			}
 
-			size_type size() const { return _ctnr.size(); }
+			size_type size() const { return (_ctnr.size()); }
 
-			value_type& top() { return _ctnr.back(); }
+			value_type& top() { return (_ctnr.back()); }
 
-			const value_type& top() const { return _ctnr.back(); }
+			const value_type& top() const { return (_ctnr.back()); }
 
 			void push (const value_type& val)
 			{
@@ -41,6 +40,23 @@ namespace ft
 			{
 				_ctnr.pop_back();
 			}
+			template <class Tbis, class ContainerBis>
+				friend bool operator== (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+
+			template <class Tbis, class ContainerBis>
+				friend bool operator!= (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+			
+			template <class Tbis, class ContainerBis>
+				friend bool operator< (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+
+			template <class Tbis, class ContainerBis>
+				friend bool operator<= (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+
+			template <class Tbis, class ContainerBis>
+				friend bool operator> (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+
+			template <class Tbis, class ContainerBis>
+				friend bool operator>= (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
 
 
 		private:
@@ -52,37 +68,37 @@ namespace ft
 	template <class T, class Container>
 	bool operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{
-		return ft::stack<T, Container>:c.operator==(lhs, rhs);
+		return (lhs._ctnr = rhs._ctnr);
 	}
 
 	template <class T, class Container>
 	bool operator!=(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{
-		return (!(lhs == rhs));
+		return (lhs._ctnr != rhs._ctnr);
 	}
 
 	template <class T, class Container>
 	bool operator<(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{
-		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		return (lhs._ctnr < rhs._ctnr);
 	}
 
 	template <class T, class Container>
 	bool operator<=(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{
-		return (!(rhs < lhs));
+		return (lhs._ctnr <= rhs._ctnr);
 	}
 
 	template <class T, class Container>
 	bool operator>(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{
-		return (rhs < lhs);
+		return (lhs._ctnr > rhs._ctnr);
 	}
 
 	template <class T, class Container>
 	bool operator>=(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{
-		return (!(lhs < rhs));
+		return (lhs._ctnr >= rhs._ctnr);
 	}
 
 }
