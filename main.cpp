@@ -3,12 +3,12 @@
 #include <list>
 #include <deque>
 // #if 1 //CREATE A REAL STL EXAMPLE
-// 	#include <map>
+	#include <map>
 	#include <stack>
 	#include <vector>
 // 	namespace ft = std;
 // #else
-	// #include "Map.hpp"
+	#include "Map.hpp"
 	#include "Stack.hpp"
 	#include "Vector.hpp"
 // #endif
@@ -57,23 +57,12 @@ void	printSize(ft::stack<int> const &stck)
 	// std::cout << "###############################################" << std::endl;
 }
 
+
+
 int main(int argc, char** argv) {
 	
 
-	ft::stack<int> stck;
-
-	std::cout << "empty: " << stck.empty() << std::endl;
-	std::cout << "size: " << stck.size() << std::endl;
-
-	stck.push(41);
-	stck.push(29);
-	stck.push(10);
-	stck.push(42);
-	std::cout << "Added some elements" << std::endl;
-
-	std::cout << "empty: " << stck.empty() << std::endl;
-	// printSize(stck);
-
+	
 
 	// if (argc != 2)
 	// {

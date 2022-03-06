@@ -29,37 +29,63 @@ namespace ft
 					this->_itor = rhs._itor;
 				return *this;
 			}
-			
+
 			BiderectionalIterator* operator*(void) { return (*this->_itor); }
 			pointer operator->(void) { return &(this->operator*()); }
 
-			BiderectionalIterator operator++(void)
-			{
-				BiderectionalIterator tmp = *this;
-				this->_itor++;
-				return tmp;
-			}
-			BiderectionalIterator& operator++(int)
+			BiderectionalIterator& operator++(void)
 			{
 				this->_itor++;
 				return *this;
+			}
+			BiderectionalIterator operator++(int)
+			{
+				BiderectionalIterator tmp = *this;
+				tmp._itor = this->_itor++;
+				return tmp;
 			}
 			
-			BiderectionalIterator operator--(void)
-			{
-				BiderectionalIterator tmp = *this;
-				this->_itor--;
-				return tmp;
-			}
-			BiderectionalIterator& operator--(int)
+			BiderectionalIterator& operator--(void)
 			{
 				this->_itor--;
 				return *this;
 			}
+			BiderectionalIterator operator--(int)
+			{
+				BiderectionalIterator tmp = *this;
+				tmp._itor = this->_itor--;
+				return tmp;
+			}
 
-			bool operator==(BiderectionalIterator const &rhs) { return (this->_itor == rhs._itor); }
-			bool operator!=(BiderectionalIterator const &rhs) { return (this->_itor != rhs._itor); }
 	};
+
+	template <typename T>
+	bool operator==(const ft::BiderectionalIterator<T> lhs,
+		const ft::BiderectionalIterator<T> rhs)
+	{
+		return (lhs.base() == rhs.base());
+	}
+
+	template<typename T_L, typename T_R>
+	bool operator==(const ft::BiderectionalIterator<T_L> lhs,
+		const ft::BiderectionalIterator<T_R> rhs)
+	{
+		return (lhs.base() == rhs.base());
+	}
+
+	template <typename T>
+	bool operator!=(const ft::BiderectionalIterator<T> lhs,
+		const ft::BiderectionalIterator<T> rhs)
+	{
+		return (lhs.base() != rhs.base());
+	}
+
+	template<typename T_L, typename T_R>
+	bool operator!=(const ft::BiderectionalIterator<T_L> lhs,
+		const ft::BiderectionalIterator<T_R> rhs)
+	{
+		return (lhs.base() != rhs.base());
+	}
 
 }
 
