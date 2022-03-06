@@ -22,7 +22,7 @@ namespace ft
 			RandomAccessIterator( void ) : _itor(NULL) {}
 			RandomAccessIterator(pointer itor) : _itor(itor) {}
 			virtual ~RandomAccessIterator( void ) {}
-			RandomAccessIterator(RandomAccessIterator const & src): _itor(src._itor) {}
+			RandomAccessIterator(RandomAccessIterator const & src) : _itor(src._itor) {}
 			RandomAccessIterator& operator=(RandomAccessIterator const & rhs)
 			{
 				if (*this != rhs)

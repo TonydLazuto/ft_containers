@@ -14,17 +14,20 @@ namespace ft
 		
 		public:
 			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::iterator_category	iterator_category;
-			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::value_type		value_type;
-			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::difference_type	difference_type;
-			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::pointer			pointer;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::value_type			value_type;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::difference_type		difference_type;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::pointer				pointer;
 			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::reference			reference;
 
-			BiderectionalIterator( void ) {}
+			BiderectionalIterator( void ) : _itor(NULL) {}
 			BiderectionalIterator( BiderectionalIterator itor ) : _itor(itor) {}
 			virtual ~BiderectionalIterator( void ) {}
-			BiderectionalIterator(BiderectionalIterator const & src)
+			BiderectionalIterator(BiderectionalIterator const & src) : _itor(src._itor) {}
+			RandomAccessIterator& operator=(RandomAccessIterator const & rhs)
 			{
-				this->_itor = src._itor;
+				if (*this != rhs)
+					this->_itor = rhs._itor;
+				return *this;
 			}
 			
 			BiderectionalIterator* operator*(void) { return (*this->_itor); }

@@ -20,6 +20,14 @@ namespace ft
 			
 			virtual ~stack( void ) {}
 
+			stack(const stack& x) : _ctnr(x._ctnr) {}
+
+			stack& operator=(const stack& x)
+			{
+				_ctnr = x._ctnr;
+				return *this;
+			}
+
 			bool empty() const
 			{
 				return (_ctnr.empty());
@@ -68,7 +76,7 @@ namespace ft
 	template <class T, class Container>
 	bool operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{
-		return (lhs._ctnr = rhs._ctnr);
+		return (lhs._ctnr == rhs._ctnr);
 	}
 
 	template <class T, class Container>
