@@ -15,7 +15,8 @@ namespace ft
 	class map
 	{
 		private:
-			Bst* _root;
+			Bst*	_root;
+			Alloc	_alloc;
 
 		public:
 			typedef pair<const Key, T> value_type;

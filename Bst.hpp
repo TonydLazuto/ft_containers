@@ -1,65 +1,51 @@
-#ifndef BST_HPP
-# define BST_HPP
+#ifndef Node_HPP
+# define Node_HPP
 
 #include <iostream>
 #include "Maptools.hpp"
 
 namespace ft
 {
-	template < class Key, class T, class Compare >
-	class Bst
+	template < class Key, class T >
+	class Node
 	{
-		private:
-			Bst*	_parent;
-			Bst*	_left;
-			Bst*	_right;
-			int		_nb_nodes;
-
-			ft::pair<Key, T> _pr;
-
+			
 		public:
 
-			Bst( void ) : _parent(NULL), _left(NULL), _right(NULL)
-			, _nb_nodes(0), _pr(NULL) {}
+			Node*	_parent;
+			Node*	_left;
+			Node*	_right;
+			int		_bf; // _balance_factor
+			ft::pair<Key, T> _pr;
 
-			Bst( ft::pair(Key, T) pr, Bst *parent ) : _parent(parent)
-			, _left(NULL), _right(NULL), _nb_nodes(0), _pr(pr) {}
+			Node( void ) : _parent(NULL), _left(NULL), _right(NULL)
+			, _pr(NULL) {}
 
-			virtual ~Bst( void ) {}
+			Node( ft::pair(Key, T) pr, Node *parent ) : _parent(parent)
+			, _left(NULL), _right(NULL), _pr(pr) {}
 
-			Bst(Bst const & src);
+			virtual ~Node( void ) {}
 
-			Bst& operator=(Bst const & rhs);
-
-			void	insertNode(Bst *node, ft::pair<Key, T> pr, Bst *parent)
+			Node(Node const & src)
 			{
-				if (!node)
-				{
-					node(ft::make_pair<Key, T>(pr.first, pr.second), parent);
-					balance_tree();
-				}
-				
-				if (pr < node._pr)
-					insertNode(node->left, pr, node);
-				else
-					insertNode(node->right, pr, node);
-				
+				_left = src._left;
+				_right = src._right;
+				_parent = src._parent;
+				_bf = src._bf;
+				_pr = src._pr;
 			}
-			void	deleteNode(ft::pair<Key, T> pr);
 
-			Bst* search(Bst* root, int key)
+			Node& operator=(Node const & rhs)
 			{
-				// Base Cases: root is null or key is present at root
-				if (root == NULL || root->key == key)
-				return root;
-				
-				// Key is greater than root's key
-				if (root->key < key)
-				return search(root->right, key);
+				_left = rhs._left;
+				_right = rhs._right;
+				_parent = rhs._parent;
+				_bf = rhs._bf;
+				_pr = rhs._pr;
+				return *this;
+			}
+
 			
-				// Key is smaller than root's key
-				return search(root->left, key);
-			}
 	};
 }
 
