@@ -20,10 +20,10 @@ namespace ft
 			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::reference			reference;
 
 			BiderectionalIterator( void ) : _itor(NULL) {}
-			BiderectionalIterator( BiderectionalIterator itor ) : _itor(itor) {}
+			BiderectionalIterator( pointer itor ) : _itor(itor) {}
 			virtual ~BiderectionalIterator( void ) {}
 			BiderectionalIterator(BiderectionalIterator const & src) : _itor(src._itor) {}
-			RandomAccessIterator& operator=(RandomAccessIterator const & rhs)
+			BiderectionalIterator& operator=(BiderectionalIterator const & rhs)
 			{
 				if (*this != rhs)
 					this->_itor = rhs._itor;

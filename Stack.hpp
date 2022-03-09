@@ -49,22 +49,22 @@ namespace ft
 				_ctnr.pop_back();
 			}
 			template <class Tbis, class ContainerBis>
-				friend bool operator== (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+				friend bool operator==(const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
 
 			template <class Tbis, class ContainerBis>
-				friend bool operator!= (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+				friend bool operator!=(const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
 			
 			template <class Tbis, class ContainerBis>
-				friend bool operator< (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+				friend bool operator<(const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
 
 			template <class Tbis, class ContainerBis>
-				friend bool operator<= (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+				friend bool operator<=(const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
 
 			template <class Tbis, class ContainerBis>
-				friend bool operator> (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+				friend bool operator>(const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
 
 			template <class Tbis, class ContainerBis>
-				friend bool operator>= (const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
+				friend bool operator>=(const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
 
 
 		private:

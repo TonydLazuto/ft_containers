@@ -6,7 +6,7 @@
 #include "Maptools.hpp"
 #include "Bidirectional.hpp"
 #include "IteratorTraits.hpp"
-#include "Bst.hpp"
+#include "AvlTree.hpp"
 
 namespace ft
 {
@@ -15,7 +15,7 @@ namespace ft
 	class map
 	{
 		private:
-			Bst*	_root;
+			Avl*	_root;
 			Alloc	_alloc;
 
 		public:

@@ -14,21 +14,33 @@ namespace ft
 		first_type	first;
 		second_type	second;
 		
-		Pair( void ) : first(NULL), second(NULL) {}
-		virtual ~Pair( void ) {}
+		pair( void ) : first(NULL), second(NULL) {}
+		virtual ~pair( void ) {}
 
 		template<class U, class V>
 		pair (const pair<U, V>& pr) : first(pr.first), second(pr.second) {}
 
 		pair (const first_type& a, const second_type& b) : first(a), second(b) {}
 
-		Pair& operator=(Pair const& pr)
+		pair& operator=(pair const& pr)
 		{
-			first = pr.first;
-			second = pr.second;
+			this->first = pr.first;
+			this->second = pr.second;
 			return *this;
 		}
 
+		// template <class T1bis, class T2bis>
+		// 	friend bool operator== (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
+		// template <class T1bis, class T2bis>
+		// 	friend bool operator!= (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
+		// template <class T1bis, class T2bis>
+		// 	friend bool operator<  (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
+		// template <class T1bis, class T2bis>
+		// 	friend bool operator<= (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
+		// template <class T1bis, class T2bis>
+		// 	friend bool operator>  (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
+		// template <class T1bis, class T2bis>
+		// 	friend bool operator>= (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
 	};
 
 	template <class T1, class T2>
@@ -64,9 +76,9 @@ namespace ft
 
 	template <class Arg1, class Arg2, class Result>
 	struct binary_function {
-		typedef Arg1 first_argument_type;
-		typedef Arg2 second_argument_type;
-		typedef Result result_type;
+		typedef Arg1	first_argument_type;
+		typedef Arg2	second_argument_type;
+		typedef Result	result_type;
 	};
 
 	template <class T>
