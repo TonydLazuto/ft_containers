@@ -12,24 +12,12 @@ namespace ft
 	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
 	class AvlTree
 	{
-		public:
+		friend class TestAvlTree;
+		private:
 			typedef Node<Key, T>	NodeTree;
 			Alloc					_alloc;
 			NodeTree*				_root;
 			int						_nb_NodeTrees;
-
-			void print2D(NodeTree* r, int space) {
-				if (r == NULL) // Base case  1
-					return;
-				space += SPACE; // Increase distance between levels   2
-				print2D(r->_right, space); // Process right child first 3 
-				std::cout << std::endl;
-				for (int i = SPACE; i < space; i++) // 5 
-					std::cout << " "; // 5.1  
-				std::cout << "Key="<< r->_pr.first << ", Val=" << r->_pr.second << "\n"; // 6
-				print2D(r->_left, space); // Process left child  7
-			}
-
 
 			// Get Height  
 			int getHeight(NodeTree* r)
@@ -134,7 +122,7 @@ namespace ft
 				return (r);
 			}
 
-		// public:
+		public:
 			AvlTree( const Alloc& alloc = Alloc() ) : _alloc(alloc), _root(NULL), _nb_NodeTrees(0) {}
 
 			virtual ~AvlTree( void ) {}
@@ -152,6 +140,18 @@ namespace ft
 				_root = rhs._root;
 				_nb_NodeTrees = rhs._nb_NodeTrees;
 				return *this;
+			}
+
+			void print2D(NodeTree* r, int space) {
+				if (r == NULL) // Base case  1
+					return;
+				space += SPACE; // Increase distance between levels   2
+				print2D(r->_right, space); // Process right child first 3 
+				std::cout << std::endl;
+				for (int i = SPACE; i < space; i++) // 5 
+					std::cout << " "; // 5.1  
+				std::cout << "Key="<< r->_pr.first << ", Val=" << r->_pr.second << "\n"; // 6
+				print2D(r->_left, space); // Process left child  7
 			}
 
 			bool isTreeEmpty()
