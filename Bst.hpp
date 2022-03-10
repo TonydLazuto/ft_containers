@@ -13,17 +13,12 @@ namespace ft
 
 			Node*			_left;
 			Node*			_right;
-			pair<Key, T>	_pr();
+			pair<Key, T>	_pr;
 
-			Node( void ) : _left(NULL), _right(NULL)
-			{
-				_pr();
-			}
+			Node( void ) : _left(NULL), _right(NULL), _pr() {}
 
 			Node( ft::pair<Key, T> pr() ) : _left(NULL), _right(NULL)
-			{
-				_pr(pr);
-			}
+			, _pr(pr) {}
 
 			virtual ~Node( void ) {}
 

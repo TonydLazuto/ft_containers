@@ -13,10 +13,10 @@ namespace ft
 	class AvlTree
 	{
 		public:
-			typedef Node<Key, T, Compare, Alloc>	NodeTree;
-			Alloc									_alloc;
-			NodeTree*								_root;
-			int										_nb_NodeTrees;
+			typedef Node<Key, T>	NodeTree;
+			Alloc					_alloc;
+			NodeTree*				_root;
+			int						_nb_NodeTrees;
 
 			void print2D(NodeTree* r, int space) {
 				if (r == NULL) // Base case  1
@@ -26,7 +26,7 @@ namespace ft
 				std::cout << std::endl;
 				for (int i = SPACE; i < space; i++) // 5 
 					std::cout << " "; // 5.1  
-				std::cout << r->_pr().second << "\n"; // 6
+				std::cout << "Key="<< r->_pr.first << ", Val=" << r->_pr.second << "\n"; // 6
 				print2D(r->_left, space); // Process left child  7
 			}
 
@@ -91,19 +91,19 @@ namespace ft
 			NodeTree*	balanceInsert(int bf, NodeTree* r, NodeTree* new_node)
 			{
 				// Left Left Case
-				if (bf > 1 && new_node->_pr() < r->_left->_pr())
+				if (bf > 1 && new_node->_pr < r->_left->_pr)
 					return rightRotate(r);
 				// Right Right Case  
-				if (bf < -1 && new_node->_pr() > r->_right->_pr())
+				if (bf < -1 && new_node->_pr > r->_right->_pr)
 					return leftRotate(r);
 				// Left Right Case  
-				if (bf > 1 && new_node->_pr() > r->_left->_pr())
+				if (bf > 1 && new_node->_pr > r->_left->_pr)
 				{
 					r->_left = leftRotate(r->_left);
 						return rightRotate(r);
 				}
 				// Right Left Case  
-				if (bf < -1 && new_node->_pr() < r->_right->_pr())
+				if (bf < -1 && new_node->_pr < r->_right->_pr)
 				{
 					r->_right = rightRotate(r->_right);
 						return leftRotate(r);
@@ -164,13 +164,13 @@ namespace ft
 
 			NodeTree* recursiveSearch(NodeTree* r, ft::pair<Key, T> pr)
 			{
-				if (r->_pr() == pr)
+				if (r->_pr == pr)
 					return r;
 				if (r == NULL)
 					return NULL;
-				else if (pr < r->_pr())
+				else if (pr < r->_pr)
 					return recursiveSearch(r->_left, pr);
-				else if (pr > r->_pr())
+				else if (pr > r->_pr)
 					return recursiveSearch(r->_right, pr);
 				return r; // NULL
 			}
@@ -184,9 +184,9 @@ namespace ft
 					std::cout << "Value inserted successfully" << std::endl;
 					return r;
 				}
-				if (new_node->_pr() < r->_pr())
+				if (new_node->_pr < r->_pr)
 					r->_left = insert(r->_left, new_node);
-				else if (new_node->_pr() > r->_pr())
+				else if (new_node->_pr > r->_pr)
 					r->_right = insert(r->_right, new_node);
 				else
 				{
@@ -203,9 +203,9 @@ namespace ft
 				// base case 
 				if (r == NULL)
 					return NULL;
-				else if (pr < r->_pr())
+				else if (pr < r->_pr)
 					r->_left = deleteNode(r->_left, pr);
-				else if (pr > r->_pr())
+				else if (pr > r->_pr)
 					r->_right = deleteNode(r->_right, pr);
 				else
 				{
@@ -228,10 +228,10 @@ namespace ft
 						// in the right subtree) 
 						NodeTree* min_right = minValueNode(r->_right);
 						// Copy the inorder successor's content to this NodeTree 
-						r->_pr() = min_right->_pr();
+						r->_pr = min_right->_pr;
 						// Delete the inorder successor 
-						r->_right = deleteNode(r->_right, min_right->_pr());
-						//deleteNode(r->_right, min_right->_pr()); 
+						r->_right = deleteNode(r->_right, min_right->_pr);
+						//deleteNode(r->_right, min_right->_pr); 
 					}
 				}
 

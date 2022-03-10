@@ -64,7 +64,7 @@ void	printSize(ft::stack<int> const &stck)
 
 int main(int argc, char** argv) {
 	
-	ft::AvlTree<int, int, ft::less<int>, std::allocator< ft::pair<const int, int> > > obj;
+	ft::AvlTree<int, int> obj;
 	int option = 0, key;
 	static int val = 0;
 
@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
 
 		cin >> option;
 		//Node n1;
-		ft::Node<int, int, ft::less<int>, std::allocator< ft::pair<const int, int> > >* new_node = new ft::Node<int, int, ft::less<int>, std::allocator< ft::pair<const int, int> > >();
+		ft::Node<int, int>* new_node = new ft::Node<int, int>();
 
 		switch (option) {
 			case 0:
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 				cout << "Enter VALUE of TREE NODE to INSERT in AVL Tree: ";
 				cin >> key;
 				
-				new_node->_pr() = ft::make_pair<int,int> (key, val);
+				new_node->_pr = ft::make_pair<int,int> (key, val);
 				obj._root = obj.insert(obj._root, new_node);
 				cout << endl;
 				val++;

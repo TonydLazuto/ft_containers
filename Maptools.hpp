@@ -14,7 +14,7 @@ namespace ft
 		first_type	first;
 		second_type	second;
 		
-		pair( void ) : first(NULL), second(NULL) {}
+		pair( void ) : first(0), second(0) {} // first(NULL)
 		virtual ~pair( void ) {}
 
 		template<class U, class V>
