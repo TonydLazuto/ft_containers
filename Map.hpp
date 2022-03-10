@@ -5,19 +5,15 @@
 #include <memory>
 #include "Maptools.hpp"
 #include "Bidirectional.hpp"
+#include "ReverseIterator.hpp"
 #include "IteratorTraits.hpp"
 #include "AvlTree.hpp"
 
 namespace ft
 {
-
 	template < class Key, class T, class Compare = less<Key>, class Alloc = std::allocator< pair<const Key, T> > >
 	class map
 	{
-		private:
-			Avl*	_root;
-			Alloc	_alloc;
-
 		public:
 			typedef pair<const Key, T> value_type;
 
@@ -38,6 +34,7 @@ namespace ft
 
 			typedef typename IteratorTraits<iterator>::difference_type difference_type;
 			typedef size_t	size_type;
+
 			class value_compare : public binary_function<value_type, value_type, bool> {
 				friend class map;
 				protected:
@@ -49,93 +46,169 @@ namespace ft
 			};
 
 			explicit map (const key_compare& comp = key_compare(),
-				const allocator_type& alloc = allocator_type());
+				const allocator_type& alloc = allocator_type())
+				: _avl(), _alloc(alloc), _nb_nodes(0) {
+					(void)comp;
+				}
 
 			template <class InputIterator>
 				map (InputIterator first, InputIterator last,
 					const key_compare& comp = key_compare(),
-					const allocator_type& alloc = allocator_type());
+					const allocator_type& alloc = allocator_type())
+					: _avl(), _alloc(alloc), _nb_nodes(0)
+				{
+					insert(first, last);
+					(void)comp;
+				}
 
-			virtual ~map( void );
-
-			map(const map<key_type, value_type, key_compare, allocator_type> & x);
-
-			map& operator=(map const & x);
-
-			iterator begin();
-			const_iterator begin() const;
-
-			reverse_iterator rbegin(void)
+			virtual ~map( void )
 			{
-				return (reverse_iterator(_v_end));
+				if (size())
+					_alloc.deallocate(_avl._root, size());
 			}
-			const_reverse_iterator rbegin(void) const
+
+			map(const map& x)
 			{
-				return (reverse_iterator(_v_end));
+				this->_alloc = x._alloc;
+				this->_avl(x._avl);
 			}
+
+			map& operator=(map const & x)
+			{
+				this->_alloc = x._alloc;
+				this->_avl(x._avl);
+				return *this;
+			}
+
+			// iterator begin(void);
+			// const_iterator begin(void) const;
+
+			// reverse_iterator rbegin(void)
+			// {
+			// 	return (reverse_iterator(_v_end));
+			// }
+			// const_reverse_iterator rbegin(void) const
+			// {
+			// 	return (reverse_iterator(_v_end));
+			// }
 			
-			iterator end(void)
-			{
-				if (empty())
-					return _v;
-				return (_v_end);
-			}
-			const_iterator end(void) const
-			{
-				if (empty())
-					return _v;
-				return (_v_end);
-			}
-			reverse_iterator rend(void) { return (reverse_iterator(_v)); }
-			const_reverse_iterator rend(void) const { return (reverse_iterator(_v)); }
+			// iterator end(void)
+			// {
+			// 	if (empty())
+			// 		return _v;
+			// 	return (_v_end);
+			// }
+			// const_iterator end(void) const
+			// {
+			// 	if (empty())
+			// 		return _v;
+			// 	return (_v_end);
+			// }
+			// reverse_iterator rend(void) { return (reverse_iterator(_v)); }
+			// const_reverse_iterator rend(void) const { return (reverse_iterator(_v)); }
 			
-			bool empty(void) const { return (this->size() == 0 ? true : false); }
+			bool empty(void) const
+			{
+				return (this->size() == 0 ? true : false);
+			}
 
 			size_type size(void) const 
 			{
-				return static_cast<size_type>(this->_v_end - this->_v);
+				return (_nb_nodes);
 			}
 
 			size_type max_size(void) const
 			{
 				return (_alloc.max_size());
 			}
-			pair<iterator, bool> insert (const value_type& val);
-			iterator insert (iterator position, const value_type& val);
-			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last);
+			ft::pair<iterator, bool> insert (const value_type& val)
+			{
+				ft::AvlTree<Key, T>	new_tree;
+				ft::Node<Key, T>	new_node(val);
 
-			void erase (iterator position);
-			size_type erase (const key_type& k);
-			void erase (iterator first, iterator last);
-
-			void swap (map& x);
-
-			void clear();
-
-			mapped_type& operator[](const key_type& k) {
-				(*((this->insert(make_pair(k, mapped_type() ))).first)).second;
+				if (_avl.recursiveSearch(_avl._root, val) == NULL)
+				{
+					new_tree._root = _alloc.allocate(size() + 1);
+					while (size())
+					{
+						_alloc.construct(new_tree._root, *_avl._root);
+						new_tree._root = new_tree.insertNode(new_tree._root, _avl._root);
+						erase(_avl._root->_pr.first);
+						new_tree._root++;
+					}
+					
+					_alloc.construct(new_tree._root, &new_node);
+					_alloc.deallocate(_avl.node, new_tree.size());
+					_nb_nodes++;
 				}
+				new_tree._root = new_tree.insertNode(new_tree._root, &new_node);
+				return (new_tree._root->_pr);
+			}
 
-			key_compare key_comp() const;
+			// iterator insert (iterator position, const value_type& val);
 
-			value_compare value_comp() const;
+			// template <class InputIterator>
+			// void insert (InputIterator first, InputIterator last);
 
-			iterator find (const key_type& k);
-			const_iterator find (const key_type& k) const;
+			// void erase (iterator position);
 
-			size_type count (const key_type& k) const;
+			size_type erase (const key_type& k)
+			{
+				if (size() == 0)
+					return (0);
+				value_type		tmp;
+				Node<Key, T>*	to_del;
 
-			iterator lower_bound (const key_type& k);
-			const_iterator lower_bound (const key_type& k) const;
+				tmp.first = k;
+				tmp.second = tmp.first[k];
+				to_del = _avl.recursiveSearch(_avl._root, tmp);
+				if (!to_del)
+					return (0);
+				to_del = deleteNode(_avl._root, tmp);
+				destroy(to_del);
+				_nb_nodes--;
+				return (1);
+			}
 
-			iterator upper_bound (const key_type& k);
-			const_iterator upper_bound (const key_type& k) const;
+			// void erase (iterator first, iterator last);
 
-			pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
-			pair<iterator,iterator>             equal_range (const key_type& k);
+			// void swap (map& x);
+
+			void clear(void)
+			{
+				while (size() > 0)
+					_alloc.destroy(_avl._root);
+			}
+
+			mapped_type& operator[](const key_type& k)
+			{
+				(*((this->insert(ft::make_pair(k, mapped_type() ))).first)).second;
+			}
+
+			// key_compare key_comp(void) const;
+
+			// value_compare value_comp(void) const;
+
+			// iterator find (const key_type& k);
+			// const_iterator find (const key_type& k) const;
+
+			// size_type count (const key_type& k) const;
+
+			// iterator lower_bound (const key_type& k);
+			// const_iterator lower_bound (const key_type& k) const;
+
+			// iterator upper_bound (const key_type& k);
+			// const_iterator upper_bound (const key_type& k) const;
+
+			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
+			// pair<iterator,iterator>             equal_range (const key_type& k);
 
 			allocator_type get_allocator(void) const { return this->_alloc; }
+
+		private:
+			ft::AvlTree<Key, T>	_avl;
+			allocator_type		_alloc;
+			size_type			_nb_nodes;
 
 	};
 	template <class Key, class T, class Compare, class Allocator>

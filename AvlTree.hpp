@@ -4,20 +4,21 @@
 #include <iostream>
 #include "Maptools.hpp"
 #include "Bst.hpp"
+#include "Map.hpp"
 
 #define SPACE 10
 
 namespace ft
 {
-	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
+	template < class Key, class T, class Compare = ft::less<Key> >
 	class AvlTree
 	{
-		friend class TestAvlTree;
+		// friend class TestAvlTree;
+		template<>
+		friend class ft::map<Key, T>;
 		private:
 			typedef Node<Key, T>	NodeTree;
-			Alloc					_alloc;
 			NodeTree*				_root;
-			int						_nb_NodeTrees;
 
 			// Get Height  
 			int getHeight(NodeTree* r)
@@ -123,22 +124,18 @@ namespace ft
 			}
 
 		public:
-			AvlTree( const Alloc& alloc = Alloc() ) : _alloc(alloc), _root(NULL), _nb_NodeTrees(0) {}
+			AvlTree( void ) : _root(NULL) {}
 
 			virtual ~AvlTree( void ) {}
 
 			AvlTree(AvlTree const & src)
 			{
-				_alloc = src._alloc;
 				_root = src._root;
-				_nb_NodeTrees = src._nb_NodeTrees;
 			}
 
 			AvlTree& operator=(AvlTree const & rhs)
 			{
-				_alloc = rhs._alloc;
 				_root = rhs._root;
-				_nb_NodeTrees = rhs._nb_NodeTrees;
 				return *this;
 			}
 
@@ -162,7 +159,7 @@ namespace ft
 					return false;
 			}
 
-			NodeTree* recursiveSearch(NodeTree* r, ft::pair<Key, T> pr)
+			NodeTree* recursiveSearch(NodeTree* r, ft::pair<Key, T>& pr) //value_type instead of ft::pair()
 			{
 				if (r->_pr == pr)
 					return r;
@@ -175,7 +172,7 @@ namespace ft
 				return r; // NULL
 			}
 
-			NodeTree* insert(NodeTree* r, NodeTree* new_node)
+			NodeTree* insertNode(NodeTree* r, NodeTree* new_node)
 			{
 				if (r == NULL)
 				{
@@ -185,21 +182,22 @@ namespace ft
 					return r;
 				}
 				if (new_node->_pr < r->_pr)
-					r->_left = insert(r->_left, new_node);
+					r->_left = insertNode(r->_left, new_node);
 				else if (new_node->_pr > r->_pr)
-					r->_right = insert(r->_right, new_node);
+					r->_right = insertNode(r->_right, new_node);
 				else
 				{
-					std::cout << "No duplicate values allowed!" << std::endl;
+					std::cout << "Value already exists!" << std::endl;
 					return r;
 				}
 				int bf = getBalanceFactor(r);
 				r = balanceInsert(bf, r, new_node);
+
 				return r;
 
 			}
 
-			NodeTree* deleteNode(NodeTree* r, ft::pair<Key, T> pr) {
+			NodeTree* deleteNode(NodeTree* r, ft::pair<Key, T>& pr) {
 				// base case 
 				if (r == NULL)
 					return NULL;
@@ -213,14 +211,12 @@ namespace ft
 					if (r->_left == NULL)
 					{
 						NodeTree* temp = r->_right;
-						delete r; //destroy
-						return temp;
+						return temp; //destroy
 					}
 					else if (r->_right == NULL)
 					{
 						NodeTree* temp = r->_left;
-						delete r; //destroy
-						return temp;
+						return temp; //destroy
 					}
 					else
 					{

@@ -51,7 +51,7 @@ namespace ft
 							cin >> key;
 							
 							new_node->_pr = ft::make_pair<int,int> (key, val);
-							obj._root = obj.insert(obj._root, new_node);
+							obj._root = obj.insertNode(obj._root, new_node);
 							cout << endl;
 							val++;
 						}
