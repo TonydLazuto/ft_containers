@@ -28,19 +28,6 @@ namespace ft
 			this->second = pr.second;
 			return *this;
 		}
-
-		// template <class T1bis, class T2bis>
-		// 	friend bool operator== (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
-		// template <class T1bis, class T2bis>
-		// 	friend bool operator!= (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
-		// template <class T1bis, class T2bis>
-		// 	friend bool operator<  (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
-		// template <class T1bis, class T2bis>
-		// 	friend bool operator<= (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
-		// template <class T1bis, class T2bis>
-		// 	friend bool operator>  (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
-		// template <class T1bis, class T2bis>
-		// 	friend bool operator>= (const pair<T1bis,T2bis>& lhs, const pair<T1bis,T2bis>& rhs);
 	};
 
 	template <class T1, class T2>
