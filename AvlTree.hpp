@@ -3,33 +3,34 @@
 
 #include <iostream>
 #include "Maptools.hpp"
-#include "Bst.hpp"
-#include "Map.hpp"
 
 #define SPACE 10
 
 namespace ft
 {
-	template < class Key, class T, class Compare = ft::less<Key> >
+	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< pair<const Key, T> >  >
 	class AvlTree
 	{
-		// friend class TestAvlTree;
-		template<>
-		friend class ft::map<Key, T>;
+		friend class TestAvlTree;
 		private:
-			typedef Node<Key, T>	NodeTree;
-			NodeTree*				_root;
+			typedef struct s_node {
+				struct s_node*		left;
+				struct s_node*		right;
+				ft::pair<Key, T>	pr;
+			}				t_node;
 
-			// Get Height  
-			int getHeight(NodeTree* r)
+			t_node*		_root;
+
+			// Get Height
+			int getHeight(t_node* r)
 			{
 				if (r == NULL)
 					return -1;
 				else
 				{
 					/* compute the height of each subtree */
-					int lheight = getHeight(r->_left);
-					int rheight = getHeight(r->_right);
+					int lheight = getHeight(r->left);
+					int rheight = getHeight(r->right);
 					/* use the larger one */
 					if (lheight > rheight)
 						return (lheight + 1);
@@ -38,86 +39,86 @@ namespace ft
 				}
 			}
 
-			// Get Balance factor of NodeTree N
-			int getBalanceFactor(NodeTree* n)
+			// Get Balance factor of t_node N
+			int getBalanceFactor(t_node* n)
 			{
 				if (n == NULL)
 					return (-1);
-				return (getHeight(n->_left) - getHeight(n->_right));
+				return (getHeight(n->left) - getHeight(n->right));
 			}
 
-			NodeTree* minValueNode(NodeTree* node)
+			t_node* minValueNode(t_node* node)
 			{
-				NodeTree* minNodeTree = node;
+				t_node* mint_node = node;
 				/* loop down to find the leftmost leaf */
-				while (minNodeTree->_left != NULL)
-					minNodeTree = minNodeTree->_left;				
-				return minNodeTree;
+				while (mint_node->left != NULL)
+					mint_node = mint_node->left;				
+				return mint_node;
 			}
 
-			NodeTree* rightRotate(NodeTree* y)
+			t_node* rightRotate(t_node* y)
 			{
-				NodeTree* x = y->_left;
-				NodeTree* grand_child = x->_right;
+				t_node* x = y->left;
+				t_node* grand_child = x->right;
 
 				// Perform rotation  
-				x->_right = y;
-				y->_left = grand_child;
+				x->right = y;
+				y->left = grand_child;
 				return x;
 			}
 
-			NodeTree* leftRotate(NodeTree* x)
+			t_node* leftRotate(t_node* x)
 			{
-				NodeTree* y = x->_right;
-				NodeTree* grand_child = y->_left;
+				t_node* y = x->right;
+				t_node* grand_child = y->left;
 
 				// Perform rotation  
-				y->_left = x;
-				x->_right = grand_child;
+				y->left = x;
+				x->right = grand_child;
 				return y;
 			}
 
-			NodeTree*	balanceInsert(int bf, NodeTree* r, NodeTree* new_node)
+			t_node*	balanceInsert(int bf, t_node* r, t_node* new_node)
 			{
 				// Left Left Case
-				if (bf > 1 && new_node->_pr < r->_left->_pr)
+				if (bf > 1 && new_node->pr < r->left->pr)
 					return rightRotate(r);
 				// Right Right Case  
-				if (bf < -1 && new_node->_pr > r->_right->_pr)
+				if (bf < -1 && new_node->pr > r->right->pr)
 					return leftRotate(r);
 				// Left Right Case  
-				if (bf > 1 && new_node->_pr > r->_left->_pr)
+				if (bf > 1 && new_node->pr > r->left->pr)
 				{
-					r->_left = leftRotate(r->_left);
+					r->left = leftRotate(r->left);
 						return rightRotate(r);
 				}
 				// Right Left Case  
-				if (bf < -1 && new_node->_pr < r->_right->_pr)
+				if (bf < -1 && new_node->pr < r->right->pr)
 				{
-					r->_right = rightRotate(r->_right);
+					r->right = rightRotate(r->right);
 						return leftRotate(r);
 				}
 				return (r);
 			}
 
-			NodeTree*	balanceDeletion(int bf, NodeTree* r)
+			t_node*	balanceDeletion(int bf, t_node* r)
 			{
 				// Left Left Imbalance/Case or Right rotation 
-				if (bf == 2 && getBalanceFactor(r->_left) >= 0)
+				if (bf == 2 && getBalanceFactor(r->left) >= 0)
 					return rightRotate(r);
 				// Left Right Imbalance/Case or LR rotation 
-				else if (bf == 2 && getBalanceFactor(r->_left) == -1)
+				else if (bf == 2 && getBalanceFactor(r->left) == -1)
 				{
-					r->_left = leftRotate(r->_left);
+					r->left = leftRotate(r->left);
 					return rightRotate(r);
 				}
 				// Right Right Imbalance/Case or Left rotation	
-				else if (bf == -2 && getBalanceFactor(r->_right) <= 0)
+				else if (bf == -2 && getBalanceFactor(r->right) <= 0)
 					return leftRotate(r);
 				// Right Left Imbalance/Case or RL rotation 
-				else if (bf == -2 && getBalanceFactor(r->_right) == 1)
+				else if (bf == -2 && getBalanceFactor(r->right) == 1)
 				{
-					r->_right = rightRotate(r->_right);
+					r->right = rightRotate(r->right);
 					return leftRotate(r);
 				}
 				return (r);
@@ -139,16 +140,16 @@ namespace ft
 				return *this;
 			}
 
-			void print2D(NodeTree* r, int space) {
+			void print2D(t_node* r, int space) {
 				if (r == NULL) // Base case  1
 					return;
 				space += SPACE; // Increase distance between levels   2
-				print2D(r->_right, space); // Process right child first 3 
+				print2D(r->right, space); // Process right child first 3 
 				std::cout << std::endl;
 				for (int i = SPACE; i < space; i++) // 5 
 					std::cout << " "; // 5.1  
-				std::cout << "Key="<< r->_pr.first << ", Val=" << r->_pr.second << "\n"; // 6
-				print2D(r->_left, space); // Process left child  7
+				std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second << "\n"; // 6
+				print2D(r->left, space); // Process left child  7
 			}
 
 			bool isTreeEmpty()
@@ -159,20 +160,20 @@ namespace ft
 					return false;
 			}
 
-			NodeTree* recursiveSearch(NodeTree* r, ft::pair<Key, T>& pr) //value_type instead of ft::pair()
+			t_node* recursiveSearch(t_node* r, ft::pair<Key, T>& pr)
 			{
-				if (r->_pr == pr)
+				if (r->pr == pr)
 					return r;
 				if (r == NULL)
 					return NULL;
-				else if (pr < r->_pr)
-					return recursiveSearch(r->_left, pr);
-				else if (pr > r->_pr)
-					return recursiveSearch(r->_right, pr);
+				else if (pr < r->pr)
+					return recursiveSearch(r->left, pr);
+				else if (pr > r->pr)
+					return recursiveSearch(r->right, pr);
 				return r; // NULL
 			}
 
-			NodeTree* insertNode(NodeTree* r, NodeTree* new_node)
+			t_node* insertNode(t_node* r, t_node* new_node)
 			{
 				if (r == NULL)
 				{
@@ -181,10 +182,10 @@ namespace ft
 					std::cout << "Value inserted successfully" << std::endl;
 					return r;
 				}
-				if (new_node->_pr < r->_pr)
-					r->_left = insertNode(r->_left, new_node);
-				else if (new_node->_pr > r->_pr)
-					r->_right = insertNode(r->_right, new_node);
+				if (new_node->pr < r->pr)
+					r->left = insertNode(r->left, new_node);
+				else if (new_node->pr > r->pr)
+					r->right = insertNode(r->right, new_node);
 				else
 				{
 					std::cout << "Value already exists!" << std::endl;
@@ -197,37 +198,38 @@ namespace ft
 
 			}
 
-			NodeTree* deleteNode(NodeTree* r, ft::pair<Key, T>& pr) {
+			t_node* deleteNode(t_node* r, ft::pair<Key, T>& pr) {
 				// base case 
 				if (r == NULL)
 					return NULL;
-				else if (pr < r->_pr)
-					r->_left = deleteNode(r->_left, pr);
-				else if (pr > r->_pr)
-					r->_right = deleteNode(r->_right, pr);
+				else if (pr < r->pr)
+					r->left = deleteNode(r->left, pr);
+				else if (pr > r->pr)
+					r->right = deleteNode(r->right, pr);
 				else
 				{
-					// NodeTree with only one child or no child 
-					if (r->_left == NULL)
+					// t_node with only one child or no child 
+					if (r->left == NULL)
 					{
-						NodeTree* temp = r->_right;
+						t_node* temp = r->right;
+						delete temp;
 						return temp; //destroy
 					}
-					else if (r->_right == NULL)
+					else if (r->right == NULL)
 					{
-						NodeTree* temp = r->_left;
+						t_node* temp = r->left;
 						return temp; //destroy
 					}
 					else
 					{
-						// NodeTree with two children: Get the inorder successor (smallest 
+						// t_node with two children: Get the inorder successor (smallest 
 						// in the right subtree) 
-						NodeTree* min_right = minValueNode(r->_right);
-						// Copy the inorder successor's content to this NodeTree 
-						r->_pr = min_right->_pr;
+						t_node* minright = minValueNode(r->right);
+						// Copy the inorder successor's content to this t_node 
+						r->pr = minright->pr;
 						// Delete the inorder successor 
-						r->_right = deleteNode(r->_right, min_right->_pr);
-						//deleteNode(r->_right, min_right->_pr); 
+						r->right = deleteNode(r->right, minright->pr);
+						//deleteNode(r->right, minright->pr); 
 					}
 				}
 

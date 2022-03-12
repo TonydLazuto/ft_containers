@@ -39,7 +39,7 @@ namespace ft
 
 					cin >> option;
 					//Node n1;
-					ft::Node<int, int>* new_node = new ft::Node<int, int>();
+					ft::AvlTree<int, int>::t_node* new_node = new ft::AvlTree<int, int>::t_node();
 
 					switch (option) {
 						case 0:
@@ -50,7 +50,7 @@ namespace ft
 							cout << "Enter VALUE of TREE NODE to INSERT in AVL Tree: ";
 							cin >> key;
 							
-							new_node->_pr = ft::make_pair<int,int> (key, val);
+							new_node->pr = ft::make_pair<int,int> (key, val);
 							obj._root = obj.insertNode(obj._root, new_node);
 							cout << endl;
 							val++;
@@ -62,7 +62,7 @@ namespace ft
 							cout << "Enter VALUE of TREE NODE to SEARCH in AVL Tree: ";
 							cin >> key;
 							// new_node = obj.iterativeSearch(key);
-							ft::pair<int,int> tmp2(key, val);
+							ft::pair<int, int> tmp2(key, val);
 							new_node = obj.recursiveSearch(obj._root, tmp2);
 							if (new_node != NULL) {
 								cout << "Value found" << endl;
@@ -76,7 +76,7 @@ namespace ft
 							cout << "DELETE" << endl;
 							cout << "Enter VALUE of TREE NODE to DELETE in AVL: ";
 							cin >> key;
-							ft::pair<int,int> tmp3(key, val);
+							ft::pair<int, int> tmp3(key, val);
 							new_node = obj.recursiveSearch(obj._root, tmp3);
 							if (new_node != NULL) {
 								obj._root = obj.deleteNode(obj._root, tmp3);
