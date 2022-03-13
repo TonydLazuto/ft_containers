@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Maptools.hpp"
 #include "Node.hpp"
+#include "Nullptr.hpp"
 
 #define SPACE 10
 
@@ -19,18 +20,20 @@ namespace ft
 		public:
 			typedef	Node<Key, T> NodeTree;
 
-			AvlTree( void ) : _root(NULL), _begin(NULL), _end(NULL) {}
+			AvlTree( void ) : _root(NULL), _begin(NULL), _end(NULL)
+			, _nb_nodes(0) {}
 
 			virtual ~AvlTree( void ) {}
 
 			AvlTree(AvlTree const & src) : _root(src._root)
-			, _begin(src._begin), _end(src._end) {}
+			, _begin(src._begin), _end(src._end), _nb_nodes(src._nb_nodes) {}
 
 			AvlTree& operator=(AvlTree const & rhs)
 			{
 				_root = rhs._root;
 				_begin = rhs._begin;
 				_end = rhs._end;
+				_nb_nodes = rhs._nb_nodes;
 				return *this;
 			}
 
@@ -67,17 +70,30 @@ namespace ft
 					return false;
 			}
 
-			NodeTree* recursiveSearch(NodeTree* r, ft::pair<Key, T>& pr)
+			NodeTree* searchByPair(NodeTree* r, const ft::pair<Key, T>& pr)
 			{
 				if (r->pr == pr)
 					return r;
 				if (r == NULL)
 					return NULL;
 				else if (pr < r->pr)
-					return recursiveSearch(r->left, pr);
+					return searchByPair(r->left, pr);
 				else if (pr > r->pr)
-					return recursiveSearch(r->right, pr);
-				return r; // NULL
+					return searchByPair(r->right, pr);
+				return NULL; // NULL
+			}
+
+			NodeTree* searchByKey(NodeTree* r, Key k)
+			{
+				if (r->pr.first && r->pr.first == k)
+					return r;
+				if (r == NULL)
+					return NULL;
+				else if (k < r->pr.first)
+					return searchByKey(r->left, k);
+				else if (k > r->pr.first)
+					return searchByKey(r->right, k);
+				return NULL; // NULL
 			}
 
 			NodeTree* insertNode(NodeTree* r, NodeTree* new_node)
@@ -105,14 +121,14 @@ namespace ft
 
 			}
 
-			NodeTree* deleteNode(NodeTree* r, ft::pair<Key, T>& pr) {
+			NodeTree* deleteNode(NodeTree* r, NodeTree* node) {
 				// base case 
 				if (r == NULL)
 					return NULL;
-				else if (pr < r->pr)
-					r->left = deleteNode(r->left, pr);
-				else if (pr > r->pr)
-					r->right = deleteNode(r->right, pr);
+				else if (node->pr < r->pr)
+					r->left = deleteNode(r->left, node);
+				else if (node->pr > r->pr)
+					r->right = deleteNode(r->right, node);
 				else
 				{
 					// t_node with only one child or no child 
@@ -134,7 +150,7 @@ namespace ft
 						// Copy the inorder successor's content to this t_node 
 						r->pr = minright->pr;
 						// Delete the inorder successor 
-						r->right = deleteNode(r->right, minright->pr);
+						r->right = deleteNode(r->right, minright);
 						//deleteNode(r->right, minright->pr); 
 					}
 				}
@@ -149,6 +165,7 @@ namespace ft
 			NodeTree*		_root;
 			NodeTree*		_begin;
 			NodeTree*		_end;
+			size_t			_nb_nodes;
 			// alloc_node		_alloc;
 
 			// Get Height
@@ -185,20 +202,20 @@ namespace ft
 
 			NodeTree* minValueNode(NodeTree* node)
 			{
-				NodeTree* mint_node = node;
+				NodeTree* min_node = node;
 				/* loop down to find the leftmost leaf */
-				while (mint_node->left != NULL)
-					mint_node = mint_node->left;				
-				return mint_node;
+				while (min_node->left != NULL)
+					min_node = min_node->left;				
+				return min_node;
 			}
 
 			NodeTree* maxValueNode(NodeTree* node)
 			{
-				NodeTree* mint_node = node;
+				NodeTree* max_node = node;
 				/* loop down to find the rightmost leaf */
-				while (mint_node->right != NULL)
-					mint_node = mint_node->right;				
-				return mint_node;
+				while (max_node->right != NULL)
+					max_node = max_node->right;				
+				return max_node;
 			}
 
 			NodeTree* rightRotate(NodeTree* y)

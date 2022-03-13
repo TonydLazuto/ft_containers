@@ -12,11 +12,11 @@
 
 namespace ft
 {
-	template < class Key, class T, class Compare = less<Key>, class Alloc = std::allocator< pair<const Key, T> > >
+	template < class Key, class T, class Compare = less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
 	class map
 	{
 		public:
-			typedef pair<const Key, T> value_type;
+			typedef ft::pair<const Key, T> value_type;
 
 			typedef	Key key_type;
 			typedef	T mapped_type;
@@ -59,14 +59,14 @@ namespace ft
 
 			explicit map (const key_compare& comp = key_compare(),
 				const allocator_type& alloc = allocator_type())
-				: _avl(), _nb_nodes(0)
+				: _avl()
 				{
 					(void)comp;
 					(void)alloc;
 					_avl._root = _alloc.allocate(1);
 					_alloc.construct(_avl._root, _avl._root->pr);
-					// _n_begin = _avl._begin;
-					// _n_end = _avl._end;
+					_avl._begin = _avl._root;
+					_avl._end = _avl._root;
 				}
 
 			// template <class InputIterator>
@@ -75,8 +75,6 @@ namespace ft
 			// 		const allocator_type& alloc = allocator_type())
 			// 		: _avl(), _alloc(alloc), _nb_nodes(0)
 			// 	{
-			// 		_n_begin = _avl._begin;
-			// 		_n_end = _avl._end;
 			// 		insert(first, last);
 			// 		(void)comp;
 			// 	}
@@ -89,13 +87,11 @@ namespace ft
 
 			map(const map& x)
 			{
-				// this->_alloc = x._alloc;
 				this->_avl(x._avl);
 			}
 
 			map& operator=(map const & x)
 			{
-				// this->_alloc = x._alloc;
 				this->_avl(x._avl);
 				return *this;
 			}
@@ -123,37 +119,47 @@ namespace ft
 
 			size_type size(void) const 
 			{
-				return (_nb_nodes);
+				return (_avl._nb_nodes);
 			}
 
 			// size_type max_size(void) const
 			// {
 			// 	return (_alloc.max_size());
 			// }
-			// ft::pair<iterator, bool> insert (const value_type& val)
-			// {
-			// 	ft::AvlTree<Key, T>	new_tree;
-			// 	AvlTree<Key, T>::NodeTree*				new_node = NULL;
 
-			// 	if (_avl.recursiveSearch(_avl._root, val) == NULL)
-			// 	{
-			// 		new_tree._root = _alloc.allocate(size() + 1);
-			// 		_alloc.construct(new_node, val);
-			// 		while (size())
-			// 		{
-			// 			_alloc.construct(new_tree._root, *_avl._root);
-			// 			new_tree._root = new_tree.insertNode(new_tree._root, _avl._root);
-			// 			erase(_avl._root->_pr.first);
-			// 			new_tree._root++;
-			// 		}
-					
-			// 		_alloc.construct(new_tree._root, &new_node);
-			// 		_alloc.deallocate(_avl.node, new_tree.size());
-			// 		_nb_nodes++;
-			// 	}
-			// 	new_tree._root = new_tree.insertNode(new_tree._root, &new_node);
-			// 	return (new_tree._root->_pr);
-			// }
+			void	growSizeTree(void)
+			{
+				size_type	cpysize = size() == 0 ? 1 : size();
+				ft::AvlTree<Key, T>	tmp_tree;
+				tmp_tree._root = _alloc.allocate(cpysize + 1);
+				while (size())
+				{
+					NodeTree*	cpy_node = NULL;
+					_alloc.construct(cpy_node, _avl._root->pr);
+					tmp_tree.insertNode(tmp_tree._root, cpy_node);
+					erase(_avl._root->pr.first);
+					tmp_tree._nb_nodes++;
+				}
+				_alloc.deallocate(_avl._root, tmp_tree._nb_nodes);
+				_avl = tmp_tree;
+			}
+
+			ft::pair<iterator, bool> insert (const value_type& val)
+			{
+				ft::AvlTree<Key, T>	new_tree;
+				NodeTree*	new_node = _avl.searchByPair(_avl._root, val);
+
+				if (new_node == NULL)
+				{
+					growSizeTree();	
+					_alloc.construct(new_node, val);
+					new_node = new_tree.insertNode(new_tree._root, new_node);
+					_avl.maxValueNode(_avl._root)->right = _avl._end;
+					_avl._nb_nodes++;
+				}
+				// new_tree._root = new_tree.insertNode(new_tree._root, new_node);
+				return (new_node->pr);
+			}
 
 			// iterator insert (iterator position, const value_type& val);
 
@@ -162,23 +168,20 @@ namespace ft
 
 			// void erase (iterator position);
 
-			// size_type erase (const key_type& k)
-			// {
-			// 	if (size() == 0)
-			// 		return (0);
-			// 	value_type		tmp;
-			// 	Node<Key, T>*	to_del;
+			size_type erase (const key_type& k)
+			{
+				// if (size() == 0)
+				// 	return (0);
+				NodeTree*	to_del;
 
-			// 	tmp.first = k;
-			// 	tmp.second = tmp.first[k];
-			// 	to_del = _avl.recursiveSearch(_avl._root, tmp);
-			// 	if (!to_del)
-			// 		return (0);
-			// 	to_del = deleteNode(_avl._root, tmp);
-			// 	destroy(to_del);
-			// 	_nb_nodes--;
-			// 	return (1);
-			// }
+				to_del = _avl.searchByKey(_avl._root, k);		
+				if (!to_del)
+					return (0);
+				to_del = _avl.deleteNode(_avl._root, to_del);
+				_alloc.destroy(to_del);
+				_avl._nb_nodes--;
+				return (1);
+			}
 
 			// void erase (iterator first, iterator last);
 
@@ -192,7 +195,7 @@ namespace ft
 
 			mapped_type& operator[](const key_type& k)
 			{
-				(*((this->insert(ft::make_pair(k, mapped_type() ))).first)).second;
+				(*((this->insert(ft::make_pair(k, mapped_type() ))).first))->second;
 			}
 
 			// key_compare key_comp(void) const;
@@ -219,9 +222,7 @@ namespace ft
 			ft::AvlTree<Key, T>	_avl;
 			allocator_type		_alloc_save;
 			alloc_node			_alloc;
-			size_type			_nb_nodes;
-			NodeTree*			_n_begin;
-			NodeTree*			_n_end;
+			// size_type			_nb_nodes;
 
 	};
 	template <class Key, class T, class Compare, class Allocator>
