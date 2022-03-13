@@ -9,24 +9,17 @@
 
 namespace ft
 {
-	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< Node<Key, T>* > >
+	template < class Key, class T, class Compare = ft::less<Key> >
 	class AvlTree
 	{
-		friend class TestAvlTree;
+		// friend class TestAvlTree;
+		template < class Key2, class T2, class Compare2, class Alloc2 >
+		friend class map;
 
 		public:
-
 			typedef	Node<Key, T> NodeTree;
 
-			AvlTree( const Alloc& alloc = Alloc() )
-			: _alloc(alloc) , _root(NULL), _begin(NULL), _end(NULL)
-			{
-				_root = _alloc.allocate(1);
-				_alloc.construct(_root, 0);
-				init_node(_root);
-				_begin = _root;
-				_end = _root;
-			}
+			AvlTree( void ) : _root(NULL), _begin(NULL), _end(NULL) {}
 
 			virtual ~AvlTree( void ) {}
 
@@ -54,16 +47,16 @@ namespace ft
 				this->_end = node;
 			}
 
-			void print2D(NodeTree* r, int space) {
+			void prinTD(NodeTree* r, int space) {
 				if (r == NULL) // Base case  1
 					return;
 				space += SPACE; // Increase distance between levels   2
-				print2D(r->right, space); // Process right child first 3
+				prinTD(r->right, space); // Process right child first 3
 				std::cout << std::endl;
 				for (int i = SPACE; i < space; i++) // 5
 					std::cout << " "; // 5.1
 				std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second << "\n"; // 6
-				print2D(r->left, space); // Process left child  7
+				prinTD(r->left, space); // Process left child  7
 			}
 
 			bool isTreeEmpty()
@@ -156,7 +149,7 @@ namespace ft
 			NodeTree*		_root;
 			NodeTree*		_begin;
 			NodeTree*		_end;
-			Alloc			_alloc;
+			// alloc_node		_alloc;
 
 			// Get Height
 			int getHeight(NodeTree* r)

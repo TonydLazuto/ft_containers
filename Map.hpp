@@ -8,6 +8,7 @@
 #include "ReverseIterator.hpp"
 #include "IteratorTraits.hpp"
 #include "AvlTree.hpp"
+#include "Nullptr.hpp"
 
 namespace ft
 {
@@ -21,15 +22,25 @@ namespace ft
 			typedef	T mapped_type;
 			typedef Compare key_compare;
 
-			typedef Alloc allocator_type;
-			typedef typename Alloc::reference reference;
-			typedef typename Alloc::const_reference const_reference;
-			typedef typename Alloc::pointer pointer;
-			typedef typename Alloc::const_pointer const_pointer;
+			typedef	Node<Key, T> NodeTree;
 
-			typedef typename AvlTree<Key, T>::NodeTree NodeAvl;
-			typedef typename ft::AvlIterator<NodeAvl> iterator;
-			typedef typename ft::AvlIterator<const NodeAvl> const_iterator; //2eme classe const
+			typedef Alloc allocator_type;
+
+			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
+
+			// typedef typename alloc_node::reference reference;
+			// typedef typename alloc_node::const_reference const_reference;
+			// typedef typename alloc_node::pointer pointer;
+			// typedef typename alloc_node::const_pointer const_pointer;
+
+			typedef T*        pointer;
+			typedef const T*  const_pointer;
+			typedef T&        reference;
+			typedef const T&  const_reference;
+
+
+			typedef typename ft::AvlIterator<NodeTree> iterator;
+			typedef typename ft::AvlIterator<const NodeTree> const_iterator; //2eme classe const
 			typedef typename ft::ReverseIterator<iterator> reverse_iterator;
 			typedef typename ft::ReverseIterator<const_iterator> const_reverse_iterator;
 
@@ -48,11 +59,14 @@ namespace ft
 
 			explicit map (const key_compare& comp = key_compare(),
 				const allocator_type& alloc = allocator_type())
-				: _alloc(alloc), _avl(), _nb_nodes(0)
+				: _avl(), _nb_nodes(0)
 				{
 					(void)comp;
-					_n_begin = _avl.getBegin();
-					_n_end = _avl.getEnd();
+					(void)alloc;
+					_avl._root = _alloc.allocate(1);
+					_alloc.construct(_avl._root, _avl._root->pr);
+					// _n_begin = _avl._begin;
+					// _n_end = _avl._end;
 				}
 
 			// template <class InputIterator>
@@ -61,8 +75,8 @@ namespace ft
 			// 		const allocator_type& alloc = allocator_type())
 			// 		: _avl(), _alloc(alloc), _nb_nodes(0)
 			// 	{
-			// 		_n_begin = _avl.getBegin();
-			// 		_n_end = _avl.getEnd();
+			// 		_n_begin = _avl._begin;
+			// 		_n_end = _avl._end;
 			// 		insert(first, last);
 			// 		(void)comp;
 			// 	}
@@ -75,18 +89,18 @@ namespace ft
 
 			map(const map& x)
 			{
-				this->_alloc = x._alloc;
+				// this->_alloc = x._alloc;
 				this->_avl(x._avl);
 			}
 
 			map& operator=(map const & x)
 			{
-				this->_alloc = x._alloc;
+				// this->_alloc = x._alloc;
 				this->_avl(x._avl);
 				return *this;
 			}
 
-			iterator begin(void) { iterator(_avl.getBegin()); }
+			iterator begin(void) { iterator(_avl._begin); }
 			// const_iterator begin(void) const;
 			// reverse_iterator rbegin(void)
 			// {
@@ -97,7 +111,7 @@ namespace ft
 			// 	return (reverse_iterator(_v_end));
 			// }
 			
-			iterator end(void) { iterator(_avl.getEnd()); }
+			iterator end(void) { iterator(_avl._end); }
 			// const_iterator end(void) const {}
 			// reverse_iterator rend(void) { return (reverse_iterator(_v)); }
 			// const_reverse_iterator rend(void) const { return (reverse_iterator(_v)); }
@@ -112,10 +126,10 @@ namespace ft
 				return (_nb_nodes);
 			}
 
-			size_type max_size(void) const
-			{
-				return (_alloc.max_size());
-			}
+			// size_type max_size(void) const
+			// {
+			// 	return (_alloc.max_size());
+			// }
 			// ft::pair<iterator, bool> insert (const value_type& val)
 			// {
 			// 	ft::AvlTree<Key, T>	new_tree;
@@ -170,11 +184,11 @@ namespace ft
 
 			// void swap (map& x);
 
-			void clear(void)
-			{
-				while (size() > 0)
-					_alloc.destroy(_avl._root);
-			}
+			// void clear(void)
+			// {
+			// 	while (size() > 0)
+			// 		_alloc.destroy(_avl._root);
+			// }
 
 			mapped_type& operator[](const key_type& k)
 			{
@@ -199,14 +213,15 @@ namespace ft
 			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
 			// pair<iterator,iterator>             equal_range (const key_type& k);
 
-			allocator_type get_allocator(void) const { return this->_alloc; }
+			allocator_type get_allocator(void) const { return this->_alloc_save; }
 
 		private:
 			ft::AvlTree<Key, T>	_avl;
-			allocator_type		_alloc;
+			allocator_type		_alloc_save;
+			alloc_node			_alloc;
 			size_type			_nb_nodes;
-			NodeAvl*			_n_begin;
-			NodeAvl*			_n_end;
+			NodeTree*			_n_begin;
+			NodeTree*			_n_end;
 
 	};
 	template <class Key, class T, class Compare, class Allocator>

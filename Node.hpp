@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Maptools.hpp"
+#include "Nullptr.hpp"
 
 template < class Key, class T, class Compare = ft::less<Key> >
 class Node
@@ -13,10 +14,11 @@ class Node
 		Node*				left;
 		Node*				right;
 		ft::pair<Key, T>	pr;
+		
 
 		Node( void ) : left(NULL), right(NULL), pr() {}
 
-		Node( ft::pair<Key, T> a_pr() ) : left(NULL), right(NULL)
+		Node( ft::pair<Key, T> a_pr ) : left(NULL), right(NULL)
 		, pr(a_pr) {}
 
 		virtual ~Node( void ) {}
