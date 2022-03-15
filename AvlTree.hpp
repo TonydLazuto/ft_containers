@@ -10,7 +10,7 @@
 
 namespace ft
 {
-	template < class Key, class T, class Compare = ft::less<Key>,class Alloc = std::allocator<T> >
+	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
 	class AvlTree
 	{
 		// friend class TestAvlTree;
@@ -18,16 +18,24 @@ namespace ft
 		friend class map;
 
 		public:
-			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
-
+			typedef ft::pair<const Key, T> value_type;
 			typedef	Node<Key, T> NodeTree;
 
-			AvlTree( void ) : _root(NULL), _begin(NULL), _end(NULL)
-			, _nb_nodes(0) {}
+			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
+
+
+			AvlTree( const alloc_node& alloc = alloc_node() ) : _root(NULL)
+			, _begin(NULL), _end(NULL), _nb_nodes(0), _alloc_n(alloc)
+			{
+				_end = _alloc_n.allocate(1);
+				_alloc_n.construct(_end, NodeTree());
+				_root = NULL;
+				_begin = NULL;
+			}
 
 			virtual ~AvlTree( void ) {}
 
-			AvlTree(AvlTree const & src) : _root(src._root)
+			AvlTree(AvlTree const & src) : _root(src._root), _alloc_n(src._alloc_n)
 			, _begin(src._begin), _end(src._end), _nb_nodes(src._nb_nodes) {}
 
 			AvlTree& operator=(AvlTree const & rhs)
@@ -36,20 +44,8 @@ namespace ft
 				_begin = rhs._begin;
 				_end = rhs._end;
 				_nb_nodes = rhs._nb_nodes;
+				_alloc_n = rhs._alloc_n;
 				return *this;
-			}
-
-			NodeTree*	getRoot(void) { return this->_root; }
-
-			NodeTree*	getBegin(void) { return this->_begin; }
-			NodeTree*	getEnd(void) { return this->_end; }
-			NodeTree*	setBegin(NodeTree* node)
-			{
-				this->_begin = node;
-			}
-			NodeTree	*setEnd(NodeTree* node)
-			{
-				this->_end = node;
 			}
 
 			void prinTD(NodeTree* r, int space) {
@@ -72,7 +68,7 @@ namespace ft
 					return false;
 			}
 
-			NodeTree* searchByPair(NodeTree* r, const ft::pair<Key, T>& pr)
+			NodeTree* searchByPair(NodeTree* r, const value_type& pr)
 			{
 				if (r->pr == pr)
 					return r;
@@ -98,12 +94,13 @@ namespace ft
 				return NULL; // NULL
 			}
 
-			NodeTree* insertNode(NodeTree* r, NodeTree* new_node)
+			NodeTree* insertNode(NodeTree* r, NodeTree& new_node)
 			{
 				if (r == NULL)
 				{
-					// deallocate + allocate + construct in MAP!
-					r = new_node;
+					r = _alloc_n.allocate(1);
+					_alloc_n.construct(r, *new_node);
+					_nb_nodes++;
 					std::cout << "Value inserted successfully" << std::endl;
 					return r;
 				}
@@ -133,23 +130,28 @@ namespace ft
 					r->right = deleteNode(r->right, node);
 				else
 				{
-					// t_node with only one child or no child 
+					_nb_nodes--;
+					// Node with only one child or no child 
 					if (r->left == NULL)
 					{
 						NodeTree* temp = r->right;
-						return temp; //to_destroy
+						_alloc_n.destroy(temp);
+						_alloc_n.deallocate(temp, 1);
+						return temp;
 					}
 					else if (r->right == NULL)
 					{
 						NodeTree* temp = r->left;
-						return temp; //to_destroy
+						_alloc_n.destroy(temp);
+						_alloc_n.deallocate(temp, 1);
+						return temp;
 					}
 					else
 					{
-						// t_node with two children: Get the inorder successor (smallest 
+						// Node with two children: Get the inorder successor (smallest 
 						// in the right subtree) 
 						NodeTree* minright = minValueNode(r->right);
-						// Copy the inorder successor's content to this t_node 
+						// Copy the inorder successor's content to this Node 
 						r->pr = minright->pr;
 						// Delete the inorder successor 
 						r->right = deleteNode(r->right, minright);
@@ -168,7 +170,8 @@ namespace ft
 			NodeTree*		_begin;
 			NodeTree*		_end;
 			size_t			_nb_nodes;
-			// alloc_node		_alloc;
+			alloc_node		_alloc_n;
+
 
 			// Get Height
 			int getHeight(NodeTree* r)

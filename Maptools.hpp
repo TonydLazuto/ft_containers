@@ -14,7 +14,7 @@ namespace ft
 		first_type	first;
 		second_type	second;
 		
-		pair( void ) : first(0), second(0) {} // first(NULL)
+		pair( void ) : first(0), second(0) {}
 		virtual ~pair( void ) {}
 
 		template<class U, class V>
@@ -28,6 +28,7 @@ namespace ft
 			this->second = pr.second;
 			return *this;
 		}
+
 	};
 
 	template <class T1, class T2>
@@ -63,9 +64,9 @@ namespace ft
 
 	template <class Arg1, class Arg2, class Result>
 	struct binary_function {
-		typedef Arg1	first_argument_type;
-		typedef Arg2	second_argument_type;
-		typedef Result	result_type;
+		typedef Arg1 first_argument_type;
+		typedef Arg2 second_argument_type;
+		typedef Result result_type;
 	};
 
 	template <class T>
@@ -78,6 +79,3 @@ namespace ft
 
 
 #endif
-
-
-

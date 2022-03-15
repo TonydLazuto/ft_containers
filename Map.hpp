@@ -61,10 +61,6 @@ namespace ft
 				{
 					(void)comp;
 					(void)alloc;
-					_avl._root = _alloc.allocate(1);
-					_alloc.construct(_avl._root, _avl._root->pr);
-					_avl._begin = _avl._root;
-					_avl._end = _avl._root;
 				}
 
 			// template <class InputIterator>
@@ -125,38 +121,15 @@ namespace ft
 			// 	return (_alloc.max_size());
 			// }
 
-			void	growSizeTree(void)
-			{
-				size_type	cpysize = size() == 0 ? 1 : size();
-				ft::AvlTree<Key, T>	tmp_tree;
-				tmp_tree._root = _alloc.allocate(cpysize + 1);
-				while (size())
-				{
-					NodeTree*	cpy_node = NULL;
-					_alloc.construct(cpy_node, _avl._root->pr);
-					tmp_tree.insertNode(tmp_tree._root, cpy_node);
-					erase(_avl._root->pr.first);
-					tmp_tree._nb_nodes++;
-				}
-				_alloc.deallocate(_avl._root, tmp_tree._nb_nodes);
-				_avl = tmp_tree;
-			}
-
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
-				ft::AvlTree<Key, T>	new_tree;
-				NodeTree*	new_node = _avl.searchByPair(_avl._root, val);
-
-				if (new_node == NULL)
-				{
-					growSizeTree();	
-					_alloc.construct(new_node, val);
-					new_node = new_tree.insertNode(new_tree._root, new_node);
-					_avl.maxValueNode(_avl._root)->right = _avl._end;
-					_avl._nb_nodes++;
-				}
+				NodeTree*	match_node = _avl.searchByPair(_avl._root, val);
+				NodeTree*	ret_node = _avl.insertNode(_avl._root, match_node);
+				// if (match_node) does not exist in _avl
+				// match_node == NULL => true => insertion has been done
+				ft::pair<iterator, bool> pair_ret(ret_node, match_node == NULL);
 				// new_tree._root = new_tree.insertNode(new_tree._root, new_node);
-				return (new_node->pr);
+				return (pair_ret);
 			}
 
 			// iterator insert (iterator position, const value_type& val);
@@ -168,16 +141,12 @@ namespace ft
 
 			size_type erase (const key_type& k)
 			{
-				// if (size() == 0)
-				// 	return (0);
 				NodeTree*	to_del;
 
-				to_del = _avl.searchByKey(_avl._root, k);		
+				to_del = _avl.searchByKey(_avl._root, k);
 				if (!to_del)
 					return (0);
 				to_del = _avl.deleteNode(_avl._root, to_del);
-				_alloc.destroy(to_del);
-				_avl._nb_nodes--;
 				return (1);
 			}
 
@@ -214,13 +183,10 @@ namespace ft
 			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
 			// pair<iterator,iterator>             equal_range (const key_type& k);
 
-			allocator_type get_allocator(void) const { return this->_alloc_save; }
+			allocator_type get_allocator(void) const { return this->_alloc; }
 
 		private:
 			ft::AvlTree<Key, T>	_avl;
-			allocator_type		_alloc_save;
-			alloc_node			_alloc;
-			// size_type			_nb_nodes;
 
 	};
 	template <class Key, class T, class Compare, class Allocator>

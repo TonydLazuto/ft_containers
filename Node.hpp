@@ -5,14 +5,14 @@
 #include "Maptools.hpp"
 #include "Nullptr.hpp"
 
-template < class Key, class T, class Compare = ft::less<Key> >
+template < class Key, class T >
 class Node
 {
 	public:
 
-		Node*				parent;
-		Node*				left;
-		Node*				right;
+		Node*		parent;
+		Node*		left;
+		Node*		right;
 		ft::pair<Key, T>	pr;
 		
 
@@ -27,14 +27,14 @@ class Node
 		{
 			left = src.left;
 			right = src.right;
-			pr(src.pr);
+			pr = src.pr;
 		}
 
 		Node& operator=(Node const & rhs)
 		{
 			left = rhs.left;
 			right = rhs.right;
-			pr(rhs.pr);
+			pr = rhs.pr;
 			return *this;
 		}
 };
