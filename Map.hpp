@@ -124,12 +124,17 @@ namespace ft
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
 				NodeTree*	match_node = _avl.searchByPair(_avl._root, val);
-
-				
-				NodeTree*	new_node = _avl.insertNode(_avl._root, NULL, val);
+				//NodeTree*	new_node = 
+				_avl.insertNode(_avl._root, val);
+				_avl._root = _avl.balanceInsert(val);
 				// if (match_node) does not exist in _avl
 				// match_node == NULL => true => insertion has been done
-				ft::pair<iterator, bool> pair_ret(new_node, match_node == NULL);
+				ft::pair<iterator, bool> pair_ret(_avl._root, match_node == NULL);
+				// std::cout << pair_ret;
+				// std::cout << "new_node.first: " << new_node->pr.first << std::endl;
+				// std::cout << "new_node.second: " << new_node->pr.second << std::endl;
+				std::cout << "_avl._root.first: " << _avl._root->pr.first << std::endl;
+				std::cout << "_avl._root.second: " << _avl._root->pr.second << std::endl;
 				// new_tree._root = new_tree.insertNode(new_tree._root, new_node);
 				return (pair_ret);
 			}

@@ -94,31 +94,36 @@ namespace ft
 				return NULL; // NULL
 			}
 
-			NodeTree* insertNode(NodeTree* r, NodeTree* parent, const ft::pair<Key, T>& val)
+			NodeTree *iterativeSearch(NodeTree *r, NodeTree *parent, const ft::pair<Key, T>& val)
 			{
-				if (r == NULL)
+				while (r != NULL)
+				{
+					parent = r;
+					if (val < r->pr)
+						r = r->left;
+					else if (val > r->pr)
+						r = r->right;
+					else
+						return r;
+				}
+				return r;
+			}
+			NodeTree* insertNode(NodeTree* r, const ft::pair<Key, T>& val)
+			{
+				NodeTree *parent = NULL;
+
+				r = iterativeSearch(r, parent, val);
+				if (r != NULL)
+					std::cout << "Value already exists!" << std::endl;
+				else
 				{
 					r = _alloc_n.allocate(1);
 					_alloc_n.construct(r, NodeTree(parent, val));
 					_nb_nodes++;
 					std::cout << "Value inserted successfully" << std::endl;
 					this->print2D(_root, 5);
-					return r;
 				}
-				if (val < r->pr)
-					r->left = insertNode(r->left, r, val);
-				else if (val > r->pr)
-					r->right = insertNode(r->right, r, val);
-				else
-				{
-					std::cout << "Value already exists!" << std::endl;
-					return r;
-				}
-				int bf = getBalanceFactor(r);
-				r = balanceInsert(bf, r, val);
-
 				return r;
-
 			}
 
 			NodeTree* deleteNode(NodeTree* r, NodeTree* parent, NodeTree* node) {
@@ -182,6 +187,54 @@ namespace ft
 				while (max_node->right != NULL)
 					max_node = max_node->right;				
 				return max_node;
+			}
+
+			NodeTree*	balanceInsert(const ft::pair<Key, T>& val)
+			{
+				NodeTree* r = searchByPair(_root, val);
+				int bf = getBalanceFactor(r);
+				// Left Left Case
+				if (bf > 1 && val < r->left->pr)
+					return rightRotate(r);
+				// Right Right Case  
+				if (bf < -1 && val > r->right->pr)
+					return leftRotate(r);
+				// Left Right Case  
+				if (bf > 1 && val > r->left->pr)
+				{
+					r->left = leftRotate(r->left);
+						return rightRotate(r);
+				}
+				// Right Left Case  
+				if (bf < -1 && val < r->right->pr)
+				{
+					r->right = rightRotate(r->right);
+						return leftRotate(r);
+				}
+				return (r);
+			}
+
+			NodeTree*	balanceDeletion(int bf, NodeTree* r)
+			{
+				// Left Left Imbalance/Case or Right rotation 
+				if (bf == 2 && getBalanceFactor(r->left) >= 0)
+					return rightRotate(r);
+				// Left Right Imbalance/Case or LR rotation 
+				else if (bf == 2 && getBalanceFactor(r->left) == -1)
+				{
+					r->left = leftRotate(r->left);
+					return rightRotate(r);
+				}
+				// Right Right Imbalance/Case or Left rotation	
+				else if (bf == -2 && getBalanceFactor(r->right) <= 0)
+					return leftRotate(r);
+				// Right Left Imbalance/Case or RL rotation 
+				else if (bf == -2 && getBalanceFactor(r->right) == 1)
+				{
+					r->right = rightRotate(r->right);
+					return leftRotate(r);
+				}
+				return (r);
 			}
 
 		private:
@@ -251,51 +304,9 @@ namespace ft
 				return y;
 			}
 
-			NodeTree*	balanceInsert(int bf, NodeTree* r, const ft::pair<Key, T>& val)
-			{
-				// Left Left Case
-				if (bf > 1 && val < r->left->pr)
-					return rightRotate(r);
-				// Right Right Case  
-				if (bf < -1 && val > r->right->pr)
-					return leftRotate(r);
-				// Left Right Case  
-				if (bf > 1 && val > r->left->pr)
-				{
-					r->left = leftRotate(r->left);
-						return rightRotate(r);
-				}
-				// Right Left Case  
-				if (bf < -1 && val < r->right->pr)
-				{
-					r->right = rightRotate(r->right);
-						return leftRotate(r);
-				}
-				return (r);
-			}
+			
 
-			NodeTree*	balanceDeletion(int bf, NodeTree* r)
-			{
-				// Left Left Imbalance/Case or Right rotation 
-				if (bf == 2 && getBalanceFactor(r->left) >= 0)
-					return rightRotate(r);
-				// Left Right Imbalance/Case or LR rotation 
-				else if (bf == 2 && getBalanceFactor(r->left) == -1)
-				{
-					r->left = leftRotate(r->left);
-					return rightRotate(r);
-				}
-				// Right Right Imbalance/Case or Left rotation	
-				else if (bf == -2 && getBalanceFactor(r->right) <= 0)
-					return leftRotate(r);
-				// Right Left Imbalance/Case or RL rotation 
-				else if (bf == -2 && getBalanceFactor(r->right) == 1)
-				{
-					r->right = rightRotate(r->right);
-					return leftRotate(r);
-				}
-				return (r);
-			}
+			
 	};
 }
 

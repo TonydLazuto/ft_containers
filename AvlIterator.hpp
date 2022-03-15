@@ -30,7 +30,7 @@ namespace ft
 					this->_itor = rhs._itor;
 				return *this;
 			}
-			AvlIterator* operator*(void) { return (*this->_itor->pr); }
+			AvlIterator* operator*(void) { return (*this->_itor); }
 			pointer operator->(void) { return &(this->operator*()); }
 			
 			AvlIterator& operator++(void)

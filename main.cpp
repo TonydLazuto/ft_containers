@@ -59,15 +59,15 @@ int main(int argc, char** argv) {
 	ft::pair<char, int> pr5('e', 4);
 	ft::pair<char, int> pr6('f', 5);
 	ft::pair<char, int> pr7('g', 6);
-	map1.insert(pr1);
+	ft::pair<ft::map<char, int>::iterator, bool> ret1 = map1.insert(pr1);
 	map1.insert(pr2);
 	map1.insert(pr3);
 	map1.insert(pr4);
-	map1.insert(pr5);
-	map1.insert(pr6);
-	map1.insert(pr7);
+	// map1.insert(pr5);
+	// map1.insert(pr6);
+	// map1.insert(pr7);
 
-	map1.erase(pr1.first);
+	// map1.erase(pr1.first);
 	// map1.erase(pr3.first);
 	// map1.erase(pr4.first);
 	// map1.erase(pr5.first);
