@@ -8,13 +8,13 @@
 	#include <vector>
 // 	namespace ft = std;
 // #else
-	// #include "Map.hpp"
+	#include "Map.hpp"
 	#include "Stack.hpp"
 	#include "Vector.hpp"
-	#include "AvlTree.hpp"
+	// #include "AvlTree.hpp"
 // #endif
 
-#include "TestAvlTree.hpp"
+// #include "TestAvlTree.hpp"
 #include <stdlib.h>
 
 #define MAX_RAM 4294967296
@@ -48,15 +48,47 @@ public:
 };
 */
 
-
-
-
 int main(int argc, char** argv) {
 	
-	ft::TestAvlTree test;
+	ft::map<char, int> map1;
 
-	test.make();
-	
+	ft::pair<char, int> pr1('a', 0);
+	ft::pair<char, int> pr2('b', 1);
+	ft::pair<char, int> pr3('c', 2);
+	ft::pair<char, int> pr4('d', 3);
+	ft::pair<char, int> pr5('e', 4);
+	ft::pair<char, int> pr6('f', 5);
+	ft::pair<char, int> pr7('g', 6);
+	map1.insert(pr1);
+	map1.insert(pr2);
+	map1.insert(pr3);
+	map1.insert(pr4);
+	map1.insert(pr5);
+	map1.insert(pr6);
+	map1.insert(pr7);
+
+	map1.erase(pr1.first);
+	// map1.erase(pr3.first);
+	// map1.erase(pr4.first);
+	// map1.erase(pr5.first);
+	// map1.erase(pr6.first);
+	// map1.erase(pr7.first);
+
+	// map1['a'] = 0;
+	// map1['b'] = 1;
+	// map1['c'] = 2;
+	// map1['d'] = 3;
+	// map1['e'] = 4;
+	// map1['f'] = 5;
+
+	// std::map<char,int>::iterator it2 = map1.begin();
+	// it2++;
+	// // it2++;
+	// if (it2->first)
+	// 	std::cout << "YO" << std::endl;
+	// for (std::map<char,int>::iterator it=map1.begin(); it!=map1.end(); ++it)
+	// 	std::cout << it->first << " => " << it->second << std::endl;
+
 
 	// if (argc != 2)
 	// {

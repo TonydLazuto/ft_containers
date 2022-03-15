@@ -90,7 +90,7 @@ namespace ft
 				return *this;
 			}
 
-			iterator begin(void) { iterator(_avl._begin); }
+			iterator begin(void) { iterator(_avl._root); }
 			// const_iterator begin(void) const;
 			// reverse_iterator rbegin(void)
 			// {
@@ -124,10 +124,12 @@ namespace ft
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
 				NodeTree*	match_node = _avl.searchByPair(_avl._root, val);
-				NodeTree*	ret_node = _avl.insertNode(_avl._root, match_node);
+
+				
+				NodeTree*	new_node = _avl.insertNode(_avl._root, NULL, val);
 				// if (match_node) does not exist in _avl
 				// match_node == NULL => true => insertion has been done
-				ft::pair<iterator, bool> pair_ret(ret_node, match_node == NULL);
+				ft::pair<iterator, bool> pair_ret(new_node, match_node == NULL);
 				// new_tree._root = new_tree.insertNode(new_tree._root, new_node);
 				return (pair_ret);
 			}
@@ -146,7 +148,7 @@ namespace ft
 				to_del = _avl.searchByKey(_avl._root, k);
 				if (!to_del)
 					return (0);
-				to_del = _avl.deleteNode(_avl._root, to_del);
+				_avl._root = _avl.deleteNode(_avl._root, NULL, to_del);
 				return (1);
 			}
 
