@@ -26,8 +26,6 @@ namespace ft
 
 			typedef Alloc allocator_type;
 
-			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
-
 			// typedef typename alloc_node::reference reference;
 			// typedef typename alloc_node::const_reference const_reference;
 			// typedef typename alloc_node::pointer pointer;

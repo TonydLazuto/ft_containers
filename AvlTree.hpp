@@ -10,7 +10,7 @@
 
 namespace ft
 {
-	template < class Key, class T, class Compare = ft::less<Key> >
+	template < class Key, class T, class Compare = ft::less<Key>,class Alloc = std::allocator<T> >
 	class AvlTree
 	{
 		// friend class TestAvlTree;
@@ -18,6 +18,8 @@ namespace ft
 		friend class map;
 
 		public:
+			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
+
 			typedef	Node<Key, T> NodeTree;
 
 			AvlTree( void ) : _root(NULL), _begin(NULL), _end(NULL)
