@@ -25,23 +25,22 @@ namespace ft
 
 
 			AvlTree( const alloc_node& alloc = alloc_node() ) : _root(NULL)
-			, _begin(NULL), _end(NULL), _nb_nodes(0), _alloc_n(alloc)
+			, _end(NULL), _nb_nodes(0), _alloc_n(alloc)
 			{
 				_end = _alloc_n.allocate(1);
 				_alloc_n.construct(_end, NodeTree());
-				_root = NULL;
-				_begin = NULL;
 			}
 
-			virtual ~AvlTree( void ) {}
+			virtual ~AvlTree( void ) {
 
-			AvlTree(AvlTree const & src) : _root(src._root), _alloc_n(src._alloc_n)
-			, _begin(src._begin), _end(src._end), _nb_nodes(src._nb_nodes) {}
+			}
+
+			AvlTree(AvlTree const & src) : _root(src._root), _end(src._end)
+			, _alloc_n(src._alloc_n), _nb_nodes(src._nb_nodes) {}
 
 			AvlTree& operator=(AvlTree const & rhs)
 			{
 				_root = rhs._root;
-				_begin = rhs._begin;
 				_end = rhs._end;
 				_nb_nodes = rhs._nb_nodes;
 				_alloc_n = rhs._alloc_n;
@@ -72,7 +71,7 @@ namespace ft
 			{
 				NodeTree* min_node = node;
 				/* loop down to find the leftmost leaf */
-				while (min_node->left != NULL)
+				while (min_node && min_node->left != NULL)
 					min_node = min_node->left;				
 				return min_node;
 			}
@@ -81,8 +80,17 @@ namespace ft
 			{
 				NodeTree* max_node = node;
 				/* loop down to find the rightmost leaf */
-				while (max_node->right != NULL)
-					max_node = max_node->right;				
+				int i = 0;
+				while (max_node && max_node->right != NULL && i < 5)
+				{
+					if (max_node)
+					{
+							// std::cout << "max_node.first: " << max_node->pr.first << std::endl;
+							// std::cout << "max_node.second: " << max_node->pr.second << std::endl;
+					}
+					max_node = max_node->right;
+					i++;
+				}
 				return max_node;
 			}
 
@@ -130,10 +138,13 @@ namespace ft
 				}
 				return r;
 			}
+			
 			// 1st arg always root?
 			NodeTree* insertNode(NodeTree* r, NodeTree* parent
 				, const ft::pair<Key, T>& val, NodeTree*& new_node)
 			{
+				// std::cout << "yo" << std::endl;
+				
 				if (r == NULL)
 				{
 					// if (parent)
@@ -154,6 +165,7 @@ namespace ft
 				else
 					return r;
 				r = balanceInsert(r, val);
+				
 				return r;
 			}
 
@@ -170,13 +182,13 @@ namespace ft
 				if (bf > 1 && val > r->left->pr)
 				{
 					r->left = leftRotate(r->left);
-						return rightRotate(r);
+					return rightRotate(r);
 				}
 				// Right Left Case  
 				if (bf < -1 && val < r->right->pr)
 				{
 					r->right = rightRotate(r->right);
-						return leftRotate(r);
+					return leftRotate(r);
 				}
 				return (r);
 			}
@@ -249,10 +261,64 @@ namespace ft
 				return (r);
 			}
 
+			NodeTree	*getBegin(void)
+			{
+				return minValueNode(_root);
+			}
+			
+			NodeTree	*getEnd(void)
+			{
+				return _end;
+			}
+
+			void	linkEnd(void)
+			{
+				if (_root)
+				{
+					std::cout << "yep" <<std::endl;
+					// std::cout << "_root.first: " << _root->pr.first << std::endl;
+					// std::cout << "_root.second: " << _root->parent->pr.second << std::endl;
+					if (_root->parent)
+					{
+						std::cout << "_root->parent.first: " << _root->parent->pr.first << std::endl;
+						std::cout << "_root->parent.second: " << _root->parent->pr.second << std::endl;
+					}
+					if (_root->left)
+					{
+						std::cout << "_root->left.first: " << _root->left->pr.first << std::endl;
+						std::cout << "_root->left.second: " << _root->left->pr.second << std::endl;
+					}
+					if (_root->right)
+					{
+						std::cout << "_root->right.first: " << _root->right->pr.first << std::endl;
+						std::cout << "_root->right.second: " << _root->right->pr.second << std::endl;
+					}
+				}
+				NodeTree	*last_node = maxValueNode(_root);
+
+				if (last_node)
+				{
+					last_node->right = _end;
+					_end->parent = last_node;
+				}
+			}
+
+			void	unlinkEnd(void)
+			{
+std::cout << "yo4" << std::endl;
+				NodeTree	*last_node = maxValueNode(_root);
+				if (last_node)
+				{
+					last_node->right = NULL;
+					_end->parent = NULL;
+				}
+			}
+
+			
+
 		private:
 
 			NodeTree*		_root;
-			NodeTree*		_begin;
 			NodeTree*		_end;
 			size_t			_nb_nodes;
 			alloc_node		_alloc_n;
@@ -276,7 +342,7 @@ namespace ft
 				}
 			}
 
-			// Get Balance factor of t_node N
+			// Get Balance factor of Node N
 			int getBalanceFactor(NodeTree* n)
 			{
 				if (n == NULL)
@@ -294,8 +360,8 @@ namespace ft
 				z->left = Tx;
 				y->parent = z->parent;
 				z->parent = y;
-				if (Tx)
-					Tx->parent = z;
+				// if (Tx)
+				// 	Tx->parent = z;
 				return y;
 			}
 
@@ -309,8 +375,8 @@ namespace ft
 				z->right = Tx;
 				y->parent = z->parent;
 				z->parent = y;
-				if (Tx)
-					Tx->parent = z;
+				// if (Tx)
+				// 	Tx->parent = z;
 				return y;
 			}
 

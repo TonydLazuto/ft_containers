@@ -26,19 +26,13 @@ namespace ft
 
 			typedef Alloc allocator_type;
 
-			// typedef typename alloc_node::reference reference;
-			// typedef typename alloc_node::const_reference const_reference;
-			// typedef typename alloc_node::pointer pointer;
-			// typedef typename alloc_node::const_pointer const_pointer;
-
 			typedef T*        pointer;
 			typedef const T*  const_pointer;
 			typedef T&        reference;
 			typedef const T&  const_reference;
 
-
 			typedef typename ft::AvlIterator<NodeTree> iterator;
-			typedef typename ft::AvlIterator<const NodeTree> const_iterator; //2eme classe const
+			typedef typename ft::AvlIterator<const NodeTree> const_iterator; //2eme classe const ?
 			typedef typename ft::ReverseIterator<iterator> reverse_iterator;
 			typedef typename ft::ReverseIterator<const_iterator> const_reverse_iterator;
 
@@ -73,11 +67,7 @@ namespace ft
 			// 		(void)comp;
 			// 	}
 
-			virtual ~map( void )
-			{
-				// if (size())
-				// 	_alloc.deallocate(_avl.getRoot(), size());
-			}
+			virtual ~map( void ) {}
 
 			map(const map& x)
 			{
@@ -90,7 +80,7 @@ namespace ft
 				return *this;
 			}
 
-			iterator begin(void) { iterator(_avl._root); }
+			iterator begin(void) { iterator(_avl.getBegin()); }
 			// const_iterator begin(void) const;
 			// reverse_iterator rbegin(void)
 			// {
@@ -101,7 +91,7 @@ namespace ft
 			// 	return (reverse_iterator(_v_end));
 			// }
 			
-			iterator end(void) { iterator(_avl._end); }
+			iterator end(void) { iterator(_avl.getEnd()); }
 			// const_iterator end(void) const {}
 			// reverse_iterator rend(void) { return (reverse_iterator(_v)); }
 			// const_reverse_iterator rend(void) const { return (reverse_iterator(_v)); }
@@ -123,10 +113,26 @@ namespace ft
 
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
+				_avl.unlinkEnd();
 				NodeTree*	match_node = _avl.iterativeSearch(_avl._root, val);
 				NodeTree*	new_node = match_node;
 
 				_avl._root = _avl.insertNode(_avl._root, NULL, val, new_node);
+				// if (_avl._root->parent)
+				// {
+				// 	std::cout << "_avl._root->parent.first: " << _avl._root->parent->pr.first << std::endl;
+				// 	std::cout << "_avl._root->parent.second: " << _avl._root->parent->pr.second << std::endl;
+				// }
+				// if (_avl._root->left)
+				// {
+				// 	std::cout << "_avl._root->left.first: " << _avl._root->left->pr.first << std::endl;
+				// 	std::cout << "_avl._root->left.second: " << _avl._root->left->pr.second << std::endl;
+				// }
+				// if (_avl._root->right)
+				// {
+				// 	std::cout << "_avl._root->right.first: " << _avl._root->right->pr.first << std::endl;
+				// 	std::cout << "_avl._root->right.second: " << _avl._root->right->pr.second << std::endl;
+				// }
 				_avl.print2D(_avl._root, 5);
 				// match_node == NULL => true => insertion has been done
 				ft::pair<iterator, bool> pair_ret(new_node, match_node == NULL);
@@ -135,6 +141,7 @@ namespace ft
 				// 	std::cout << "new_node.first: " << new_node->pr.first << std::endl;
 				// 	std::cout << "new_node.second: " << new_node->pr.second << std::endl;
 				// }
+				_avl.linkEnd();
 				return (pair_ret);
 			}
 

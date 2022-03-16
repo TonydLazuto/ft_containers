@@ -10,9 +10,9 @@ class Node
 {
 	public:
 
-		Node*		parent;
-		Node*		left;
-		Node*		right;
+		Node*				parent;
+		Node*				left;
+		Node*				right;
 		ft::pair<Key, T>	pr;
 		
 
