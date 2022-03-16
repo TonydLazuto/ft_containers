@@ -117,11 +117,10 @@ namespace ft
 				return NULL; // NULL
 			}
 			// 1st arg always root?
-			NodeTree *iterativeSearch(NodeTree* r, NodeTree*& parent, const ft::pair<Key, T>& val)
+			NodeTree *iterativeSearch(NodeTree* r, const ft::pair<Key, T>& val)
 			{
 				while (r != NULL)
 				{
-					parent = r;
 					if (val < r->pr)
 						r = r->left;
 					else if (val > r->pr)
@@ -132,7 +131,8 @@ namespace ft
 				return r;
 			}
 			// 1st arg always root?
-			NodeTree* insertNode(NodeTree* r, NodeTree* parent, const ft::pair<Key, T>& val)
+			NodeTree* insertNode(NodeTree* r, NodeTree* parent
+				, const ft::pair<Key, T>& val, NodeTree*& new_node)
 			{
 				if (r == NULL)
 				{
@@ -140,6 +140,7 @@ namespace ft
 					// 	std::cout << "parent.first: " << parent->pr.first << std::endl;
 					r = _alloc_n.allocate(1);
 					_alloc_n.construct(r, NodeTree(parent, val));
+					new_node = r;
 					_nb_nodes++;
 					// if (_nb_nodes == 1)
 					// 	_root = r;
@@ -147,9 +148,9 @@ namespace ft
 					return r;
 				}
 				else if (val < r->pr)
-					r->left = insertNode(r->left, r, val);
+					r->left = insertNode(r->left, r, val, new_node);
 				else if (val > r->pr)
-					r->right = insertNode(r->right, r, val);
+					r->right = insertNode(r->right, r, val, new_node);
 				else
 					return r;
 				r = balanceInsert(r, val);
