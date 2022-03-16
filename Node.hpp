@@ -16,7 +16,10 @@ class Node
 		ft::pair<Key, T>	pr;
 		
 
-		Node( void ) : left(NULL), right(NULL), pr() {}
+		Node( void ) : parent(NULL), left(NULL), right(NULL), pr() {}
+
+		Node( ft::pair<Key, T> a_pr )
+		: parent(NULL), left(NULL), right(NULL), pr(a_pr) {}
 
 		Node( Node<Key, T>* theparent, ft::pair<Key, T> a_pr )
 		: parent(theparent), left(NULL), right(NULL), pr(a_pr) {}

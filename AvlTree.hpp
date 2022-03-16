@@ -68,18 +68,41 @@ namespace ft
 					return false;
 			}
 
-			NodeTree* searchByPair(NodeTree* r, const ft::pair<Key, T>& pr)
+			NodeTree* minValueNode(NodeTree* node)
 			{
-				if (r == NULL)
-					return NULL;
-				if (r->pr == pr)
-					return r;
-				else if (pr < r->pr)
-					return searchByPair(r->left, pr);
-				else if (pr > r->pr)
-					return searchByPair(r->right, pr);
-				return NULL; // NULL
+				NodeTree* min_node = node;
+				/* loop down to find the leftmost leaf */
+				while (min_node->left != NULL)
+					min_node = min_node->left;				
+				return min_node;
 			}
+
+			NodeTree* maxValueNode(NodeTree* node)
+			{
+				NodeTree* max_node = node;
+				/* loop down to find the rightmost leaf */
+				while (max_node->right != NULL)
+					max_node = max_node->right;				
+				return max_node;
+			}
+
+
+			// NodeTree* searchByPair(NodeTree* r, NodeTree *parent, const ft::pair<Key, T>& pr)
+			// {
+			// 	if (r == NULL)
+			// 		return NULL;
+			// 	if (pr < r->pr)
+			// 	{
+			// 		parent = r;
+			// 		return searchByPair(r->left, parent, pr);
+			// 	}
+			// 	else if (pr > r->pr)
+			// 	{
+			// 		parent = r;
+			// 		return searchByPair(r->right, parent, pr);
+			// 	}
+			// 	return r;
+			// }
 
 			NodeTree* searchByKey(NodeTree* r, Key k)
 			{
@@ -93,8 +116,8 @@ namespace ft
 					return searchByKey(r->right, k);
 				return NULL; // NULL
 			}
-
-			NodeTree *iterativeSearch(NodeTree *r, NodeTree *parent, const ft::pair<Key, T>& val)
+			// 1st arg always root?
+			NodeTree *iterativeSearch(NodeTree* r, NodeTree*& parent, const ft::pair<Key, T>& val)
 			{
 				while (r != NULL)
 				{
@@ -108,22 +131,53 @@ namespace ft
 				}
 				return r;
 			}
-			NodeTree* insertNode(NodeTree* r, const ft::pair<Key, T>& val)
+			// 1st arg always root?
+			NodeTree* insertNode(NodeTree* r, NodeTree* parent, const ft::pair<Key, T>& val)
 			{
-				NodeTree *parent = NULL;
-
-				r = iterativeSearch(r, parent, val);
-				if (r != NULL)
-					std::cout << "Value already exists!" << std::endl;
-				else
+				if (r == NULL)
 				{
+					// if (parent)
+					// 	std::cout << "parent.first: " << parent->pr.first << std::endl;
 					r = _alloc_n.allocate(1);
 					_alloc_n.construct(r, NodeTree(parent, val));
 					_nb_nodes++;
+					// if (_nb_nodes == 1)
+					// 	_root = r;
 					std::cout << "Value inserted successfully" << std::endl;
-					this->print2D(_root, 5);
+					return r;
 				}
+				else if (val < r->pr)
+					r->left = insertNode(r->left, r, val);
+				else if (val > r->pr)
+					r->right = insertNode(r->right, r, val);
+				else
+					return r;
+				r = balanceInsert(r, val);
 				return r;
+			}
+
+			NodeTree*	balanceInsert(NodeTree* r, const ft::pair<Key, T>& val)
+			{				
+				int bf = getBalanceFactor(r);
+				// Left Left Case
+				if (bf > 1 && val < r->left->pr)
+					return rightRotate(r);
+				// Right Right Case  
+				if (bf < -1 && val > r->right->pr)
+					return leftRotate(r);
+				// Left Right Case  
+				if (bf > 1 && val > r->left->pr)
+				{
+					r->left = leftRotate(r->left);
+						return rightRotate(r);
+				}
+				// Right Left Case  
+				if (bf < -1 && val < r->right->pr)
+				{
+					r->right = rightRotate(r->right);
+						return leftRotate(r);
+				}
+				return (r);
 			}
 
 			NodeTree* deleteNode(NodeTree* r, NodeTree* parent, NodeTree* node) {
@@ -169,49 +223,6 @@ namespace ft
 				int bf = getBalanceFactor(r);
 				r = balanceDeletion(bf, r);
 				return r;
-			}
-
-			NodeTree* minValueNode(NodeTree* node)
-			{
-				NodeTree* min_node = node;
-				/* loop down to find the leftmost leaf */
-				while (min_node->left != NULL)
-					min_node = min_node->left;				
-				return min_node;
-			}
-
-			NodeTree* maxValueNode(NodeTree* node)
-			{
-				NodeTree* max_node = node;
-				/* loop down to find the rightmost leaf */
-				while (max_node->right != NULL)
-					max_node = max_node->right;				
-				return max_node;
-			}
-
-			NodeTree*	balanceInsert(const ft::pair<Key, T>& val)
-			{
-				NodeTree* r = searchByPair(_root, val);
-				int bf = getBalanceFactor(r);
-				// Left Left Case
-				if (bf > 1 && val < r->left->pr)
-					return rightRotate(r);
-				// Right Right Case  
-				if (bf < -1 && val > r->right->pr)
-					return leftRotate(r);
-				// Left Right Case  
-				if (bf > 1 && val > r->left->pr)
-				{
-					r->left = leftRotate(r->left);
-						return rightRotate(r);
-				}
-				// Right Left Case  
-				if (bf < -1 && val < r->right->pr)
-				{
-					r->right = rightRotate(r->right);
-						return leftRotate(r);
-				}
-				return (r);
 			}
 
 			NodeTree*	balanceDeletion(int bf, NodeTree* r)
@@ -263,12 +274,6 @@ namespace ft
 						return (rheight + 1);
 				}
 			}
-			void	init_node(NodeTree* node)
-			{
-				node->parent = NULL;
-				node->left = NULL;
-				node->right = NULL;
-			}
 
 			// Get Balance factor of t_node N
 			int getBalanceFactor(NodeTree* n)
@@ -285,9 +290,11 @@ namespace ft
 
 				// Perform rotation
 				y->right = z;
-				y->parent = z->parent;
 				z->left = Tx;
+				y->parent = z->parent;
 				z->parent = y;
+				if (Tx)
+					Tx->parent = z;
 				return y;
 			}
 
@@ -298,9 +305,11 @@ namespace ft
 
 				// Perform rotation
 				y->left = z;
-				y->parent = z->parent;
 				z->right = Tx;
+				y->parent = z->parent;
 				z->parent = y;
+				if (Tx)
+					Tx->parent = z;
 				return y;
 			}
 

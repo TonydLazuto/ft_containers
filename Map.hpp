@@ -123,19 +123,44 @@ namespace ft
 
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
-				NodeTree*	match_node = _avl.searchByPair(_avl._root, val);
-				//NodeTree*	new_node = 
-				_avl.insertNode(_avl._root, val);
-				_avl._root = _avl.balanceInsert(val);
-				// if (match_node) does not exist in _avl
+				// NodeTree*	parent = NULL;
+				// NodeTree*	match_node = _avl.iterativeSearch(_avl._root, parent, val);
+				// NodeTree*	new_node = match_node;
+
+				// if (parent)
+				// 	std::cout << "parent.first: " << parent->pr.first << std::endl;
+				// else
+				// 	std::cout << "--> Parent value NULL :(" << std::endl;
+				// if (match_node == NULL)
+				// {
+				_avl._root = _avl.insertNode(_avl._root, NULL, val);
+				// 	if (size() > 2)
+						// _avl._root = _avl.balanceInsert(_avl._root, val);
+				// }
+				// else
+					// std::cout << "Value already exists!" << std::endl;
+				_avl.print2D(_avl._root, 5);
+				if (_avl._root->parent)
+				{
+					std::cout << "_avl._root->parent.first: " << _avl._root->parent->pr.first << std::endl;
+					std::cout << "_avl._root->parent.second: " << _avl._root->parent->pr.second << std::endl;	
+				}
+				if (_avl._root->left)
+				{
+					std::cout << "_avl._root->left.first: " << _avl._root->left->pr.first << std::endl;
+					std::cout << "_avl._root->left.second: " << _avl._root->left->pr.second << std::endl;	
+				}
+				if (_avl._root->right)
+				{
+					std::cout << "_avl._root->right.first: " << _avl._root->right->pr.first << std::endl;
+					std::cout << "_avl._root->right.second: " << _avl._root->right->pr.second << std::endl;	
+				}
 				// match_node == NULL => true => insertion has been done
-				ft::pair<iterator, bool> pair_ret(_avl._root, match_node == NULL);
-				// std::cout << pair_ret;
+				ft::pair<iterator, bool> pair_ret(_avl._root, _avl._root == NULL);
 				// std::cout << "new_node.first: " << new_node->pr.first << std::endl;
 				// std::cout << "new_node.second: " << new_node->pr.second << std::endl;
 				std::cout << "_avl._root.first: " << _avl._root->pr.first << std::endl;
 				std::cout << "_avl._root.second: " << _avl._root->pr.second << std::endl;
-				// new_tree._root = new_tree.insertNode(new_tree._root, new_node);
 				return (pair_ret);
 			}
 
