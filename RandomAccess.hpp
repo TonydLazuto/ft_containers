@@ -7,7 +7,7 @@
 namespace ft 
 {
 	template <class T>
-	class RandomAccessIterator : public std::iterator<std::random_access_iterator_tag, T>
+	class RandomAccessIterator
 	{
 		private:
 			T*	_itor;
