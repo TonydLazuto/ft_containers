@@ -62,7 +62,11 @@ namespace ft
 				std::cout << std::endl;
 				for (int i = SPACE; i < space; i++) // 5
 					std::cout << " "; // 5.1
-				std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second << "\n"; // 6
+				std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second << std::endl; // 6
+				// if (r && r->parent)
+				// 	std::cout << ", Parent=" << r->parent->pr.first << std::endl;
+				// else
+				// 	std::cout << std::endl;
 				print2D(r->left, space); // Process left child  7
 			}
 
@@ -87,12 +91,8 @@ namespace ft
 			{
 				NodeTree* max_node = node;
 				/* loop down to find the rightmost leaf */
-				int i = 0;
 				while (max_node && max_node->right)
-				{
 					max_node = max_node->right;
-					i++;
-				}
 				return max_node;
 			}
 
@@ -256,11 +256,6 @@ namespace ft
 
 				if (last_node)
 				{
-					if (_root)
-					{
-						// std::cout << "link-> _root.first: " << _root->pr.first << std::endl;
-						// std::cout << "link-> _root.second: " << _root->pr.second << std::endl;
-					}
 					last_node->right = _end;
 					_end->parent = last_node;
 				}
@@ -323,8 +318,8 @@ namespace ft
 				z->left = Tx;
 				y->parent = z->parent;
 				z->parent = y;
-				// if (Tx)
-				// 	Tx->parent = z;
+				if (Tx)
+					Tx->parent = z;
 				return y;
 			}
 
@@ -338,8 +333,8 @@ namespace ft
 				z->right = Tx;
 				y->parent = z->parent;
 				z->parent = y;
-				// if (Tx)
-				// 	Tx->parent = z;
+				if (Tx)
+					Tx->parent = z;
 				return y;
 			}
 

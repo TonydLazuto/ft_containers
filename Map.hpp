@@ -140,7 +140,7 @@ namespace ft
 				// }
 				// match_node == NULL => true => insertion has been done
 				ft::pair<iterator, bool> pair_ret(new_node, match_node == NULL);
-				_avl.linkEnd();
+				_avl.linkEnd();				
 				_avl.print2D(_avl._root, 5);
 				return (pair_ret);
 			}

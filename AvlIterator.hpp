@@ -35,15 +35,29 @@ namespace ft
 			
 			AvlIterator& operator++(void)
 			{
-				std::cout << "pre incr" << std::endl;
+				// std::cout << "--- START pre incr ---" << std::endl;
 				Pair	save = _itor->pr;
-
-				while (!_itor->right || (_itor->right->pr < save))
-					_itor = _itor->parent;
-				if (_itor && _itor->right &&_itor->pr <= save)
-					_itor = _itor->right;
+				
+				if (_itor)
+				{
+					if (!_itor->right && _itor->parent) // _itor == LeftChild || RightChild
+					{
+						while (_itor->pr <= save && _itor->parent)
+							_itor = _itor->parent;
+					}
+					else if (_itor->right) // _itor == Parent
+					{
+						_itor = _itor->right;
+						while (_itor->left)
+						{
+							_itor = _itor->left;
+						}
+					}
+				}
+				// std::cout << "--- END pre incr ---" << std::endl;
 				return *this;
 			}
+
 			AvlIterator operator++(int)
 			{
 				std::cout << "post incr" << std::endl;
@@ -74,6 +88,10 @@ namespace ft
 	bool operator==(ft::AvlIterator<T,Pair> lhs,
 		ft::AvlIterator<T,Pair> rhs)
 	{
+		std::cout << "lhs.first: " << lhs->first << std::endl;
+		std::cout << "lhs.second: " << lhs->second << std::endl;
+		std::cout << "rhs.first: " << rhs->first << std::endl;
+		std::cout << "rhs.second: " << rhs->second << std::endl;
 		return (*lhs == *rhs);
 	}
 

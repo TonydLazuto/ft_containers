@@ -25,7 +25,6 @@ struct Buffer
 	char buff[BUFFER_SIZE];
 };
 
-
 #define COUNT (MAX_RAM / (int)sizeof(Buffer))
 /*
 template<typename T>
@@ -50,23 +49,70 @@ public:
 
 int main(int argc, char** argv) {
 	
-	ft::map<char, int> map1;
+	ft::map<char, int> mymap;
 
-	ft::pair<char, int> pr1('a', 0);
-	ft::pair<char, int> pr2('b', 1);
-	ft::pair<char, int> pr3('c', 2);
-	ft::pair<char, int> pr4('d', 3);
-	ft::pair<char, int> pr5('e', 4);
-	ft::pair<char, int> pr6('f', 5);
-	ft::pair<char, int> pr7('g', 6);
-	ft::pair<ft::map<char, int>::iterator, bool> ret1 = map1.insert(pr1);
-	map1.insert(pr2);
-	map1.insert(pr3);
-	map1.insert(pr4);
-	// map1.insert(pr5);
-	// map1.insert(pr6);
-	// map1.insert(pr7);
+	ft::pair<char, int> pr1('a', 1);
+	ft::pair<char, int> pr2('b', 2);
+	ft::pair<char, int> pr3('c', 3);
+	ft::pair<char, int> pr4('d', 4);
+	ft::pair<char, int> pr5('e', 5);
+	ft::pair<char, int> pr6('f', 6);
+	ft::pair<char, int> pr7('g', 7);
+	ft::pair<char, int> pr8('h', 8);
+	ft::pair<char, int> pr9('i', 9);
+	ft::pair<char, int> pr10('k', 10);
+	ft::pair<char, int> pr11('l', 11);
+	ft::pair<char, int> pr12('m', 12);
+	ft::pair<char, int> pr13('n', 13);
+	mymap.insert(pr1);
+	mymap.insert(pr2);
+	mymap.insert(pr3);
+	mymap.insert(pr4);
+	mymap.insert(pr5);
+	mymap.insert(pr6);
+	mymap.insert(pr7);
+	mymap.insert(pr8);
+	mymap.insert(pr9);
+	mymap.insert(pr10);
+	mymap.insert(pr11);
+	mymap.insert(pr12);
+	mymap.insert(pr13);
+	ft::map<char,int>::iterator it=mymap.begin();
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	std::cout << it->first << " => " << it->second << std::endl;
+	++it;
+	if (it == mymap.end())
+		std::cout << "Kudos" << std::endl;
+	else
+		std::cout << "Different" << std::endl;
 
+	// for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+    // 	std::cout << it->first << " => " << it->second << std::endl;
 	// map1.erase(pr1.first);
 	// map1.erase(pr3.first);
 	// map1.erase(pr4.first);
