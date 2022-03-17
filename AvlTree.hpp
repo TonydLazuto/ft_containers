@@ -10,7 +10,7 @@
 
 namespace ft
 {
-	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
+	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< ft::pair<Key, T> > >
 	class AvlTree
 	{
 		// friend class TestAvlTree;
@@ -18,17 +18,22 @@ namespace ft
 		friend class map;
 
 		public:
-			typedef ft::pair<const Key, T> value_type;
+			typedef ft::pair<Key, T> value_type;
 			typedef	Node<Key, T> NodeTree;
 
+			typedef Alloc alloc_pair;
 			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
 
 
-			AvlTree( const alloc_node& alloc = alloc_node() ) : _root(NULL)
-			, _end(NULL), _nb_nodes(0), _alloc_n(alloc)
+			AvlTree( const alloc_node& alloc_n = alloc_node()
+			, const alloc_pair& alloc_pr = alloc_pair() )
+			: _root(NULL), _end(NULL)
+			, _nb_nodes(0), _alloc_n(alloc_n), _alloc_pr(alloc_pr)
 			{
 				_end = _alloc_n.allocate(1);
 				_alloc_n.construct(_end, NodeTree());
+				_end->pr = _alloc_pr.allocate(1);
+				_alloc_pr.construct(&_end->pr, value_type());
 			}
 
 			virtual ~AvlTree( void ) {
@@ -36,7 +41,8 @@ namespace ft
 			}
 
 			AvlTree(AvlTree const & src) : _root(src._root), _end(src._end)
-			, _alloc_n(src._alloc_n), _nb_nodes(src._nb_nodes) {}
+			, _nb_nodes(src._nb_nodes), _alloc_n(src._alloc_n)
+			, _alloc_pr(src._alloc_pr) {}
 
 			AvlTree& operator=(AvlTree const & rhs)
 			{
@@ -44,6 +50,7 @@ namespace ft
 				_end = rhs._end;
 				_nb_nodes = rhs._nb_nodes;
 				_alloc_n = rhs._alloc_n;
+				_alloc_pr = rhs._alloc_pr;
 				return *this;
 			}
 
@@ -89,24 +96,6 @@ namespace ft
 				return max_node;
 			}
 
-
-			// NodeTree* searchByPair(NodeTree* r, NodeTree *parent, const ft::pair<Key, T>& pr)
-			// {
-			// 	if (r == NULL)
-			// 		return NULL;
-			// 	if (pr < r->pr)
-			// 	{
-			// 		parent = r;
-			// 		return searchByPair(r->left, parent, pr);
-			// 	}
-			// 	else if (pr > r->pr)
-			// 	{
-			// 		parent = r;
-			// 		return searchByPair(r->right, parent, pr);
-			// 	}
-			// 	return r;
-			// }
-
 			NodeTree* searchByKey(NodeTree* r, Key k)
 			{
 				if (r == NULL)
@@ -141,11 +130,11 @@ namespace ft
 				if (r == NULL)
 				{
 					r = _alloc_n.allocate(1);
-					_alloc_n.construct(r, NodeTree(parent, val));
+					_alloc_n.construct(r, NodeTree(parent));
+					r->pr = _alloc_pr.allocate(1);
+					_alloc_pr.construct(&r->pr, value_type(val));
 					new_node = r;
 					_nb_nodes++;
-					// if (_nb_nodes == 1)
-					// 	_root = r;
 					std::cout << "Value inserted successfully" << std::endl;
 					return r;
 				}
@@ -156,7 +145,6 @@ namespace ft
 				else
 					return r;
 				r = balanceInsert(r, val);
-				
 				return r;
 			}
 
@@ -290,14 +278,13 @@ namespace ft
 				}
 			}
 
-			
-
 		private:
 
 			NodeTree*		_root;
 			NodeTree*		_end;
 			size_t			_nb_nodes;
 			alloc_node		_alloc_n;
+			alloc_pair		_alloc_pr;
 
 
 			// Get Height

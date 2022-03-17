@@ -7,7 +7,7 @@
 
 namespace ft 
 {
-	template < class T >
+	template < class T, class Pair >
 	class AvlIterator
 	{
 		private:
@@ -30,25 +30,24 @@ namespace ft
 					this->_itor = rhs._itor;
 				return *this;
 			}
-			AvlIterator* operator*(void) { return (*this->_itor->pr); }
-			pointer operator->(void) { return &(this->operator*()); }
+			Pair& operator*(void) { return (this->_itor->pr); }
+			Pair* operator->(void) { return &(this->operator*()); }
 			
 			AvlIterator& operator++(void)
 			{
-				if (_itor->right)
+				std::cout << "pre incr" << std::endl;
+				Pair	save = _itor->pr;
+
+				while (!_itor->right || (_itor->right->pr < save))
+					_itor = _itor->parent;
+				if (_itor && _itor->right &&_itor->pr <= save)
 					_itor = _itor->right;
-				else
-				{
-					while (_itor->parent && !_itor->right)
-						_itor = _itor->parent;
-					_itor = _itor->right;
-				}
 				return *this;
 			}
 			AvlIterator operator++(int)
 			{
-				AvlIterator tmp = *this;
-				tmp._itor = this->_itor++;
+				std::cout << "post incr" << std::endl;
+				AvlIterator tmp = operator++();
 				return tmp;
 			}
 			
@@ -66,38 +65,37 @@ namespace ft
 			}
 			AvlIterator operator--(int)
 			{
-				AvlIterator tmp = *this;
-				tmp._itor = this->_itor--;
+				AvlIterator tmp = operator--();
 				return tmp;
 			}
 
 	};
-	template <typename T>
-	bool operator==(const ft::AvlIterator<T> lhs,
-		const ft::AvlIterator<T> rhs)
+	template <typename T, typename Pair>
+	bool operator==(ft::AvlIterator<T,Pair> lhs,
+		ft::AvlIterator<T,Pair> rhs)
 	{
-		return (lhs.base() == rhs.base());
+		return (*lhs == *rhs);
 	}
 
-	template<typename T_L, typename T_R>
-	bool operator==(const ft::AvlIterator<T_L> lhs,
-		const ft::AvlIterator<T_R> rhs)
+	template<typename T_L, typename T_R, typename Pair>
+	bool operator==(ft::AvlIterator<T_L,Pair> lhs,
+		ft::AvlIterator<T_R,Pair> rhs)
 	{
-		return (lhs.base() == rhs.base());
+		return (*lhs == *rhs);
 	}
 
-	template <typename T>
-	bool operator!=(const ft::AvlIterator<T> lhs,
-		const ft::AvlIterator<T> rhs)
+	template <typename T, typename Pair>
+	bool operator!=(ft::AvlIterator<T,Pair> lhs,
+		ft::AvlIterator<T,Pair> rhs)
 	{
-		return (lhs.base() != rhs.base());
+		return (*lhs != *rhs);
 	}
 
-	template<typename T_L, typename T_R>
-	bool operator!=(const ft::AvlIterator<T_L> lhs,
-		const ft::AvlIterator<T_R> rhs)
+	template<typename T_L, typename T_R, typename Pair>
+	bool operator!=(ft::AvlIterator<T_L,Pair> lhs,
+		ft::AvlIterator<T_R,Pair> rhs)
 	{
-		return (lhs.base() != rhs.base());
+		return (*lhs != *rhs);
 	}
 }
 

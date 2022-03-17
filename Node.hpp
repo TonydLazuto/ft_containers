@@ -14,15 +14,11 @@ class Node
 		Node*				left;
 		Node*				right;
 		ft::pair<Key, T>	pr;
-		
 
-		Node( void ) : parent(NULL), left(NULL), right(NULL), pr() {}
+		Node( void ) : parent(NULL), left(NULL), right(NULL) {}
 
-		Node( ft::pair<Key, T> a_pr )
-		: parent(NULL), left(NULL), right(NULL), pr(a_pr) {}
-
-		Node( Node<Key, T>* theparent, ft::pair<Key, T> a_pr )
-		: parent(theparent), left(NULL), right(NULL), pr(a_pr) {}
+		Node( Node<Key, T>* theparent )
+		: parent(theparent), left(NULL), right(NULL) {}
 
 		virtual ~Node( void ) {}
 

@@ -28,14 +28,21 @@ namespace ft
 			this->second = pr.second;
 			return *this;
 		}
+
+		pair& operator=(pair const* pr)
+		{
+			this->first = pr->first;
+			this->second = pr->second;
+			return *this;
+		}
 	};
 
-	template <class T1, class T2>
-	std::ostream & operator<<(std::ostream &o, const ft::pair<T1, T2> pair)
-	{
-		o << "pair.first: " << pair.first << std::endl << "pair.second: " << pair.second << std::endl;
-		return o;
-	}
+	// template <class T1, class T2>
+	// std::ostream & operator<<(std::ostream &o, const ft::pair<T1, T2> pair)
+	// {
+	// 	o << "pair.first: " << pair.first << std::endl << "pair.second: " << pair.second << std::endl;
+	// 	return o;
+	// }
 
 	template <class T1, class T2>
 	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
