@@ -81,13 +81,8 @@ namespace ft
 				NodeTree* max_node = node;
 				/* loop down to find the rightmost leaf */
 				int i = 0;
-				while (max_node && max_node->right != NULL && i < 5)
+				while (max_node && max_node->right)
 				{
-					if (max_node)
-					{
-							// std::cout << "max_node.first: " << max_node->pr.first << std::endl;
-							// std::cout << "max_node.second: " << max_node->pr.second << std::endl;
-					}
 					max_node = max_node->right;
 					i++;
 				}
@@ -143,12 +138,8 @@ namespace ft
 			NodeTree* insertNode(NodeTree* r, NodeTree* parent
 				, const ft::pair<Key, T>& val, NodeTree*& new_node)
 			{
-				// std::cout << "yo" << std::endl;
-				
 				if (r == NULL)
 				{
-					// if (parent)
-					// 	std::cout << "parent.first: " << parent->pr.first << std::endl;
 					r = _alloc_n.allocate(1);
 					_alloc_n.construct(r, NodeTree(parent, val));
 					new_node = r;
@@ -273,31 +264,15 @@ namespace ft
 
 			void	linkEnd(void)
 			{
-				if (_root)
-				{
-					std::cout << "yep" <<std::endl;
-					// std::cout << "_root.first: " << _root->pr.first << std::endl;
-					// std::cout << "_root.second: " << _root->parent->pr.second << std::endl;
-					if (_root->parent)
-					{
-						std::cout << "_root->parent.first: " << _root->parent->pr.first << std::endl;
-						std::cout << "_root->parent.second: " << _root->parent->pr.second << std::endl;
-					}
-					if (_root->left)
-					{
-						std::cout << "_root->left.first: " << _root->left->pr.first << std::endl;
-						std::cout << "_root->left.second: " << _root->left->pr.second << std::endl;
-					}
-					if (_root->right)
-					{
-						std::cout << "_root->right.first: " << _root->right->pr.first << std::endl;
-						std::cout << "_root->right.second: " << _root->right->pr.second << std::endl;
-					}
-				}
 				NodeTree	*last_node = maxValueNode(_root);
 
 				if (last_node)
 				{
+					if (_root)
+					{
+						// std::cout << "link-> _root.first: " << _root->pr.first << std::endl;
+						// std::cout << "link-> _root.second: " << _root->pr.second << std::endl;
+					}
 					last_node->right = _end;
 					_end->parent = last_node;
 				}
@@ -305,8 +280,9 @@ namespace ft
 
 			void	unlinkEnd(void)
 			{
-std::cout << "yo4" << std::endl;
 				NodeTree	*last_node = maxValueNode(_root);
+				if (last_node && (last_node->parent))
+					last_node = last_node->parent;
 				if (last_node)
 				{
 					last_node->right = NULL;

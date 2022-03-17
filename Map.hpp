@@ -118,6 +118,11 @@ namespace ft
 				NodeTree*	new_node = match_node;
 
 				_avl._root = _avl.insertNode(_avl._root, NULL, val, new_node);
+				// if (_avl._root)
+				// {
+				// 	std::cout << "_avl._root.first: " << _avl._root->pr.first << std::endl;
+				// 	std::cout << "_avl._root.second: " << _avl._root->pr.second << std::endl;
+				// }
 				// if (_avl._root->parent)
 				// {
 				// 	std::cout << "_avl._root->parent.first: " << _avl._root->parent->pr.first << std::endl;
@@ -136,11 +141,6 @@ namespace ft
 				_avl.print2D(_avl._root, 5);
 				// match_node == NULL => true => insertion has been done
 				ft::pair<iterator, bool> pair_ret(new_node, match_node == NULL);
-				// if (new_node)
-				// {
-				// 	std::cout << "new_node.first: " << new_node->pr.first << std::endl;
-				// 	std::cout << "new_node.second: " << new_node->pr.second << std::endl;
-				// }
 				_avl.linkEnd();
 				return (pair_ret);
 			}
