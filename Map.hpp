@@ -116,9 +116,8 @@ namespace ft
 			{
 				_avl.unlinkEnd();
 				NodeTree*	match_node = _avl.iterativeSearch(_avl._root, val);
-				NodeTree*	new_node = match_node;
 
-				_avl._root = _avl.insertNode(_avl._root, NULL, val, new_node);
+				_avl._root = _avl.insertNode(_avl._root, NULL, val);
 				// if (_avl._root)
 				// {
 				// 	std::cout << "_avl._root.first: " << _avl._root->pr.first << std::endl;
@@ -140,8 +139,8 @@ namespace ft
 				// 	std::cout << "_avl._root->right.second: " << _avl._root->right->pr->second << std::endl;
 				// }
 				// match_node == NULL => true => insertion has been done
-				ft::pair<iterator, bool> pair_ret(new_node, match_node == NULL);
-				_avl.linkEnd();				
+				ft::pair<iterator, bool> pair_ret(match_node, match_node == NULL);
+				_avl.linkEnd();		
 				_avl.print2D(_avl._root, 5);
 				return (pair_ret);
 			}
@@ -155,12 +154,14 @@ namespace ft
 
 			size_type erase (const key_type& k)
 			{
+				_avl.unlinkEnd();
 				NodeTree*	to_del;
 
 				to_del = _avl.searchByKey(_avl._root, k);
 				if (!to_del)
 					return (0);
 				_avl._root = _avl.deleteNode(_avl._root, NULL, to_del);
+				_avl.linkEnd();
 				return (1);
 			}
 

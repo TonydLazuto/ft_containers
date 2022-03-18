@@ -37,7 +37,6 @@ namespace ft
 			}
 
 			virtual ~AvlTree( void ) {
-
 			}
 
 			AvlTree(AvlTree const & src) : _root(src._root), _end(src._end)
@@ -125,7 +124,7 @@ namespace ft
 			
 			// 1st arg always root?
 			NodeTree* insertNode(NodeTree* r, NodeTree* parent
-				, const ft::pair<Key, T>& val, NodeTree*& new_node)
+				, const ft::pair<Key, T>& val)
 			{
 				if (r == NULL)
 				{
@@ -133,15 +132,14 @@ namespace ft
 					_alloc_n.construct(r, NodeTree(parent));
 					r->pr = _alloc_pr.allocate(1);
 					_alloc_pr.construct(&r->pr, value_type(val));
-					new_node = r;
 					_nb_nodes++;
 					std::cout << "Value inserted successfully" << std::endl;
 					return r;
 				}
 				else if (val < r->pr)
-					r->left = insertNode(r->left, r, val, new_node);
+					r->left = insertNode(r->left, r, val);
 				else if (val > r->pr)
-					r->right = insertNode(r->right, r, val, new_node);
+					r->right = insertNode(r->right, r, val);
 				else
 					return r;
 				r = balanceInsert(r, val);
@@ -177,48 +175,52 @@ namespace ft
 				if (r == NULL)
 					return NULL;
 				else if (node->pr < r->pr)
-					r->left = deleteNode(r->left, parent, node);
+					r->left = deleteNode(r->left, r, node);
 				else if (node->pr > r->pr)
-					r->right = deleteNode(r->right, parent, node);
+					r->right = deleteNode(r->right, r, node);
 				else
 				{
-					this->print2D(_root, 5);
-					_nb_nodes--;
 					// Node with only one child or no child 
 					if (r->left == NULL)
 					{
+						_nb_nodes--;
 						NodeTree* temp = r->right;
+						_alloc_pr.destroy(&temp->pr);
+						_alloc_pr.deallocate(&temp->pr, 1);
 						_alloc_n.destroy(temp);
 						_alloc_n.deallocate(temp, 1);
 						return parent;
 					}
 					else if (r->right == NULL)
 					{
+						_nb_nodes--;
 						NodeTree* temp = r->left;
+						_alloc_pr.destroy(&temp->pr);
+						_alloc_pr.deallocate(&temp->pr, 1);
 						_alloc_n.destroy(temp);
 						_alloc_n.deallocate(temp, 1);
 						return parent;
 					}
 					else
 					{
-						// Node with two children: Get the inorder successor (smallest 
-						// in the right subtree) 
+						// Node with two children: Get the inorder successor (smallest
+						// in the right subtree)
 						NodeTree* minright = minValueNode(r->right);
-						// Copy the inorder successor's content to this Node 
+						// Copy the inorder successor's content to this Node
 						r->pr = minright->pr;
-						// Delete the inorder successor 
+						// Delete the inorder successor
 						r->right = deleteNode(r->right, r, minright);
-						//deleteNode(r->right, minright->pr); 
+						_nb_nodes--;
 					}
 				}
-
-				int bf = getBalanceFactor(r);
-				r = balanceDeletion(bf, r);
+				r = balanceDeletion(r);
 				return r;
 			}
 
-			NodeTree*	balanceDeletion(int bf, NodeTree* r)
+			NodeTree*	balanceDeletion(NodeTree* r)
 			{
+
+				int bf = getBalanceFactor(r);
 				// Left Left Imbalance/Case or Right rotation 
 				if (bf == 2 && getBalanceFactor(r->left) >= 0)
 					return rightRotate(r);

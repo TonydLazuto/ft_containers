@@ -26,8 +26,7 @@ namespace ft
 			MapIterator(MapIterator const & src) : _itor(src._itor) {}
 			MapIterator& operator=(MapIterator const & rhs)
 			{
-				if (*this != rhs)
-					this->_itor = rhs._itor;
+				this->_itor = rhs._itor;
 				return *this;
 			}
 			Pair& operator*(void) { return (this->_itor->pr); }

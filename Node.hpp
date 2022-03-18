@@ -10,6 +10,7 @@ class Node
 {
 	public:
 
+		typedef ft::pair<Key, T>*	pr_ptr;
 		Node*				parent;
 		Node*				left;
 		Node*				right;
