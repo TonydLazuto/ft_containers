@@ -4,8 +4,8 @@
 #include <iostream>
 #include <memory>
 #include "Maptools.hpp"
-#include "AvlIterator.hpp"
-#include "ReverseIterator.hpp"
+#include "MapIterator.hpp"
+#include "ReverseMapIterator.hpp"
 #include "IteratorTraits.hpp"
 #include "AvlTree.hpp"
 #include "Nullptr.hpp"
@@ -31,10 +31,10 @@ namespace ft
 			typedef T&        reference;
 			typedef const T&  const_reference;
 
-			typedef typename ft::AvlIterator<NodeTree, value_type> iterator;
-			typedef typename ft::AvlIterator<const NodeTree, value_type> const_iterator; //2eme classe const ?
-			typedef typename ft::ReverseIterator<iterator> reverse_iterator;
-			typedef typename ft::ReverseIterator<const_iterator> const_reverse_iterator;
+			typedef typename ft::MapIterator<NodeTree, value_type> iterator;
+			typedef typename ft::MapIterator<const NodeTree, value_type> const_iterator; //2eme classe const ?
+			typedef typename ft::ReverseMapIterator<iterator, value_type> reverse_iterator;
+			typedef typename ft::ReverseMapIterator<const_iterator, value_type> const_reverse_iterator;
 
 			typedef typename IteratorTraits<iterator>::difference_type difference_type;
 			typedef size_t	size_type;
@@ -81,20 +81,24 @@ namespace ft
 			}
 
 			iterator begin(void) { return (_avl.getBegin()); }
-			// const_iterator begin(void) const;
-			// reverse_iterator rbegin(void)
-			// {
-			// 	return (reverse_iterator(_v_end));
-			// }
-			// const_reverse_iterator rbegin(void) const
-			// {
-			// 	return (reverse_iterator(_v_end));
-			// }
+			const_iterator begin(void) const { return (_avl.getBegin()); }
+			reverse_iterator rbegin(void)
+			{
+				iterator it = _avl.getEnd();
+				--it;
+				return (reverse_iterator(it));
+			}
+			const_reverse_iterator rbegin(void) const
+			{
+				iterator it = _avl.getEnd();
+				--it;
+				return (reverse_iterator(it));
+			}
 			
 			iterator end(void) { return (_avl.getEnd()); }
-			// const_iterator end(void) const {}
-			// reverse_iterator rend(void) { return (reverse_iterator(_v)); }
-			// const_reverse_iterator rend(void) const { return (reverse_iterator(_v)); }
+			const_iterator end(void) const { return (_avl.getEnd()); }
+			reverse_iterator rend(void) { return (reverse_iterator(_avl.getBegin())); }
+			const_reverse_iterator rend(void) const { return (reverse_iterator(_avl.getBegin())); }
 			
 			bool empty(void) const
 			{
@@ -120,8 +124,8 @@ namespace ft
 				_avl._root = _avl.insertNode(_avl._root, NULL, val, new_node);
 				// if (_avl._root)
 				// {
-				// 	std::cout << "_avl._root.first: " << _avl._root->pr->first << std::endl;
-				// 	std::cout << "_avl._root.second: " << _avl._root->pr->second << std::endl;
+				// 	std::cout << "_avl._root.first: " << _avl._root->pr.first << std::endl;
+				// 	std::cout << "_avl._root.second: " << _avl._root->pr.second << std::endl;
 				// }
 				// if (_avl._root->parent)
 				// {

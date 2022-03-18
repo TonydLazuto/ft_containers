@@ -38,6 +38,18 @@ class Node
 			pr = rhs.pr;
 			return *this;
 		}
+
+		Node*	getEndNode(void)
+		{
+			Node<Key, T>* end_node = &*this;
+			/* Go to the rooftop */
+			while (end_node && end_node->parent)
+				end_node = end_node->parent;
+			/* loop down to find the rightmost leaf */
+			while (end_node && end_node->right)
+				end_node = end_node->right;
+			return end_node;
+		}
 };
 
 #endif
