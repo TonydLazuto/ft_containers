@@ -172,7 +172,13 @@ namespace ft
 
 			mapped_type& operator[](const key_type& k)
 			{
-				(*((this->insert(ft::make_pair(k, mapped_type() ))).first))->second;
+				NodeTree*	match_elet;
+
+				match_elet = _avl.searchByKey(_avl._root, k);
+				if (match_elet)
+					return (match_elet->pr.second);
+				ft::pair<iterator, bool> ret_pair = insert(match_elet->pr);
+				return ((*(ret_pair.first)).second);
 			}
 
 			// key_compare key_comp(void) const;

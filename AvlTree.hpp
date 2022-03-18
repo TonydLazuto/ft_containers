@@ -93,9 +93,15 @@ namespace ft
 			NodeTree* searchByKey(NodeTree* r, Key k)
 			{
 				if (r == NULL)
+				{
+					std::cout << "Yo1" << std::endl;
 					return NULL;
+				}
 				if (r->pr.first && r->pr.first == k)
+				{
+					std::cout << "Yo1" << std::endl;
 					return r;
+				}
 				else if (k < r->pr.first)
 					return searchByKey(r->left, k);
 				else if (k > r->pr.first)

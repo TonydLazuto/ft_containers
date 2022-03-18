@@ -60,12 +60,13 @@ int main(int argc, char** argv) {
 		mymap.insert(pr[i]);
 	}
 
+	int val = mymap['e'];
+	std::cout << val << std::endl;
 	// mymap.erase(pr[5].first);
-	ft::map<char,int>::iterator it;
-	for (it=mymap.begin(); it!=mymap.end(); ++it)
-    	std::cout << it->first << " => " << it->second << std::endl;
+	// ft::map<char,int>::iterator it;
+	// for (it=mymap.begin(); it!=mymap.end(); ++it)
+    // 	std::cout << it->first << " => " << it->second << std::endl;
 
-	std::cout << mymap.max_size() << std::endl;
 	// map1.erase(pr1.first);
 	// map1.erase(pr3.first);
 	// map1.erase(pr4.first);
