@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include <limits>
 #include "Maptools.hpp"
 #include "MapIterator.hpp"
 #include "ReverseMapIterator.hpp"
@@ -99,19 +100,11 @@ namespace ft
 			reverse_iterator rend(void) { return (reverse_iterator(_avl.getBegin())); }
 			const_reverse_iterator rend(void) const { return (reverse_iterator(_avl.getBegin())); }
 			
-			bool empty(void) const
-			{
-				return (this->size() == 0 ? true : false);
-			}
-
-			size_type size(void) const 
-			{
-				return (_avl._nb_nodes);
-			}
-
-			size_type max_size(void) const
-			{
-				return (_alloc.max_size());
+			bool empty(void) const{ return (this->size() == 0 ? true : false); }
+			size_type size(void) const { return (_avl._nb_nodes); }
+			size_type max_size(void) const {
+				// return (std::numeric_limits<difference_type>::max() / (sizeof(T) / 2 < 1 ? 1 : sizeof(T) / 2 / 2));
+				return std::numeric_limits<size_type>::max() / sizeof(T) / 2 / 10;
 			}
 
 			ft::pair<iterator, bool> insert (const value_type& val)
@@ -200,8 +193,7 @@ namespace ft
 			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
 			// pair<iterator,iterator>             equal_range (const key_type& k);
 
-			allocator_type get_allocator(void) const
-			{ return static_cast<allocator_type>(this->_avl.getAlloc()); }
+			allocator_type get_allocator(void) const { return this->_alloc; }
 
 		private:
 			ft::AvlTree<Key, T>	_avl;

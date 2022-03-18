@@ -20,6 +20,7 @@ namespace ft
 		public:
 			typedef ft::pair<Key, T> value_type;
 			typedef	Node<Key, T> NodeTree;
+			typedef size_t	size_type;
 
 			typedef Alloc alloc_pair;
 			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
@@ -264,14 +265,14 @@ namespace ft
 				}
 			}
 
-			alloc_node		getAlloc(void)
-			{ return this->_alloc_n; }
+			size_type		get_max_size(void) const
+			{ return this->_alloc_n.max_size(); }
 
 		private:
 
 			NodeTree*		_root;
 			NodeTree*		_end;
-			size_t			_nb_nodes;
+			size_type			_nb_nodes;
 			alloc_node		_alloc_n;
 
 			// Get Height
