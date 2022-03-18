@@ -9,17 +9,16 @@ template < class Key, class T >
 class Node
 {
 	public:
-
-		typedef ft::pair<Key, T>*	pr_ptr;
+		// typedef ft::pair<Key, T>*	pr_ptr;
 		Node*				parent;
 		Node*				left;
 		Node*				right;
 		ft::pair<Key, T>	pr;
 
-		Node( void ) : parent(NULL), left(NULL), right(NULL) {}
+		Node( void ) : parent(NULL), left(NULL), right(NULL), pr() {}
 
 		Node( Node<Key, T>* theparent )
-		: parent(theparent), left(NULL), right(NULL) {}
+		: parent(theparent), left(NULL), right(NULL), pr() {}
 
 		virtual ~Node( void ) {}
 

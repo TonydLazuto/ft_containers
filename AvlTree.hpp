@@ -25,23 +25,18 @@ namespace ft
 			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
 
 
-			AvlTree( const alloc_node& alloc_n = alloc_node()
-			, const alloc_pair& alloc_pr = alloc_pair() )
-			: _root(NULL), _end(NULL)
-			, _nb_nodes(0), _alloc_n(alloc_n), _alloc_pr(alloc_pr)
+			AvlTree( const alloc_node& alloc_n = alloc_node() )
+			: _root(NULL), _end(NULL), _nb_nodes(0), _alloc_n(alloc_n)
 			{
 				_end = _alloc_n.allocate(1);
 				_alloc_n.construct(_end, NodeTree());
-				_end->pr = _alloc_pr.allocate(1);
-				_alloc_pr.construct(&_end->pr, value_type());
 			}
 
 			virtual ~AvlTree( void ) {
 			}
 
 			AvlTree(AvlTree const & src) : _root(src._root), _end(src._end)
-			, _nb_nodes(src._nb_nodes), _alloc_n(src._alloc_n)
-			, _alloc_pr(src._alloc_pr) {}
+			, _nb_nodes(src._nb_nodes), _alloc_n(src._alloc_n) {}
 
 			AvlTree& operator=(AvlTree const & rhs)
 			{
@@ -49,7 +44,6 @@ namespace ft
 				_end = rhs._end;
 				_nb_nodes = rhs._nb_nodes;
 				_alloc_n = rhs._alloc_n;
-				_alloc_pr = rhs._alloc_pr;
 				return *this;
 			}
 
@@ -130,8 +124,7 @@ namespace ft
 				{
 					r = _alloc_n.allocate(1);
 					_alloc_n.construct(r, NodeTree(parent));
-					r->pr = _alloc_pr.allocate(1);
-					_alloc_pr.construct(&r->pr, value_type(val));
+					r->pr = val;
 					_nb_nodes++;
 					std::cout << "Value inserted successfully" << std::endl;
 					return r;
@@ -185,8 +178,6 @@ namespace ft
 					{
 						_nb_nodes--;
 						NodeTree* temp = r->right;
-						_alloc_pr.destroy(&temp->pr);
-						_alloc_pr.deallocate(&temp->pr, 1);
 						_alloc_n.destroy(temp);
 						_alloc_n.deallocate(temp, 1);
 						return parent;
@@ -195,8 +186,6 @@ namespace ft
 					{
 						_nb_nodes--;
 						NodeTree* temp = r->left;
-						_alloc_pr.destroy(&temp->pr);
-						_alloc_pr.deallocate(&temp->pr, 1);
 						_alloc_n.destroy(temp);
 						_alloc_n.deallocate(temp, 1);
 						return parent;
@@ -275,14 +264,15 @@ namespace ft
 				}
 			}
 
+			alloc_node		getAlloc(void)
+			{ return this->_alloc_n; }
+
 		private:
 
 			NodeTree*		_root;
 			NodeTree*		_end;
 			size_t			_nb_nodes;
 			alloc_node		_alloc_n;
-			alloc_pair		_alloc_pr;
-
 
 			// Get Height
 			int getHeight(NodeTree* r)

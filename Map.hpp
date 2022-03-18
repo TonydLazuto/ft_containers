@@ -25,6 +25,7 @@ namespace ft
 			typedef	Node<Key, T> NodeTree;
 
 			typedef Alloc allocator_type;
+			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
 
 			typedef T*        pointer;
 			typedef const T*  const_pointer;
@@ -35,6 +36,7 @@ namespace ft
 			typedef typename ft::MapIterator<const NodeTree, value_type> const_iterator; //2eme classe const ?
 			typedef typename ft::ReverseMapIterator<iterator, value_type> reverse_iterator;
 			typedef typename ft::ReverseMapIterator<const_iterator, value_type> const_reverse_iterator;
+			
 
 			typedef typename IteratorTraits<iterator>::difference_type difference_type;
 			typedef size_t	size_type;
@@ -141,7 +143,7 @@ namespace ft
 				// match_node == NULL => true => insertion has been done
 				ft::pair<iterator, bool> pair_ret(match_node, match_node == NULL);
 				_avl.linkEnd();		
-				_avl.print2D(_avl._root, 5);
+				// _avl.print2D(_avl._root, 5);
 				return (pair_ret);
 			}
 
@@ -198,7 +200,8 @@ namespace ft
 			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
 			// pair<iterator,iterator>             equal_range (const key_type& k);
 
-			allocator_type get_allocator(void) const { return this->_alloc; }
+			allocator_type get_allocator(void) const
+			{ return static_cast<allocator_type>(this->_avl.getAlloc()); }
 
 		private:
 			ft::AvlTree<Key, T>	_avl;
