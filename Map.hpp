@@ -51,10 +51,9 @@ namespace ft
 
 			explicit map (const key_compare& comp = key_compare(),
 				const allocator_type& alloc = allocator_type())
-				: _avl()
+				: _avl(), _alloc(alloc)
 				{
 					(void)comp;
-					(void)alloc;
 				}
 
 			// template <class InputIterator>
@@ -69,14 +68,12 @@ namespace ft
 
 			virtual ~map( void ) {}
 
-			map(const map& x)
-			{
-				this->_avl(x._avl);
-			}
+			map(const map& x) : _avl(x._avl), _alloc(x._alloc) {}
 
 			map& operator=(map const & x)
 			{
-				this->_avl(x._avl);
+				_avl(x._avl);
+				_alloc(x._alloc);
 				return *this;
 			}
 
@@ -110,10 +107,10 @@ namespace ft
 				return (_avl._nb_nodes);
 			}
 
-			// size_type max_size(void) const
-			// {
-			// 	return (_alloc.max_size());
-			// }
+			size_type max_size(void) const
+			{
+				return (_alloc.max_size());
+			}
 
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
@@ -204,6 +201,7 @@ namespace ft
 
 		private:
 			ft::AvlTree<Key, T>	_avl;
+			allocator_type		_alloc;
 
 	};
 	template <class Key, class T, class Compare, class Allocator>
