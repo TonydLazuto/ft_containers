@@ -142,15 +142,12 @@ namespace ft
 			size_type erase (const key_type& k)
 			{
 				_avl.unlinkEnd();
-				_avl.print2D(_avl._root, 5);
 				std::cout << "------------------------------------------------------------" << std::endl;
 				NodeTree*	to_del;
 
-				std::cout << "yo" << std::endl;
 				to_del = _avl.searchByKey(_avl._root, k);
 				if (!to_del)
 					return (0);
-				std::cout << "yo" << std::endl;
 				_avl._root = _avl.deleteNode(_avl._root, to_del);
 				_avl.print2D(_avl._root, 5);
 				std::cout << "------------------------------------------------------------" << std::endl;

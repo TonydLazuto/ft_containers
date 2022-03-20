@@ -57,7 +57,11 @@ namespace ft
 					std::cout << " "; // 5.1
 				std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second;// << std::endl; // 6
 				if (r && r->parent)
+				{
+					std::cout << ", r.first: " << r->pr.first;
+					std::cout << ", r.second: " << r->pr.second;
 					std::cout << ", Parent=" << r->parent->pr.first << std::endl;
+				}
 				else
 					std::cout << std::endl;
 				print2D(r->left, space); // Process left child  7
@@ -176,6 +180,19 @@ namespace ft
 				_alloc_n.deallocate(r, 1);
 				return side;
 			}
+
+			void	redefineMinrightchildParent (NodeTree* minright)
+			{
+				NodeTree* minright_child;
+				
+				if (minright->right)
+					minright_child = minright->right;
+				else if (minright->left)
+					minright_child = minright->left;
+				else
+					return ;
+				minright_child->parent = minright_child->parent->parent;
+			}
 			NodeTree*	deleteNode(NodeTree* r, NodeTree* node) {
 				// base case 
 				if (r == NULL)
@@ -187,13 +204,16 @@ namespace ft
 				else
 				{
 					// Node with only one child or no child 
-					if (r->left == NULL || r->right == NULL)
+					if (r->left == NULL || !r->right)
 						return (delSingleChild(r));
+					// else if (r->right == NULL)
+					// 	return (delSingleChild(r, r->left));
 					else
 					{
 						// Node with two children: Get the inorder successor
 						// (smallest in the right subtree)
 						NodeTree* minright = minValueNode(r->right);
+						redefineMinrightchildParent(minright);
 						// Copy the inorder successor's content to this Node
 						r->pr = minright->pr;
 						// Delete the inorder successor
