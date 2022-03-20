@@ -164,8 +164,9 @@ namespace ft
 				match_elet = _avl.searchByKey(_avl._root, k);
 				if (match_elet)
 					return (match_elet->pr.second);
-				ft::pair<iterator, bool> ret_pair = insert(match_elet->pr);
-				return ((*(ret_pair.first)).second);
+				value_type val(k, 0);
+				ft::pair<iterator, bool> ret_pair = insert(val);
+				return ((ret_pair.first)->second);
 			}
 
 			// key_compare key_comp(void) const;
