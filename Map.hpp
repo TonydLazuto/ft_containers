@@ -4,12 +4,13 @@
 #include <iostream>
 #include <memory>
 #include <limits>
-#include "Maptools.hpp"
 #include "MapIterator.hpp"
 #include "ReverseMapIterator.hpp"
 #include "IteratorTraits.hpp"
 #include "AvlTree.hpp"
 #include "Nullptr.hpp"
+#include "IsIntegral.hpp"
+#include "EnableIf.hpp"
 
 namespace ft
 {
@@ -37,7 +38,6 @@ namespace ft
 			typedef typename ft::MapIterator<const NodeTree, value_type> const_iterator; //2eme classe const ?
 			typedef typename ft::ReverseMapIterator<iterator, value_type> reverse_iterator;
 			typedef typename ft::ReverseMapIterator<const_iterator, value_type> const_reverse_iterator;
-			
 
 			typedef typename IteratorTraits<iterator>::difference_type difference_type;
 			typedef size_t	size_type;
@@ -101,7 +101,7 @@ namespace ft
 			const_reverse_iterator rend(void) const { return (reverse_iterator(_avl.getBegin())); }
 			
 			bool empty(void) const{ return (this->size() == 0 ? true : false); }
-			size_type size(void) const { return (_avl._nb_nodes); }
+			size_type size(void) const { return (_avl.getSize()); }
 			size_type max_size(void) const {
 				// return (std::numeric_limits<difference_type>::max() / (sizeof(T) / 2 < 1 ? 1 : sizeof(T) / 2 / 2));
 				return std::numeric_limits<size_type>::max() / sizeof(T) / 2 / 10;
@@ -123,7 +123,8 @@ namespace ft
 				if (match_node == NULL)
 					match_node = new_insert;
 				ft::pair<iterator, bool> pair_ret(match_node, match_node == NULL);
-				_avl.linkEnd();		
+				_avl.linkEnd();	
+
 				return (pair_ret);
 			}
 
@@ -132,17 +133,27 @@ namespace ft
 			// template <class InputIterator>
 			// void insert (InputIterator first, InputIterator last);
 
-			// void erase (iterator position);
+			void erase (iterator position,
+				typename ft::enable_if<!ft::is_integral<iterator>::value, iterator>::type* = NULL)
+			{
+				erase(position->first);
+			}
 
 			size_type erase (const key_type& k)
 			{
 				_avl.unlinkEnd();
+				_avl.print2D(_avl._root, 5);
+				std::cout << "------------------------------------------------------------" << std::endl;
 				NodeTree*	to_del;
 
+				std::cout << "yo" << std::endl;
 				to_del = _avl.searchByKey(_avl._root, k);
 				if (!to_del)
 					return (0);
-				_avl._root = _avl.deleteNode(_avl._root, NULL, to_del);
+				std::cout << "yo" << std::endl;
+				_avl._root = _avl.deleteNode(_avl._root, to_del);
+				_avl.print2D(_avl._root, 5);
+				std::cout << "------------------------------------------------------------" << std::endl;
 				_avl.linkEnd();
 				return (1);
 			}
@@ -153,8 +164,6 @@ namespace ft
 
 			// void clear(void)
 			// {
-			// 	while (size() > 0)
-			// 		_alloc.destroy(_avl._root);
 			// }
 
 			mapped_type& operator[](const key_type& k)
@@ -173,8 +182,24 @@ namespace ft
 
 			// value_compare value_comp(void) const;
 
-			// iterator find (const key_type& k);
-			// const_iterator find (const key_type& k) const;
+			iterator find (const key_type& k)
+			{
+				NodeTree*	match_elet;
+
+				match_elet = _avl.searchByKey(_avl._root, k);
+				if (match_elet)
+					return (match_elet);
+				return (end());
+			}
+			const_iterator find (const key_type& k) const
+			{
+				NodeTree*	match_elet;
+
+				match_elet = _avl.searchByKey(_avl._root, k);
+				if (match_elet)
+					return (match_elet);
+				return (end());
+			}
 
 			// size_type count (const key_type& k) const;
 

@@ -1,3 +1,5 @@
+#ifndef ENABLEIF_HPP
+# define ENABLEIF_HPP
 
 namespace ft 
 {
@@ -10,3 +12,5 @@ namespace ft
 			typedef T type;
 		};
 }
+
+#endif

@@ -27,7 +27,7 @@ namespace ft
 
 
 			AvlTree( const alloc_node& alloc_n = alloc_node() )
-			: _root(NULL), _end(NULL), _nb_nodes(0), _alloc_n(alloc_n)
+			: _root(NULL), _end(NULL), _alloc_n(alloc_n)
 			{
 				_end = _alloc_n.allocate(1);
 				_alloc_n.construct(_end, NodeTree());
@@ -37,13 +37,12 @@ namespace ft
 			}
 
 			AvlTree(AvlTree const & src) : _root(src._root), _end(src._end)
-			, _nb_nodes(src._nb_nodes), _alloc_n(src._alloc_n) {}
+			, _alloc_n(src._alloc_n) {}
 
 			AvlTree& operator=(AvlTree const & rhs)
 			{
 				_root = rhs._root;
 				_end = rhs._end;
-				_nb_nodes = rhs._nb_nodes;
 				_alloc_n = rhs._alloc_n;
 				return *this;
 			}
@@ -56,11 +55,11 @@ namespace ft
 				std::cout << std::endl;
 				for (int i = SPACE; i < space; i++) // 5
 					std::cout << " "; // 5.1
-				std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second << std::endl; // 6
-				// if (r && r->parent)
-				// 	std::cout << ", Parent=" << r->parent->pr.first << std::endl;
-				// else
-				// 	std::cout << std::endl;
+				std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second;// << std::endl; // 6
+				if (r && r->parent)
+					std::cout << ", Parent=" << r->parent->pr.first << std::endl;
+				else
+					std::cout << std::endl;
 				print2D(r->left, space); // Process left child  7
 			}
 
@@ -126,7 +125,6 @@ namespace ft
 					r = _alloc_n.allocate(1);
 					_alloc_n.construct(r, NodeTree(parent));
 					r->pr = val;
-					_nb_nodes++;
 					*new_insert = r;
 					std::cout << "Value inserted successfully" << std::endl;
 					return r;
@@ -164,44 +162,42 @@ namespace ft
 				}
 				return (r);
 			}
+			NodeTree	*delSingleChild(NodeTree* r)
+			{
+				NodeTree* side;
 
-			NodeTree* deleteNode(NodeTree* r, NodeTree* parent, NodeTree* node) {
+				if (r->left == NULL)
+					side = r->right;
+				else
+					side = r->left;
+				if (!r->parent)
+					side->parent = NULL;
+				_alloc_n.destroy(r);
+				_alloc_n.deallocate(r, 1);
+				return side;
+			}
+			NodeTree*	deleteNode(NodeTree* r, NodeTree* node) {
 				// base case 
 				if (r == NULL)
 					return NULL;
 				else if (node->pr < r->pr)
-					r->left = deleteNode(r->left, r, node);
+					r->left = deleteNode(r->left, node);
 				else if (node->pr > r->pr)
-					r->right = deleteNode(r->right, r, node);
+					r->right = deleteNode(r->right, node);
 				else
 				{
 					// Node with only one child or no child 
-					if (r->left == NULL)
-					{
-						_nb_nodes--;
-						NodeTree* temp = r->right;
-						_alloc_n.destroy(temp);
-						_alloc_n.deallocate(temp, 1);
-						return parent;
-					}
-					else if (r->right == NULL)
-					{
-						_nb_nodes--;
-						NodeTree* temp = r->left;
-						_alloc_n.destroy(temp);
-						_alloc_n.deallocate(temp, 1);
-						return parent;
-					}
+					if (r->left == NULL || r->right == NULL)
+						return (delSingleChild(r));
 					else
 					{
-						// Node with two children: Get the inorder successor (smallest
-						// in the right subtree)
+						// Node with two children: Get the inorder successor
+						// (smallest in the right subtree)
 						NodeTree* minright = minValueNode(r->right);
 						// Copy the inorder successor's content to this Node
 						r->pr = minright->pr;
 						// Delete the inorder successor
-						r->right = deleteNode(r->right, r, minright);
-						_nb_nodes--;
+						r->right = deleteNode(r->right, minright);
 					}
 				}
 				r = balanceDeletion(r);
@@ -266,14 +262,24 @@ namespace ft
 				}
 			}
 
-			size_type		get_max_size(void) const
-			{ return this->_alloc_n.max_size(); }
+			size_type	getNbElets(NodeTree *node) const
+			{
+				if (node)
+					return getNbElets(node->right) + getNbElets(node->left) + 1;
+				return (0);
+			}
+			size_type	getSize(void) const
+			{
+				size_type	size;
+
+				size = getNbElets(_root);
+				return (size);
+			}
 
 		private:
 
 			NodeTree*		_root;
 			NodeTree*		_end;
-			size_type			_nb_nodes;
 			alloc_node		_alloc_n;
 
 			// Get Height

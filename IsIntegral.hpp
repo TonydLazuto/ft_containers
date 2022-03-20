@@ -1,3 +1,5 @@
+#ifndef ISINTEGRAL_HPP
+# define ISINTEGRAL_HPP
 
 namespace ft 
 {
@@ -45,3 +47,5 @@ namespace ft
 		struct is_integral : public is_integral_type<T> {};
 
 }
+
+#endif
