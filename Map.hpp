@@ -128,10 +128,14 @@ namespace ft
 				return (pair_ret);
 			}
 
-			// iterator insert (iterator position, const value_type& val);
+			// iterator insert (iterator position, const value_type& val)
+			// {
+			// 	;
+			// }
 
 			// template <class InputIterator>
-			// void insert (InputIterator first, InputIterator last);
+			// void insert (InputIterator first, InputIterator last,
+				// typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 
 			void erase (iterator position,
 				typename ft::enable_if<!ft::is_integral<iterator>::value, iterator>::type* = NULL)
@@ -157,7 +161,19 @@ namespace ft
 				return (1);
 			}
 
-			// void erase (iterator first, iterator last);
+			void erase (iterator first, iterator last)
+			{
+				iterator cpy = first;
+				++cpy;
+				while (first != last)
+				{
+					std::cout << "-->first->first: " << first->first << std::endl;
+					erase(first);
+					first = cpy;
+					if (first != last)
+						++cpy;
+				}
+			}
 
 			// void swap (map& x);
 
@@ -179,7 +195,10 @@ namespace ft
 
 			// key_compare key_comp(void) const;
 
-			// value_compare value_comp(void) const;
+			value_compare value_comp(void) const
+			{
+				value_compare();
+			}
 
 			iterator find (const key_type& k)
 			{

@@ -202,9 +202,6 @@ namespace ft
 				}
 			}
 
-			
-			
-
 			NodeTree*	deleteNode(NodeTree* r, NodeTree* node) {
 				// base case 
 				if (r == NULL)
