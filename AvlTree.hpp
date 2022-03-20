@@ -56,11 +56,14 @@ namespace ft
 				for (int i = SPACE; i < space; i++) // 5
 					std::cout << " "; // 5.1
 				std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second;// << std::endl; // 6
-				if (r && r->parent)
+				if (r)
 				{
-					std::cout << ", r.first: " << r->pr.first;
-					std::cout << ", r.second: " << r->pr.second;
-					std::cout << ", Parent=" << r->parent->pr.first << std::endl;
+					if (r->left)
+						std::cout << ", Left=" << r->left->pr.first;
+					if (r->right)
+						std::cout << ", Right=" << r->right->pr.first;
+					if (r->parent)
+						std::cout << ", Parent=" << r->parent->pr.first << std::endl;
 				}
 				else
 					std::cout << std::endl;
@@ -168,14 +171,16 @@ namespace ft
 			}
 			NodeTree	*delSingleChild(NodeTree* r)
 			{
-				NodeTree* side;
+				NodeTree* side = NULL;
 
-				if (r->left == NULL)
+				if (!r)
+					return (NULL);
+				if (!r->left)
 					side = r->right;
-				else
+				else if (!r->right)
 					side = r->left;
-				if (!r->parent)
-					side->parent = NULL;
+				if (r->parent && side)
+					side->parent = r->parent;
 				_alloc_n.destroy(r);
 				_alloc_n.deallocate(r, 1);
 				return side;
@@ -183,16 +188,23 @@ namespace ft
 
 			void	redefineMinrightchildParent (NodeTree* minright)
 			{
-				NodeTree* minright_child;
-				
+				NodeTree* minright_child = NULL;
+
 				if (minright->right)
+				{
 					minright_child = minright->right;
+					minright_child->parent = minright_child->parent->parent;
+				}
 				else if (minright->left)
+				{
 					minright_child = minright->left;
-				else
-					return ;
-				minright_child->parent = minright_child->parent->parent;
+					minright_child->parent = minright_child->parent->parent;
+				}
 			}
+
+			
+			
+
 			NodeTree*	deleteNode(NodeTree* r, NodeTree* node) {
 				// base case 
 				if (r == NULL)
@@ -204,7 +216,7 @@ namespace ft
 				else
 				{
 					// Node with only one child or no child 
-					if (r->left == NULL || !r->right)
+					if (!r->left || !r->right)
 						return (delSingleChild(r));
 					// else if (r->right == NULL)
 					// 	return (delSingleChild(r, r->left));
@@ -226,7 +238,6 @@ namespace ft
 
 			NodeTree*	balanceDeletion(NodeTree* r)
 			{
-
 				int bf = getBalanceFactor(r);
 				// Left Left Imbalance/Case or Right rotation 
 				if (bf == 2 && getBalanceFactor(r->left) >= 0)
