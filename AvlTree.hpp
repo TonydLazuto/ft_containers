@@ -93,22 +93,16 @@ namespace ft
 			NodeTree* searchByKey(NodeTree* r, Key k)
 			{
 				if (r == NULL)
-				{
-					std::cout << "Yo1" << std::endl;
 					return NULL;
-				}
 				if (r->pr.first && r->pr.first == k)
-				{
-					std::cout << "Yo1" << std::endl;
 					return r;
-				}
 				else if (k < r->pr.first)
 					return searchByKey(r->left, k);
 				else if (k > r->pr.first)
 					return searchByKey(r->right, k);
 				return NULL; // NULL
 			}
-			// 1st arg always root?
+
 			NodeTree *iterativeSearch(NodeTree* r, const ft::pair<Key, T>& val)
 			{
 				while (r != NULL)
@@ -125,7 +119,7 @@ namespace ft
 			
 			// 1st arg always root?
 			NodeTree* insertNode(NodeTree* r, NodeTree* parent
-				, const ft::pair<Key, T>& val)
+				, const ft::pair<Key, T>& val, NodeTree** new_insert)
 			{
 				if (r == NULL)
 				{
@@ -133,13 +127,14 @@ namespace ft
 					_alloc_n.construct(r, NodeTree(parent));
 					r->pr = val;
 					_nb_nodes++;
+					*new_insert = r;
 					std::cout << "Value inserted successfully" << std::endl;
 					return r;
 				}
 				else if (val < r->pr)
-					r->left = insertNode(r->left, r, val);
+					r->left = insertNode(r->left, r, val, new_insert);
 				else if (val > r->pr)
-					r->right = insertNode(r->right, r, val);
+					r->right = insertNode(r->right, r, val, new_insert);
 				else
 					return r;
 				r = balanceInsert(r, val);

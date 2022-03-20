@@ -276,15 +276,15 @@ TreeNode * iterativeSearch(int v) {
 	}
 }
 
-TreeNode * recursiveSearch(TreeNode * r, int val) {
+TreeNode * searchByPair(TreeNode * r, int val) {
 	if (r == NULL || r -> value == val)
 	return r;
 
 	else if (val < r -> value)
-	return recursiveSearch(r -> left, val);
+	return searchByPair(r -> left, val);
 
 	else
-	return recursiveSearch(r -> right, val);
+	return searchByPair(r -> right, val);
 }
 
 };
@@ -324,7 +324,7 @@ do {
 	cout << "Enter VALUE of TREE NODE to SEARCH in AVL Tree: ";
 	cin >> val;
 	//new_node = obj.iterativeSearch(val);
-	new_node = obj.recursiveSearch(obj.root, val);
+	new_node = obj.searchByPair(obj.root, val);
 	if (new_node != NULL) {
 		cout << "Value found" << endl;
 	} else {
@@ -335,7 +335,7 @@ do {
 	cout << "DELETE" << endl;
 	cout << "Enter VALUE of TREE NODE to DELETE in AVL: ";
 	cin >> val;
-	new_node = obj.recursiveSearch(obj.root, val);
+	new_node = obj.searchByPair(obj.root, val);
 	if (new_node != NULL) {
 		obj.root = obj.deleteNode(obj.root, val);
 		cout << "Value Deleted" << endl;

@@ -110,33 +110,20 @@ namespace ft
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
 				_avl.unlinkEnd();
-				NodeTree*	match_node = _avl.iterativeSearch(_avl._root, val);
+				NodeTree*	match_node = _avl.searchByKey(_avl._root, val.first);
+				NodeTree*	new_insert = NULL;
 
-				_avl._root = _avl.insertNode(_avl._root, NULL, val);
+				_avl._root = _avl.insertNode(_avl._root, NULL, val, &new_insert);
 				// if (_avl._root)
 				// {
 				// 	std::cout << "_avl._root.first: " << _avl._root->pr.first << std::endl;
 				// 	std::cout << "_avl._root.second: " << _avl._root->pr.second << std::endl;
 				// }
-				// if (_avl._root->parent)
-				// {
-				// 	std::cout << "_avl._root->parent.first: " << _avl._root->parent->pr->first << std::endl;
-				// 	std::cout << "_avl._root->parent.second: " << _avl._root->parent->pr->second << std::endl;
-				// }
-				// if (_avl._root->left)
-				// {
-				// 	std::cout << "_avl._root->left.first: " << _avl._root->left->pr->first << std::endl;
-				// 	std::cout << "_avl._root->left.second: " << _avl._root->left->pr->second << std::endl;
-				// }
-				// if (_avl._root->right)
-				// {
-				// 	std::cout << "_avl._root->right.first: " << _avl._root->right->pr->first << std::endl;
-				// 	std::cout << "_avl._root->right.second: " << _avl._root->right->pr->second << std::endl;
-				// }
 				// match_node == NULL => true => insertion has been done
+				if (match_node == NULL)
+					match_node = new_insert;
 				ft::pair<iterator, bool> pair_ret(match_node, match_node == NULL);
 				_avl.linkEnd();		
-				// _avl.print2D(_avl._root, 5);
 				return (pair_ret);
 			}
 

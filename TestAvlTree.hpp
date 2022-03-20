@@ -63,7 +63,7 @@ namespace ft
 							cin >> key;
 							// new_node = obj.iterativeSearch(key);
 							ft::pair<int, int> tmp2(key, val);
-							new_node = obj.recursiveSearch(obj._root, tmp2);
+							new_node = obj.searchByPair(obj._root, tmp2);
 							if (new_node != NULL) {
 								cout << "Value found" << endl;
 							} else {
@@ -77,7 +77,7 @@ namespace ft
 							cout << "Enter VALUE of TREE NODE to DELETE in AVL: ";
 							cin >> key;
 							ft::pair<int, int> tmp3(key, val);
-							new_node = obj.recursiveSearch(obj._root, tmp3);
+							new_node = obj.searchByPair(obj._root, tmp3);
 							if (new_node != NULL) {
 								obj._root = obj.deleteNode(obj._root, tmp3);
 								cout << "Value Deleted" << endl;
