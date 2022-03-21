@@ -168,9 +168,9 @@ namespace ft
 				}
 				return (r);
 			}
-			NodeTree	*delSingleChild(NodeTree* r)
+			NodeTree	*delSingleChild(NodeTree* r, NodeTree* side)
 			{
-				NodeTree* side = NULL;
+				std::cout << "delSingleChild" << std::endl;
 
 				if (!r)
 					return (NULL);
@@ -180,6 +180,9 @@ namespace ft
 					side = r->left;
 				if (side)
 					side->parent = r->parent;
+				// r->left = NULL;
+				// r->right = NULL;
+				// r->parent = NULL;
 				_alloc_n.destroy(r);
 				_alloc_n.deallocate(r, 1);
 				return side;
@@ -189,6 +192,8 @@ namespace ft
 			{
 				NodeTree* minright_child = NULL;
 
+				// printNode(minright, "minright");
+				// std::cout << "redefineMinrightchildParent" << std::endl;
 				if (minright->right)
 				{
 					minright_child = minright->right;
@@ -199,6 +204,8 @@ namespace ft
 					minright_child = minright->left;
 					minright_child->parent = minright_child->parent->parent;
 				}
+				// else
+				// 	std::cout << "no redefined grandchild" << std::endl;
 			}
 
 			NodeTree*	deleteNode(NodeTree* r, NodeTree* node) {
@@ -212,12 +219,13 @@ namespace ft
 				else
 				{
 					// Node with only one child or no child 
-					if (!r->left || !r->right)
-						return (delSingleChild(r));
-					// else if (r->right == NULL)
-					// 	return (delSingleChild(r, r->left));
+					if (!r->left)
+						return (delSingleChild(r, r->right));
+					else if (!r->right)
+						return (delSingleChild(r, r->left));
 					else
 					{
+						std::cout << "deleteNode" << std::endl;
 						// Node with two children: Get the inorder successor
 						// (smallest in the right subtree)
 						NodeTree* minright = minValueNode(r->right);
@@ -256,12 +264,12 @@ namespace ft
 				return (r);
 			}
 
-			void	printNode(NodeTree *node)
+			void	printNode(NodeTree *node, std::string name)
 			{
 				if (node)
 				{
-					std::cout << "node.first: " << node->pr.first << std::endl;
-					std::cout << "node.second: " << node->pr.second << std::endl;
+					std::cout << name << ".first: " << node->pr.first << std::endl;
+					std::cout << name << ".second: " << node->pr.second << std::endl;
 				}
 			}
 

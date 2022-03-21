@@ -142,33 +142,36 @@ namespace ft
 
 			size_type erase (const key_type& k)
 			{
-				_avl.unlinkEnd();
+				// _avl.unlinkEnd();
 				std::cout << "-------------------------BEGIN-----------------------------------" << std::endl;
 				_avl.print2D(_avl.getRoot(), 5);
 				std::cout << "------------------------------------------------------------" << std::endl;
 				NodeTree*	to_del;
 
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
+				// _avl.printNode(to_del, "to_del");
 				if (!to_del)
 					return (0);
 				_avl.erase(to_del);
 				_avl.print2D(_avl.getRoot(), 5);
 				std::cout << "-------------------------END-----------------------------------" << std::endl;
-				_avl.linkEnd();
+				// _avl.linkEnd();
+				// std::cout << size() << std::endl;
 				return (1);
 			}
 
 			void erase (iterator first, iterator last)
 			{
-				// iterator cpy = first;
-				// ++cpy;
-				while (first != last)
+				iterator cpy = first;
+				while (value_comp()(*cpy, *last))
 				{
-					std::cout << "-->first->first: " << first->first << std::endl;
-					erase(first++);
-					// first = cpy;
-					// if (first != last)
-					// 	++cpy;
+					std::cout << "-->cpy->first: " << cpy->first << std::endl;
+					std::cout << "last.first: " << last->first << std::endl;
+					std::cout << "last.second: " << last->second << std::endl;
+					erase(cpy->first);
+					// _avl.printNode(_avl.getRoot(), "_root");
+					++cpy;
+					// std::cout << "---->cpy->first: " << cpy->first << std::endl;
 				}
 			}
 

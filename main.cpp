@@ -56,18 +56,20 @@ int main(int argc, char** argv) {
 	int	d = 1;
 	for (int i = 0; i < 14; i++)
 	{
-		pr[i] = ft::pair<char, int> (c++, d++);
+		pr[i] = ft::make_pair<char, int>(c++, d++);
 		mymap.insert(pr[i]);
 	}
 
 	ft::map<char,int>::iterator it, it2;
-	it=mymap.lower_bound ('b');
-	it2=mymap.lower_bound ('e');
+	it=mymap.lower_bound ('h');
+	it2=mymap.lower_bound ('m');
 
-	mymap.erase(it);
+	mymap.erase(it, it2);
 	
 	for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
     	std::cout << it->first << " => " << it->second << '\n';
+	// while (1);
+	
 	// ft::map<char,int>::iterator it;
 	// for (it=mymap.begin(); it!=mymap.end(); ++it)
     // 	std::cout << it->first << " => " << it->second << std::endl;
