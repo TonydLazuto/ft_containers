@@ -60,24 +60,14 @@ int main(int argc, char** argv) {
 		mymap.insert(pr[i]);
 	}
 
-	ft::map<char,int>::iterator it;
-	std::cout << mymap.size() << std::endl;
-	it = mymap.find('b');
-	if (it != mymap.end())
-		mymap.erase (it);
-	it = mymap.find('h');
-	if (it != mymap.end())
-		mymap.erase (it);
-	it = mymap.find('i');
-	if (it != mymap.end())
-		mymap.erase (it);
+	ft::map<char,int>::iterator it, it2;
+	it=mymap.lower_bound ('b');
+	it2=mymap.lower_bound ('e');
+
+	mymap.erase(it);
 	
-	std::cout << mymap.size() << std::endl;
-	// print content:
-	std::cout << "elements in mymap:" << std::endl;
-	std::cout << "a => " << mymap.find('a')->second << std::endl;
-	std::cout << "c => " << mymap.find('c')->second << std::endl;
-	std::cout << "d => " << mymap.find('d')->second << std::endl;
+	for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+    	std::cout << it->first << " => " << it->second << '\n';
 	// ft::map<char,int>::iterator it;
 	// for (it=mymap.begin(); it!=mymap.end(); ++it)
     // 	std::cout << it->first << " => " << it->second << std::endl;

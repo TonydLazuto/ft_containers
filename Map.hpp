@@ -54,31 +54,31 @@ namespace ft
 
 			explicit map (const key_compare& comp = key_compare(),
 				const allocator_type& alloc = allocator_type())
-				: _avl(), _alloc(alloc)
-				{
-					(void)comp;
-				}
+				: _avl(), _alloc(alloc), _comp(comp) {}
 
 			// template <class InputIterator>
 			// 	map (InputIterator first, InputIterator last,
 			// 		const key_compare& comp = key_compare(),
-			// 		const allocator_type& alloc = allocator_type())
-			// 		: _avl(), _alloc(alloc), _nb_nodes(0)
+			// 		const allocator_type& alloc = allocator_type(),
+			//		typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+			// 		: _avl(), _alloc(alloc), _comp(comp)
 			// 	{
 			// 		insert(first, last);
-			// 		(void)comp;
 			// 	}
 
 			virtual ~map( void ) {}
 
-			map(const map& x) : _avl(x._avl), _alloc(x._alloc) {}
-
-			map& operator=(map const & x)
+			map(const map& x) : _avl(x._avl), _alloc(x._alloc), _comp(x.comp)
 			{
-				_avl(x._avl);
-				_alloc(x._alloc);
-				return *this;
+				// insert(x.begin(), x.end());
 			}
+
+			// map& operator=(map const & x)
+			// {
+			// 	clear();
+			// 	insert(x.begin(), x.end());
+			// 	return *this;
+			// }
 
 			iterator begin(void) { return (_avl.getBegin()); }
 			const_iterator begin(void) const { return (_avl.getBegin()); }
@@ -179,6 +179,7 @@ namespace ft
 
 			// void clear(void)
 			// {
+				// erase(begin(), end());
 			// }
 
 			mapped_type& operator[](const key_type& k)
@@ -188,16 +189,15 @@ namespace ft
 				match_elet = _avl.searchByKey(_avl._root, k);
 				if (match_elet)
 					return (match_elet->pr.second);
-				value_type val(k, 0);
-				ft::pair<iterator, bool> ret_pair = insert(val);
+				ft::pair<iterator, bool> ret_pair = insert(ft::make_pair(k, mapped_type()));
 				return ((ret_pair.first)->second);
 			}
 
-			// key_compare key_comp(void) const;
+			key_compare key_comp(void) const { return (key_compare()); }
 
 			value_compare value_comp(void) const
 			{
-				value_compare();
+				return (value_compare(key_compare()));
 			}
 
 			iterator find (const key_type& k)
@@ -221,7 +221,17 @@ namespace ft
 
 			// size_type count (const key_type& k) const;
 
-			// iterator lower_bound (const key_type& k);
+			iterator lower_bound (const key_type& k)
+			{
+				iterator first = begin();
+				iterator last = end();
+				for (; first != last; ++first)
+				{
+					if (!_comp(first->first, k))
+						break ;
+				}
+				return first;
+			}
 			// const_iterator lower_bound (const key_type& k) const;
 
 			// iterator upper_bound (const key_type& k);
@@ -235,6 +245,7 @@ namespace ft
 		private:
 			ft::AvlTree<Key, T>	_avl;
 			allocator_type		_alloc;
+			key_compare			_comp;
 
 	};
 	template <class Key, class T, class Compare, class Allocator>
