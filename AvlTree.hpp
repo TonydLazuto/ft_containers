@@ -14,8 +14,6 @@ namespace ft
 	class AvlTree
 	{
 		// friend class TestAvlTree;
-		template < class Key2, class T2, class Compare2, class Alloc2 >
-		friend class map;
 
 		public:
 			typedef ft::pair<Key, T> value_type;
@@ -55,15 +53,16 @@ namespace ft
 				std::cout << std::endl;
 				for (int i = SPACE; i < space; i++) // 5
 					std::cout << " "; // 5.1
-				std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second;// << std::endl; // 6
 				if (r)
 				{
+					std::cout << "Key="<< r->pr.first << ", Val=" << r->pr.second;// << std::endl; // 6
 					if (r->left)
 						std::cout << ", Left=" << r->left->pr.first;
 					if (r->right)
 						std::cout << ", Right=" << r->right->pr.first;
 					if (r->parent)
-						std::cout << ", Parent=" << r->parent->pr.first << std::endl;
+						std::cout << ", Parent=" << r->parent->pr.first;
+					std::cout<< std::endl;
 				}
 				else
 					std::cout << std::endl;
@@ -179,7 +178,7 @@ namespace ft
 					side = r->right;
 				else if (!r->right)
 					side = r->left;
-				if (r->parent && side)
+				if (side)
 					side->parent = r->parent;
 				_alloc_n.destroy(r);
 				_alloc_n.deallocate(r, 1);
@@ -257,15 +256,35 @@ namespace ft
 				return (r);
 			}
 
+			void	printNode(NodeTree *node)
+			{
+				if (node)
+				{
+					std::cout << "node.first: " << node->pr.first << std::endl;
+					std::cout << "node.second: " << node->pr.second << std::endl;
+				}
+			}
+
+			void		insert(const value_type& val, NodeTree** new_insert)
+			{
+				_root = insertNode(_root, NULL, val, new_insert);
+			}
+
+			void		erase(NodeTree* to_del)
+			{
+				_root = deleteNode(_root, to_del);
+			}
+
 			NodeTree	*getBegin(void)
 			{
+				if (!_root)
+					return _end;
 				return minValueNode(_root);
 			}
 			
-			NodeTree	*getEnd(void)
-			{
-				return _end;
-			}
+			NodeTree	*getEnd(void) { return _end; }
+
+			NodeTree	*getRoot(void) { return _root; }
 
 			void	linkEnd(void)
 			{

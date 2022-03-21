@@ -110,15 +110,12 @@ namespace ft
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
 				_avl.unlinkEnd();
-				NodeTree*	match_node = _avl.searchByKey(_avl._root, val.first);
+				NodeTree*	match_node = _avl.searchByKey(_avl.getRoot(), val.first);
 				NodeTree*	new_insert = NULL;
 
-				_avl._root = _avl.insertNode(_avl._root, NULL, val, &new_insert);
-				// if (_avl._root)
-				// {
-				// 	std::cout << "_avl._root.first: " << _avl._root->pr.first << std::endl;
-				// 	std::cout << "_avl._root.second: " << _avl._root->pr.second << std::endl;
-				// }
+				
+				_avl.insert(val, &new_insert);
+				// printNode(_avl.getRoot());
 				// match_node == NULL => true => insertion has been done
 				if (match_node == NULL)
 					match_node = new_insert;
@@ -147,15 +144,15 @@ namespace ft
 			{
 				_avl.unlinkEnd();
 				std::cout << "-------------------------BEGIN-----------------------------------" << std::endl;
-				_avl.print2D(_avl._root, 5);
+				_avl.print2D(_avl.getRoot(), 5);
 				std::cout << "------------------------------------------------------------" << std::endl;
 				NodeTree*	to_del;
 
-				to_del = _avl.searchByKey(_avl._root, k);
+				to_del = _avl.searchByKey(_avl.getRoot(), k);
 				if (!to_del)
 					return (0);
-				_avl._root = _avl.deleteNode(_avl._root, to_del);
-				_avl.print2D(_avl._root, 5);
+				_avl.erase(to_del);
+				_avl.print2D(_avl.getRoot(), 5);
 				std::cout << "-------------------------END-----------------------------------" << std::endl;
 				_avl.linkEnd();
 				return (1);
@@ -163,15 +160,15 @@ namespace ft
 
 			void erase (iterator first, iterator last)
 			{
-				iterator cpy = first;
-				++cpy;
+				// iterator cpy = first;
+				// ++cpy;
 				while (first != last)
 				{
 					std::cout << "-->first->first: " << first->first << std::endl;
-					erase(first);
-					first = cpy;
-					if (first != last)
-						++cpy;
+					erase(first++);
+					// first = cpy;
+					// if (first != last)
+					// 	++cpy;
 				}
 			}
 
@@ -186,7 +183,7 @@ namespace ft
 			{
 				NodeTree*	match_elet;
 
-				match_elet = _avl.searchByKey(_avl._root, k);
+				match_elet = _avl.searchByKey(_avl.getRoot(), k);
 				if (match_elet)
 					return (match_elet->pr.second);
 				ft::pair<iterator, bool> ret_pair = insert(ft::make_pair(k, mapped_type()));
@@ -204,7 +201,7 @@ namespace ft
 			{
 				NodeTree*	match_elet;
 
-				match_elet = _avl.searchByKey(_avl._root, k);
+				match_elet = _avl.searchByKey(_avl.getRoot(), k);
 				if (match_elet)
 					return (match_elet);
 				return (end());
@@ -213,7 +210,7 @@ namespace ft
 			{
 				NodeTree*	match_elet;
 
-				match_elet = _avl.searchByKey(_avl._root, k);
+				match_elet = _avl.searchByKey(_avl.getRoot(), k);
 				if (match_elet)
 					return (match_elet);
 				return (end());
