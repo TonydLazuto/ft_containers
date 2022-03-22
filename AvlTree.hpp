@@ -45,7 +45,7 @@ namespace ft
 				return *this;
 			}
 
-			void print2D(NodeTree* r, int space) {
+			void print2D(NodeTree* r, int space) const {
 				if (r == NULL) // Base case  1
 					return;
 				space += SPACE; // Increase distance between levels   2
@@ -69,7 +69,7 @@ namespace ft
 				print2D(r->left, space); // Process left child  7
 			}
 
-			bool isTreeEmpty()
+			bool isTreeEmpty() const
 			{
 				if (_root == NULL)
 					return true;
@@ -77,7 +77,7 @@ namespace ft
 					return false;
 			}
 
-			NodeTree* minValueNode(NodeTree* node)
+			NodeTree* minValueNode(NodeTree* node) const
 			{
 				NodeTree* min_node = node;
 				/* loop down to find the leftmost leaf */
@@ -86,7 +86,7 @@ namespace ft
 				return min_node;
 			}
 
-			NodeTree* maxValueNode(NodeTree* node)
+			NodeTree* maxValueNode(NodeTree* node) const
 			{
 				NodeTree* max_node = node;
 				/* loop down to find the rightmost leaf */
@@ -95,7 +95,7 @@ namespace ft
 				return max_node;
 			}
 
-			NodeTree* searchByKey(NodeTree* r, Key k)
+			NodeTree* searchByKey(NodeTree* r, Key k) const
 			{
 				if (r == NULL)
 					return NULL;
@@ -108,7 +108,7 @@ namespace ft
 				return NULL; // NULL
 			}
 
-			NodeTree *iterativeSearch(NodeTree* r, const ft::pair<Key, T>& val)
+			NodeTree *iterativeSearch(NodeTree* r, const ft::pair<Key, T>& val) const
 			{
 				while (r != NULL)
 				{
@@ -179,7 +179,7 @@ namespace ft
 				else if (!r->right)
 					side = r->left;
 				if (side)
-					side->parent = r->parent;
+					side->parent = r->parent; 
 				// r->left = NULL;
 				// r->right = NULL;
 				// r->parent = NULL;
@@ -220,9 +220,17 @@ namespace ft
 				{
 					// Node with only one child or no child 
 					if (!r->left)
-						return (delSingleChild(r, r->right));
+					{
+						NodeTree* side = r->right;
+						delSingleChild(r, side);
+						return side;
+					}
 					else if (!r->right)
-						return (delSingleChild(r, r->left));
+					{
+						NodeTree* side = r->left;
+						delSingleChild(r, side);
+						return side;
+					}
 					else
 					{
 						std::cout << "deleteNode" << std::endl;
@@ -283,16 +291,16 @@ namespace ft
 				_root = deleteNode(_root, to_del);
 			}
 
-			NodeTree	*getBegin(void)
+			NodeTree	*getBegin(void) const
 			{
 				if (!_root)
 					return _end;
 				return minValueNode(_root);
 			}
 			
-			NodeTree	*getEnd(void) { return _end; }
+			NodeTree	*getEnd(void) const { return _end; }
 
-			NodeTree	*getRoot(void) { return _root; }
+			NodeTree	*getRoot(void) const { return _root; }
 
 			void	linkEnd(void)
 			{
@@ -392,9 +400,6 @@ namespace ft
 					Tx->parent = z;
 				return y;
 			}
-
-			
-
 			
 	};
 }

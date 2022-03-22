@@ -36,7 +36,8 @@ namespace ft
 			{
 				// std::cout << "--- START pre incr ---" << std::endl;
 				Pair	save = _itor->pr;
-				
+				// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
+				// std::cout << "_itor.second: " << _itor->pr.second << std::endl;
 				if (_itor)
 				{
 					// _itor == LeftChild || _itor == RightChild
@@ -52,6 +53,8 @@ namespace ft
 							_itor = _itor->left;
 					}
 				}
+				// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
+				// std::cout << "_itor.second: " << _itor->pr.second << std::endl;
 				// std::cout << "--- END pre incr ---" << std::endl;
 				return *this;
 			}

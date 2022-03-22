@@ -113,7 +113,6 @@ namespace ft
 				NodeTree*	match_node = _avl.searchByKey(_avl.getRoot(), val.first);
 				NodeTree*	new_insert = NULL;
 
-				
 				_avl.insert(val, &new_insert);
 				// printNode(_avl.getRoot());
 				// match_node == NULL => true => insertion has been done
@@ -142,7 +141,7 @@ namespace ft
 
 			size_type erase (const key_type& k)
 			{
-				// _avl.unlinkEnd();
+				_avl.unlinkEnd();
 				std::cout << "-------------------------BEGIN-----------------------------------" << std::endl;
 				_avl.print2D(_avl.getRoot(), 5);
 				std::cout << "------------------------------------------------------------" << std::endl;
@@ -155,23 +154,25 @@ namespace ft
 				_avl.erase(to_del);
 				_avl.print2D(_avl.getRoot(), 5);
 				std::cout << "-------------------------END-----------------------------------" << std::endl;
-				// _avl.linkEnd();
+				_avl.linkEnd();
 				// std::cout << size() << std::endl;
 				return (1);
 			}
 
 			void erase (iterator first, iterator last)
 			{
-				iterator cpy = first;
-				while (value_comp()(*cpy, *last))
+				// iterator cpy = first;
+
+				while (first != last)
 				{
-					std::cout << "-->cpy->first: " << cpy->first << std::endl;
+					std::cout << "-->first->first: " << first->first << std::endl;
 					std::cout << "last.first: " << last->first << std::endl;
 					std::cout << "last.second: " << last->second << std::endl;
+					iterator cpy(first);
+					++first;
 					erase(cpy->first);
 					// _avl.printNode(_avl.getRoot(), "_root");
-					++cpy;
-					// std::cout << "---->cpy->first: " << cpy->first << std::endl;
+					// ++cpy;
 				}
 			}
 
@@ -219,7 +220,13 @@ namespace ft
 				return (end());
 			}
 
-			// size_type count (const key_type& k) const;
+			size_type count (const key_type& k) const
+			{
+				NodeTree*	match_elet;
+
+				match_elet = _avl.searchByKey(_avl.getRoot(), k);
+				return (match_elet != NULL);
+			}
 
 			iterator lower_bound (const key_type& k)
 			{
@@ -232,10 +239,26 @@ namespace ft
 				}
 				return first;
 			}
-			// const_iterator lower_bound (const key_type& k) const;
+			const_iterator lower_bound (const key_type& k) const
+			{
+				return (const_iterator(this->lower_bound(k)));
+			}
 
-			// iterator upper_bound (const key_type& k);
-			// const_iterator upper_bound (const key_type& k) const;
+			iterator upper_bound (const key_type& k)
+			{
+				iterator first = begin();
+				iterator last = end();
+				for (; first != last; ++first)
+				{
+					if (_comp(k, first->first))
+						break ;
+				}
+				return first;
+			}
+			const_iterator upper_bound (const key_type& k) const
+			{
+				return (const_iterator(this->upper_bound(k)));
+			}
 
 			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
 			// pair<iterator,iterator>             equal_range (const key_type& k);
