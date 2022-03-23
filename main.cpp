@@ -61,8 +61,8 @@ int main(int argc, char** argv) {
 	}
 
 	ft::map<char,int>::iterator it, it2;
-	it=mymap.lower_bound ('h');
-	it2=mymap.lower_bound ('m');
+	it=mymap.lower_bound ('f');
+	it2=mymap.lower_bound ('h');
 
 	mymap.erase(it, it2);
 	

@@ -142,18 +142,18 @@ namespace ft
 			size_type erase (const key_type& k)
 			{
 				_avl.unlinkEnd();
-				std::cout << "-------------------------BEGIN-----------------------------------" << std::endl;
-				_avl.print2D(_avl.getRoot(), 5);
-				std::cout << "------------------------------------------------------------" << std::endl;
+				// std::cout << "-------------------------BEGIN-----------------------------------" << std::endl;
+				// _avl.print2D(_avl.getRoot(), 5);
+				// std::cout << "------------------------------------------------------------" << std::endl;
 				NodeTree*	to_del;
 
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
 				// _avl.printNode(to_del, "to_del");
 				if (!to_del)
 					return (0);
-				_avl.erase(to_del);
-				_avl.print2D(_avl.getRoot(), 5);
-				std::cout << "-------------------------END-----------------------------------" << std::endl;
+				_avl.erase(to_del->pr);
+				// _avl.print2D(_avl.getRoot(), 5);
+				// std::cout << "-------------------------END-----------------------------------" << std::endl;
 				_avl.linkEnd();
 				// std::cout << size() << std::endl;
 				return (1);
@@ -165,14 +165,9 @@ namespace ft
 
 				while (first != last)
 				{
-					std::cout << "-->first->first: " << first->first << std::endl;
-					std::cout << "last.first: " << last->first << std::endl;
-					std::cout << "last.second: " << last->second << std::endl;
 					iterator cpy(first);
 					++first;
 					erase(cpy->first);
-					// _avl.printNode(_avl.getRoot(), "_root");
-					// ++cpy;
 				}
 			}
 
@@ -260,8 +255,14 @@ namespace ft
 				return (const_iterator(this->upper_bound(k)));
 			}
 
-			// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
-			// pair<iterator,iterator>             equal_range (const key_type& k);
+			pair<const_iterator,const_iterator>	equal_range (const key_type& k) const
+			{
+				return (ft::make_pair(lower_bound(k), upper_bound(k)));
+			}
+			pair<iterator,iterator>				equal_range (const key_type& k)
+			{
+				return (ft::make_pair(lower_bound(k), upper_bound(k)));
+			}
 
 			allocator_type get_allocator(void) const { return this->_alloc; }
 

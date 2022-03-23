@@ -168,8 +168,32 @@ namespace ft
 				}
 				return (r);
 			}
+			
+
+			void	redefineMinRightOrphan (NodeTree* minright) // return mandatory??
+			{
+				NodeTree* minright_rightchild = NULL;
+
+				// printNode(minright, "minright");
+				// std::cout << "redefineminrightchildParent" << std::endl;
+				if (minright->right)
+				{
+					// minright_rightchild got te be linkup with the above Tree after his parent deletion
+					minright_rightchild = minright->right;
+					minright_rightchild->parent = minright_rightchild->parent->parent;
+				}
+				else if (minright->left)
+				{
+					minright_rightchild = minright->left;
+					minright_rightchild->parent = minright_rightchild->parent->parent;
+				}
+				// else
+				// 	std::cout << "no redefined grandchild" << std::endl;
+			}
+
 			NodeTree	*delSingleChild(NodeTree* r, NodeTree* side)
 			{
+				NodeTree*	orphan = NULL;
 				std::cout << "delSingleChild" << std::endl;
 
 				if (!r)
@@ -178,70 +202,65 @@ namespace ft
 					side = r->right;
 				else if (!r->right)
 					side = r->left;
-				if (side)
-					side->parent = r->parent; 
-				// r->left = NULL;
-				// r->right = NULL;
-				// r->parent = NULL;
+				if (side){printNode(side, "side");
+					side->parent = r->parent;}
+				printNode(r, "1CHILD->r");
+				
+				if (r->right)
+				{
+					printNode(r, "RIGHT->r");
+					orphan = r->right;
+					orphan->parent = r->parent;
+					printNode(orphan, "orphan");
+				}
 				_alloc_n.destroy(r);
 				_alloc_n.deallocate(r, 1);
 				return side;
 			}
 
-			void	redefineMinrightchildParent (NodeTree* minright)
-			{
-				NodeTree* minright_child = NULL;
-
-				// printNode(minright, "minright");
-				// std::cout << "redefineMinrightchildParent" << std::endl;
-				if (minright->right)
-				{
-					minright_child = minright->right;
-					minright_child->parent = minright_child->parent->parent;
-				}
-				else if (minright->left)
-				{
-					minright_child = minright->left;
-					minright_child->parent = minright_child->parent->parent;
-				}
-				// else
-				// 	std::cout << "no redefined grandchild" << std::endl;
-			}
-
-			NodeTree*	deleteNode(NodeTree* r, NodeTree* node) {
+			NodeTree*	deleteNode(NodeTree* r, value_type val) {
 				// base case 
 				if (r == NULL)
 					return NULL;
-				else if (node->pr < r->pr)
-					r->left = deleteNode(r->left, node);
-				else if (node->pr > r->pr)
-					r->right = deleteNode(r->right, node);
+				else if (val < r->pr)
+					r->left = deleteNode(r->left, val);
+				else if (val > r->pr)
+					r->right = deleteNode(r->right, val);
 				else
 				{
 					// Node with only one child or no child 
 					if (!r->left)
-					{
-						NodeTree* side = r->right;
-						delSingleChild(r, side);
-						return side;
-					}
+						return (delSingleChild(r, r->right));
 					else if (!r->right)
-					{
-						NodeTree* side = r->left;
-						delSingleChild(r, side);
-						return side;
-					}
+						return (delSingleChild(r, r->left));
 					else
 					{
 						std::cout << "deleteNode" << std::endl;
 						// Node with two children: Get the inorder successor
 						// (smallest in the right subtree)
-						NodeTree* minright = minValueNode(r->right);
-						redefineMinrightchildParent(minright);
+						printNode(r, "DELETENODE->r");
+						NodeTree* min_right_tree = minValueNode(r->right);
+						
+						NodeTree* new_root = _alloc_n.allocate(1);
+						_alloc_n.construct(new_root, *min_right_tree);
+						new_root->left = r->left;
+						new_root->right = r->right;
+						new_root->parent = r->parent;
+						printNode(min_right_tree, "min_right_tree");
+						printNode(new_root, "new_root");
+						if (r->left)
+						{
+							NodeTree	*orphan = r->left;
+							orphan->parent = new_root;
+						}
 						// Copy the inorder successor's content to this Node
-						r->pr = minright->pr;
+						// redefineMinRightOrphan(min_right_tree);
+						// r->left = NULL;
+						// r->right = NULL;
+						// r->parent = NULL;
+						r = new_root;
 						// Delete the inorder successor
-						r->right = deleteNode(r->right, minright);
+						r->right = deleteNode(r->right, min_right_tree->pr);
 					}
 				}
 				r = balanceDeletion(r);
@@ -286,7 +305,7 @@ namespace ft
 				_root = insertNode(_root, NULL, val, new_insert);
 			}
 
-			void		erase(NodeTree* to_del)
+			void		erase(value_type to_del)
 			{
 				_root = deleteNode(_root, to_del);
 			}
