@@ -14,6 +14,7 @@ class Node
 		Node*				left;
 		Node*				right;
 		ft::pair<Key, T>	pr;
+		typedef ft::pair<Key, T>	value_type;
 
 		Node( void ) : parent(NULL), left(NULL), right(NULL), pr() {}
 

@@ -6,7 +6,7 @@
 
 namespace ft
 {
-	template <class Iter, class Pair>
+	template <class Iter>
 	class ReverseMapIterator
 	{
 		private:
@@ -19,14 +19,15 @@ namespace ft
 			typedef typename ft::IteratorTraits<Iter>::difference_type		difference_type;
 			typedef typename ft::IteratorTraits<Iter>::pointer				pointer;
 			typedef typename ft::IteratorTraits<Iter>::reference			reference;
+			typedef typename Iter::value_type								NodePair;
 
 			ReverseMapIterator( void ) : _itor() {}
 			explicit ReverseMapIterator(iterator_type x) : _itor(x) {}
 			virtual ~ReverseMapIterator( void ) {}
-			template < class OtherIter, class Pr >
-			ReverseMapIterator (const ReverseMapIterator<OtherIter, Pr> &rev)
+			template < class OtherIter >
+			ReverseMapIterator (const ReverseMapIterator<OtherIter> &rev)
 			: _itor(rev.base()) {}
-			ReverseMapIterator& operator=(ReverseMapIterator<Iter, Pair> const & rhs)
+			ReverseMapIterator& operator=(ReverseMapIterator<Iter> const & rhs)
 			{
 				if (*this != rhs)
 					this->_itor = rhs._itor;
@@ -35,12 +36,12 @@ namespace ft
 
 			iterator_type base(void) const { return _itor; }
 
-			Pair& operator*(void) const
+			NodePair& operator*(void) const
 			{
 				iterator_type tmp = _itor;
 				return (*tmp);
 			}
-			Pair* operator->(void) const { return &(operator*()); }
+			NodePair* operator->(void) const { return &(operator*()); }
 
 			ReverseMapIterator operator++(int)
 			{
@@ -65,48 +66,48 @@ namespace ft
 				return *this;
 			}
 
-			operator ReverseMapIterator<const Iter, class Pr> ()
-			{ return (ReverseMapIterator<Iter, Pr>(this->_itor)); }
+			operator ReverseMapIterator<const Iter> ()
+			{ return (ReverseMapIterator<Iter>(this->_itor)); }
 			
 	};
 
-	template <class Iterator, class Pair>
-		bool operator== (const ft::ReverseMapIterator<Iterator, Pair>& lhs,
-			const ft::ReverseMapIterator<Iterator, Pair>& rhs)
+	template <class Iterator>
+		bool operator== (const ft::ReverseMapIterator<Iterator>& lhs,
+			const ft::ReverseMapIterator<Iterator>& rhs)
 			{ return (*(lhs.base()) == *(rhs.base())); }
 
-	template <class Iterator_L, class Iterator_R, class Pair>
-		bool operator== (const ft::ReverseMapIterator<Iterator_L, Pair>& lhs,
-			const ft::ReverseMapIterator<Iterator_R, Pair>& rhs)
+	template <class Iterator_L, class Iterator_R>
+		bool operator== (const ft::ReverseMapIterator<Iterator_L>& lhs,
+			const ft::ReverseMapIterator<Iterator_R>& rhs)
 			{ return (*(lhs.base()) == *(rhs.base())); }
-	template <class Iterator, class Pair>
-		bool operator== (ft::ReverseMapIterator<Iterator, Pair>& lhs,
-			ft::ReverseMapIterator<Iterator, Pair>& rhs)
-			{ return (*(lhs.base()) == *(rhs.base())); }
-
-	template <class Iterator_L, class Iterator_R, class Pair>
-		bool operator== (ft::ReverseMapIterator<Iterator_L, Pair>& lhs,
-			ft::ReverseMapIterator<Iterator_R, Pair>& rhs)
+	template <class Iterator>
+		bool operator== (ft::ReverseMapIterator<Iterator>& lhs,
+			ft::ReverseMapIterator<Iterator>& rhs)
 			{ return (*(lhs.base()) == *(rhs.base())); }
 
-	template <class Iterator, class Pair>
-		bool operator!= (const ft::ReverseMapIterator<Iterator, Pair>& lhs,
-			const ft::ReverseMapIterator<Iterator, Pair>& rhs)
+	template <class Iterator_L, class Iterator_R>
+		bool operator== (ft::ReverseMapIterator<Iterator_L>& lhs,
+			ft::ReverseMapIterator<Iterator_R>& rhs)
+			{ return (*(lhs.base()) == *(rhs.base())); }
+
+	template <class Iterator>
+		bool operator!= (const ft::ReverseMapIterator<Iterator>& lhs,
+			const ft::ReverseMapIterator<Iterator>& rhs)
 			{ return (*(lhs.base()) != *(rhs.base())); }
 
-	template <class Iterator_L, class Iterator_R, class Pair>
-		bool operator!= (const ft::ReverseMapIterator<Iterator_L, Pair>& lhs,
-			const ft::ReverseMapIterator<Iterator_R, Pair>& rhs)
+	template <class Iterator_L, class Iterator_R>
+		bool operator!= (const ft::ReverseMapIterator<Iterator_L>& lhs,
+			const ft::ReverseMapIterator<Iterator_R>& rhs)
 			{ return (*(lhs.base()) != *(rhs.base())); }
 			
-	template <class Iterator, class Pair>
-		bool operator!= (ft::ReverseMapIterator<Iterator, Pair>& lhs,
-			ft::ReverseMapIterator<Iterator, Pair>& rhs)
+	template <class Iterator>
+		bool operator!= (ft::ReverseMapIterator<Iterator>& lhs,
+			ft::ReverseMapIterator<Iterator>& rhs)
 			{ return (*(lhs.base()) != *(rhs.base())); }
 
-	template <class Iterator_L, class Iterator_R, class Pair>
-		bool operator!= (ft::ReverseMapIterator<Iterator_L, Pair>& lhs,
-			ft::ReverseMapIterator<Iterator_R, Pair>& rhs)
+	template <class Iterator_L, class Iterator_R>
+		bool operator!= (ft::ReverseMapIterator<Iterator_L>& lhs,
+			ft::ReverseMapIterator<Iterator_R>& rhs)
 			{ return (*(lhs.base()) != *(rhs.base())); }
 
 }

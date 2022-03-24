@@ -34,10 +34,10 @@ namespace ft
 			typedef T&        reference;
 			typedef const T&  const_reference;
 
-			typedef typename ft::MapIterator<NodeTree, value_type> iterator;
-			typedef typename ft::MapIterator<const NodeTree, value_type> const_iterator; //2eme classe const ?
-			typedef typename ft::ReverseMapIterator<iterator, value_type> reverse_iterator;
-			typedef typename ft::ReverseMapIterator<const_iterator, value_type> const_reverse_iterator;
+			typedef typename ft::MapIterator<NodeTree> iterator;
+			typedef typename ft::MapIterator<const NodeTree> const_iterator; //2eme classe const ?
+			typedef typename ft::ReverseMapIterator<iterator> reverse_iterator;
+			typedef typename ft::ReverseMapIterator<const_iterator> const_reverse_iterator;
 
 			typedef typename IteratorTraits<iterator>::difference_type difference_type;
 			typedef size_t	size_type;
@@ -164,7 +164,26 @@ namespace ft
 
 				while (first != last)
 				{
-					erase((first++)->first);
+					iterator cpy =first;
+					std::cout << "first.first: " << first->first << std::endl;
+					std::cout << "first.second: " << first->second << std::endl;
+					std::cout << "cpy: " << &*cpy << std::endl;
+					std::cout << "first: " << &*first << std::endl;
+					++first;
+					std::cout << "first: " << &*first << std::endl;
+					std::cout << "first.first: " << first->first << std::endl;
+					std::cout << "first.second: " << first->second << std::endl;
+					erase(cpy->first);
+					std::cout << "first: " << &*first << std::endl;
+					std::cout << "cpy: " << &*cpy << std::endl;
+					++first;
+					++first;
+					++first;
+					++first;
+					++first;
+					std::cout << "first.first: " << first->first << std::endl;
+					std::cout << "first.second: " << first->second << std::endl;
+					first = last;
 				}
 			}
 

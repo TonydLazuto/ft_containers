@@ -7,18 +7,19 @@
 
 namespace ft 
 {
-	template < class T, class Pair >
+	template < class Node >
 	class MapIterator
 	{
 		private:
-			T*	_itor;
+			Node*	_itor;
 
 		public:
-			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::iterator_category	iterator_category;
-			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::value_type			value_type;
-			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::difference_type		difference_type;
-			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::pointer				pointer;
-			typedef typename std::iterator<std::bidirectional_iterator_tag, T>::reference			reference;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, Node>::iterator_category	iterator_category;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, Node>::value_type			value_type;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, Node>::difference_type		difference_type;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, Node>::pointer				pointer;
+			typedef typename std::iterator<std::bidirectional_iterator_tag, Node>::reference			reference;
+			typedef typename Node::value_type													NodePair;
 
 			MapIterator( void ) : _itor(NULL) {}
 			MapIterator( pointer itor ) : _itor(itor) {}
@@ -29,13 +30,13 @@ namespace ft
 				this->_itor = rhs._itor;
 				return *this;
 			}
-			Pair& operator*(void) { return (this->_itor->pr); }
-			Pair* operator->(void) { return &(this->operator*()); }
+			NodePair& operator*(void) { return (this->_itor->pr); }
+			NodePair* operator->(void) { return &(this->operator*()); }
 			
 			MapIterator& operator++(void)
 			{
 				// std::cout << "--- START pre incr ---" << std::endl;
-				Pair	save = _itor->pr;
+				NodePair	save = _itor->pr;
 
 				// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
 				// std::cout << "_itor.second: " << _itor->pr.second << std::endl;
@@ -68,7 +69,7 @@ namespace ft
 			
 			MapIterator& operator--(void)
 			{
-				Pair	save = _itor->pr;
+				NodePair	save = _itor->pr;
 
 				if (_itor)
 				{
@@ -98,30 +99,30 @@ namespace ft
 			}
 
 	};
-	template <typename T, typename Pair>
-	bool operator==(ft::MapIterator<T,Pair> lhs,
-		ft::MapIterator<T,Pair> rhs)
+	template <typename Node>
+	bool operator==(ft::MapIterator<Node> lhs,
+		ft::MapIterator<Node> rhs)
 	{
 		return (*lhs == *rhs);
 	}
 
-	template<typename T_L, typename T_R, typename Pair>
-	bool operator==(ft::MapIterator<T_L,Pair> lhs,
-		ft::MapIterator<T_R,Pair> rhs)
+	template<typename Node_L, typename Node_R>
+	bool operator==(ft::MapIterator<Node_L> lhs,
+		ft::MapIterator<Node_R> rhs)
 	{
 		return (*lhs == *rhs);
 	}
 
-	template <typename T, typename Pair>
-	bool operator!=(ft::MapIterator<T,Pair> lhs,
-		ft::MapIterator<T,Pair> rhs)
+	template <typename Node>
+	bool operator!=(ft::MapIterator<Node> lhs,
+		ft::MapIterator<Node> rhs)
 	{
 		return (*lhs != *rhs);
 	}
 
-	template<typename T_L, typename T_R, typename Pair>
-	bool operator!=(ft::MapIterator<T_L,Pair> lhs,
-		ft::MapIterator<T_R,Pair> rhs)
+	template<typename Node_L, typename Node_R>
+	bool operator!=(ft::MapIterator<Node_L> lhs,
+		ft::MapIterator<Node_R> rhs)
 	{
 		return (*lhs != *rhs);
 	}

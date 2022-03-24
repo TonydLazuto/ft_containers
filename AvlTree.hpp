@@ -168,32 +168,9 @@ namespace ft
 				}
 				return (r);
 			}
-			
-
-			void	redefineMinRightOrphan (NodeTree* minright) // return mandatory??
-			{
-				NodeTree* minright_rightchild = NULL;
-
-				// printNode(minright, "minright");
-				// std::cout << "redefineminrightchildParent" << std::endl;
-				if (minright->right)
-				{
-					// minright_rightchild got te be linkup with the above Tree after his parent deletion
-					minright_rightchild = minright->right;
-					minright_rightchild->parent = minright_rightchild->parent->parent;
-				}
-				else if (minright->left)
-				{
-					minright_rightchild = minright->left;
-					minright_rightchild->parent = minright_rightchild->parent->parent;
-				}
-				// else
-				// 	std::cout << "no redefined grandchild" << std::endl;
-			}
 
 			NodeTree	*delSingleChild(NodeTree* r, NodeTree* side)
 			{
-				NodeTree*	orphan = NULL;
 				std::cout << "delSingleChild" << std::endl;
 
 				if (!r)
@@ -205,17 +182,49 @@ namespace ft
 				if (side){printNode(side, "side");
 					side->parent = r->parent;}
 				printNode(r, "1CHILD->r");
-				
-				if (r->right)
-				{
-					printNode(r, "RIGHT->r");
-					orphan = r->right;
-					orphan->parent = r->parent;
-					printNode(orphan, "orphan");
-				}
+				std::cout << "r: " << &*r << std::endl;
 				_alloc_n.destroy(r);
 				_alloc_n.deallocate(r, 1);
 				return side;
+			}
+			
+			void	swap_nodes(NodeTree **r, NodeTree **minright)// ou swap les addresses de pair???
+			{
+				NodeTree*	r_left = (*r)->left;
+				NodeTree*	r_right = (*r)->right;
+				NodeTree*	r_parent = (*r)->parent;
+				NodeTree*	save_minright_left = (*minright)->left;
+				NodeTree*	save_minright_parent = (*minright)->parent;
+
+				r_left->parent = *minright;
+				r_right->parent = *minright;
+				(*minright)->left = r_left;
+				(*minright)->right = r_right;
+				(*minright)->parent = r_parent;
+
+				(*r)->right = NULL;
+				(*r)->left = save_minright_left;
+				save_minright_left->parent = *r;
+				if (r_parent && ((*r)->pr < r_parent->pr))
+					r_parent->left = *minright;
+				else if (r_parent && ((*r)->pr > r_parent->pr))
+					r_parent->right = *minright;
+
+				// check if r->right point directly on minright
+				// to avoid self pointing on r->right
+				if (r_right && r_right->pr == (*minright)->pr)
+				{
+					(*minright)->right = *r;
+					(*r)->parent = *minright;
+				}
+				else
+				{
+					(*r)->parent = save_minright_parent;
+					if (save_minright_parent && ((*r)->pr < save_minright_parent->pr))
+						save_minright_parent->left = *r;
+					else if (save_minright_parent && ((*r)->pr > save_minright_parent->pr))
+						save_minright_parent->right = *r;
+				}
 			}
 
 			NodeTree*	deleteNode(NodeTree* r, value_type val) {
@@ -239,28 +248,20 @@ namespace ft
 						// Node with two children: Get the inorder successor
 						// (smallest in the right subtree)
 						printNode(r, "DELETENODE->r");
-						NodeTree* min_right_tree = minValueNode(r->right);
+						NodeTree* minright = minValueNode(r->right);
 						
-						NodeTree* new_root = _alloc_n.allocate(1);
-						_alloc_n.construct(new_root, *min_right_tree);
-						new_root->left = r->left;
-						new_root->right = r->right;
-						new_root->parent = r->parent;
-						printNode(min_right_tree, "min_right_tree");
-						printNode(new_root, "new_root");
-						if (r->left)
-						{
-							NodeTree	*orphan = r->left;
-							orphan->parent = new_root;
-						}
-						// Copy the inorder successor's content to this Node
-						// redefineMinRightOrphan(min_right_tree);
-						// r->left = NULL;
-						// r->right = NULL;
-						// r->parent = NULL;
-						r = new_root;
+						printNode(minright, "minright");
+						// if (r->left)
+						// {
+						// 	NodeTree	*orphan = r->left;
+						// 	orphan->parent = minright;
+						// }
+						
+						swap_nodes(&r, &minright);
+						
+
 						// Delete the inorder successor
-						r->right = deleteNode(r->right, min_right_tree->pr);
+						minright->right = deleteNode(minright->right, r->pr);
 					}
 				}
 				r = balanceDeletion(r);
