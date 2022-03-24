@@ -37,6 +37,8 @@ namespace ft
 				// std::cout << "--- START pre incr ---" << std::endl;
 				Pair	save = _itor->pr;
 
+				// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
+				// std::cout << "_itor.second: " << _itor->pr.second << std::endl;
 				if (_itor)
 				{
 					if (!_itor->right && _itor->parent)
@@ -47,7 +49,7 @@ namespace ft
 					else if (_itor->right) // _itor == Parent
 					{
 						_itor = _itor->right;
-						while (_itor && _itor->left)
+						while (_itor->left)
 							_itor = _itor->left;
 					}
 				}
@@ -59,7 +61,8 @@ namespace ft
 
 			MapIterator operator++(int)
 			{
-				MapIterator tmp = operator++();
+				MapIterator tmp = *this;
+				tmp._itor = this->_itor++;
 				return tmp;
 			}
 			
@@ -89,7 +92,8 @@ namespace ft
 			}
 			MapIterator operator--(int)
 			{
-				MapIterator tmp = operator--();
+				MapIterator tmp = *this;
+				tmp._itor = this->_itor--;
 				return tmp;
 			}
 

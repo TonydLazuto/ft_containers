@@ -6,7 +6,6 @@ namespace ft
 	template <bool is_integral, typename T>
 		struct is_integral_res
 		{
-			typedef T type;
 			static const bool value = is_integral;
 		};
 

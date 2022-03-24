@@ -142,9 +142,9 @@ namespace ft
 			size_type erase (const key_type& k)
 			{
 				_avl.unlinkEnd();
-				// std::cout << "-------------------------BEGIN-----------------------------------" << std::endl;
-				// _avl.print2D(_avl.getRoot(), 5);
-				// std::cout << "------------------------------------------------------------" << std::endl;
+				std::cout << "-------------------------BEGIN-----------------------------------" << std::endl;
+				_avl.print2D(_avl.getRoot(), 5);
+				std::cout << "------------------------------------------------------------" << std::endl;
 				NodeTree*	to_del;
 
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
@@ -152,10 +152,9 @@ namespace ft
 				if (!to_del)
 					return (0);
 				_avl.erase(to_del->pr);
-				// _avl.print2D(_avl.getRoot(), 5);
-				// std::cout << "-------------------------END-----------------------------------" << std::endl;
+				_avl.print2D(_avl.getRoot(), 5);
+				std::cout << "-------------------------END-----------------------------------" << std::endl;
 				_avl.linkEnd();
-				// std::cout << size() << std::endl;
 				return (1);
 			}
 
@@ -165,9 +164,7 @@ namespace ft
 
 				while (first != last)
 				{
-					iterator cpy(first);
-					++first;
-					erase(cpy->first);
+					erase((first++)->first);
 				}
 			}
 
