@@ -66,7 +66,7 @@ namespace ft
 			// 		insert(first, last);
 			// 	}
 
-			virtual ~map( void ) {}
+			virtual ~map( void ) { this->clear(); }
 
 			map(const map& x) : _avl(x._avl), _alloc(x._alloc), _comp(x.comp)
 			{
@@ -113,7 +113,7 @@ namespace ft
 				NodeTree*	match_node = _avl.searchByKey(_avl.getRoot(), val.first);
 				NodeTree*	new_insert = NULL;
 
-				_avl.insert(val, &new_insert);
+				_avl.insert(val, new_insert);
 				// printNode(_avl.getRoot());
 				// match_node == NULL => true => insertion has been done
 				if (match_node == NULL)
@@ -126,7 +126,13 @@ namespace ft
 
 			// iterator insert (iterator position, const value_type& val)
 			// {
-			// 	;
+			// 	_avl.unlinkEnd();
+			// 	NodeTree*	insertNode = _avl.searchByKey(_avl.getRoot(), val.first);
+
+			// 	_avl.insertAtPosition(position, val, &insertNode);
+
+			// 	_avl.linkEnd();
+			// 	return (insertNode);
 			// }
 
 			// template <class InputIterator>
@@ -142,21 +148,12 @@ namespace ft
 			size_type erase (const key_type& k)
 			{
 				_avl.unlinkEnd();
-				std::cout << "-------------------------BEGIN-----------------------------------" << std::endl;
-				_avl.print2D(_avl.getRoot(), 5);
-				std::cout << "------------------------------------------------------------" << std::endl;
 				NodeTree*	to_del;
 
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
 				if (!to_del)
 					return (0);
-				// _avl.printNode(to_del, "to_del");
-				// std::cout << "to_del.first: " << to_del->pr.first << std::endl;
-				// std::cout << "to_del.second: " << to_del->pr.second << std::endl;
-				// std::cout << "to_del: " << &to_del->pr << std::endl;
 				_avl.erase(to_del->pr);
-				_avl.print2D(_avl.getRoot(), 5);
-				std::cout << "-------------------------END-----------------------------------" << std::endl;
 				_avl.linkEnd();
 				return (1);
 			}
@@ -164,33 +161,32 @@ namespace ft
 			void erase (iterator first, iterator last)
 			{
 				// iterator cpy = first;
-// int i = 0;
 				while (first != last)
 				{
-					iterator cpy =first;
+					iterator cpy = first;
 					// std::cout << "first.first: " << first->first << std::endl;
 					// std::cout << "first.second: " << first->second << std::endl;
-					std::cout << "begin: " << &*begin() << std::endl;
+					// std::cout << "begin: " << &*begin() << std::endl;
 					++first;
-					std::cout << "cpy: " << &*cpy << std::endl;
-					std::cout << "first: " << &*first << std::endl;
-					std::cout << "cpy.first: " << cpy->first << std::endl;
-					std::cout << "cpy.second: " << cpy->second << std::endl;
+					// std::cout << "cpy: " << &*cpy << std::endl;
+					// std::cout << "first: " << &*first << std::endl;
+					// std::cout << "cpy.first: " << cpy->first << std::endl;
+					// std::cout << "cpy.second: " << cpy->second << std::endl;
 					erase(cpy->first);
 					// std::cout << "first: " << &*first << std::endl;
 					// std::cout << "cpy: " << &*cpy << std::endl;
-// i++;
 					// std::cout << "first.first: " << first->first << std::endl;
 					// std::cout << "first.second: " << first->second << std::endl;
 				}
 			}
 
-			// void swap (map& x);
+			void swap (map& x) { _avl.swap(x._avl); }
 
-			// void clear(void)
-			// {
-				// erase(begin(), end());
-			// }
+			void clear(void)
+			{
+				erase(begin(), end());
+				_avl.deleteSentinelNode();
+			}
 
 			mapped_type& operator[](const key_type& k)
 			{

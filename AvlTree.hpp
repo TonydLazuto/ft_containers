@@ -124,14 +124,14 @@ namespace ft
 			
 			// 1st arg always root?
 			NodeTree* insertNode(NodeTree* r, NodeTree* parent
-				, const ft::pair<Key, T>& val, NodeTree** new_insert)
+				, const ft::pair<Key, T>& val, NodeTree*& new_insert)
 			{
 				if (r == NULL)
 				{
 					r = _alloc_n.allocate(1);
 					_alloc_n.construct(r, NodeTree(parent));
 					r->pr = val;
-					*new_insert = r;
+					new_insert = r;
 					std::cout << "Value inserted successfully" << std::endl;
 					return r;
 				}
@@ -171,44 +171,44 @@ namespace ft
 
 			
 			
-			void	swap_nodes(NodeTree **r, NodeTree **minright)// ou swap les addresses de pair???
+			void	swap_nodes(NodeTree*& r, NodeTree*& minright)// ou swap les addresses de pair???
 			{
-				NodeTree*	r_left = (*r)->left;
-				NodeTree*	r_right = (*r)->right;
-				NodeTree*	r_parent = (*r)->parent;
-				NodeTree*	save_minright_left = (*minright)->left;
-				NodeTree*	save_minright_right = (*minright)->right;
-				NodeTree*	save_minright_parent = (*minright)->parent;
+				NodeTree*	r_left = r->left;
+				NodeTree*	r_right = r->right;
+				NodeTree*	r_parent = r->parent;
+				NodeTree*	save_minright_left = minright->left;
+				NodeTree*	save_minright_right = minright->right;
+				NodeTree*	save_minright_parent = minright->parent;
 
-				r_left->parent = *minright;
-				r_right->parent = *minright;
-				(*minright)->left = r_left;
-				(*minright)->right = r_right;
-				(*minright)->parent = r_parent;
+				r_left->parent = minright;
+				r_right->parent = minright;
+				minright->left = r_left;
+				minright->right = r_right;
+				minright->parent = r_parent;
 
-				(*r)->right = save_minright_right;
-				(*r)->left = save_minright_left;
+				r->right = save_minright_right;
+				r->left = save_minright_left;
 				if (save_minright_left)
-					save_minright_left->parent = *r;
-				if (r_parent && ((*r)->pr < r_parent->pr))
-					r_parent->left = *minright;
-				else if (r_parent && ((*r)->pr > r_parent->pr))
-					r_parent->right = *minright;
+					save_minright_left->parent = r;
+				if (r_parent && (r->pr < r_parent->pr))
+					r_parent->left = minright;
+				else if (r_parent && (r->pr > r_parent->pr))
+					r_parent->right = minright;
 
 				// check if r->right point directly on minright
 				// to avoid self pointing on r->right
-				if (r_right && r_right->pr == (*minright)->pr)
+				if (r_right && r_right->pr == minright->pr)
 				{
-					(*minright)->right = *r;
-					(*r)->parent = *minright;
+					minright->right = r;
+					r->parent = minright;
 				}
 				else
 				{
-					(*r)->parent = save_minright_parent;
-					if (save_minright_parent && ((*r)->pr < save_minright_parent->pr))
-						save_minright_parent->left = *r;
-					else if (save_minright_parent && ((*r)->pr > save_minright_parent->pr))
-						save_minright_parent->right = *r;
+					r->parent = save_minright_parent;
+					if (save_minright_parent && (r->pr < save_minright_parent->pr))
+						save_minright_parent->left = r;
+					else if (save_minright_parent && (r->pr > save_minright_parent->pr))
+						save_minright_parent->right = r;
 				}
 			}
 
@@ -256,7 +256,7 @@ namespace ft
 				// std::cout << "r: " << &r->pr << std::endl;
 				// print2D(_root, 5);
 				if (r->left && r->right)
-					swap_nodes(&r, &minright);
+					swap_nodes(r, minright);
 				if (r->parent)
 					temp_start = r->parent;
 				// std::cout << "temp_start.first: " << temp_start->pr.first << std::endl;
@@ -318,9 +318,31 @@ namespace ft
 				}
 			}
 
-			void		insert(const value_type& val, NodeTree** new_insert)
+			void		insert(const value_type& val, NodeTree*& new_insert)
 			{
 				_root = insertNode(_root, NULL, val, new_insert);
+			}
+
+			void		insertAtPosition(value_type start_val, const value_type& val
+							, NodeTree*& new_insert)
+			{
+				NodeTree	*position = _root;
+				if (start_val > val)
+					_root = insertNode(_root, NULL, val, new_insert);
+				else
+				{
+					iterativeSearch(position, start_val);
+					if (position)
+					{
+						position = insertNode(position, NULL, val, new_insert);
+						while (position && position->parent)
+						{
+							position->parent = balanceInsert(position->parent, val);
+							position = position->parent;
+						}
+						_root = position;
+					}
+				}
 			}
 
 			void		erase(value_type to_del)
@@ -374,6 +396,18 @@ namespace ft
 
 				size = getNbElets(_root);
 				return (size);
+			}
+
+			void	deleteSentinelNode(void)
+			{
+				_alloc_n.destroy(_end);
+				_alloc_n.deallocate(_end, 1);
+			}
+			void swap (AvlTree& x)
+			{
+				AvlTree	tmp(x);
+				x = *this;
+				*this = tmp;
 			}
 
 		private:
