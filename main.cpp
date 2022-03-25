@@ -61,13 +61,13 @@ int main(int argc, char** argv) {
 	}
 
 	ft::map<char,int>::iterator it, it2;
-	it=mymap.lower_bound ('f');
-	it2=mymap.lower_bound ('m');
+	it=mymap.lower_bound ('h');
+	it2=mymap.lower_bound ('n');
 
 	mymap.erase(it, it2);
 	
-	for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-    	std::cout << it->first << " => " << it->second << '\n';
+	// for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+    // 	std::cout << it->first << " => " << it->second << '\n';
 	// while (1);
 	
 	// ft::map<char,int>::iterator it;
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
 	// map1.erase(pr7.first);
 
 	// map1['a'] = 0;
-	// map1['b'] = 1;
+	// map1['b'] 5= 1;
 	// map1['c'] = 2;
 	// map1['d'] = 3;
 	// map1['e'] = 4;

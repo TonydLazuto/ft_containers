@@ -212,49 +212,67 @@ namespace ft
 				}
 			}
 
-			NodeTree	*delSingleChild(NodeTree* r)
+			NodeTree*	recursiveDeletion(NodeTree*	r, value_type val)
 			{
-				NodeTree*	last = r->parent;
-				std::cout << "delSingleChild" << std::endl;
-
-				if (r->right)
+				if (r == NULL)
+					return NULL;
+				else if (r && val < r->pr)
+					r->left = recursiveDeletion(r->left, val);
+				else if (r && val > r->pr)
+					r->right = recursiveDeletion(r->right, val);
+				else
 				{
-					swap_nodes(&r, &r->right);
-					last = r->parent;
-					last->right = NULL;
+					NodeTree	*temp = r->left;
+					if (r->right)
+						temp = r->right;
+					if (temp)
+					{
+						// std::cout << "temp.first: " << temp->pr.first << std::endl;
+						// std::cout << "temp.second: " << temp->pr.second << std::endl;
+						temp->parent = r->parent;
+					}
+					// std::cout << "in r.first: " << r->pr.first << std::endl;
+					// std::cout << "in r.second: " << r->pr.second << std::endl;
+					
+					_alloc_n.destroy(r);
+					_alloc_n.deallocate(r, 1);
+					return (temp);
 				}
-				
-				std::cout << "r: " << &r->pr << std::endl;
-				std::cout << "last: " << &last->pr << std::endl;
-				_alloc_n.destroy(r);
-				_alloc_n.deallocate(r, 1);
-				return last;
+				// std::cout << "out r.first: " << r->pr.first << std::endl;
+				// std::cout << "out r.second: " << r->pr.second << std::endl;
+				return (r);
 			}
 
 			NodeTree*	deleteNode(NodeTree* r, value_type val) {
 				// base case
-				NodeTree* minright = minValueNode(r->right);
+				NodeTree* minright = NULL;
+				NodeTree* temp_start = _root;
 				
 				iterativeSearch(r, val);
+				minright = minValueNode(r->right);
 				if (!r)
 					return _root;
 				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
 				// std::cout << "r: " << &r->pr << std::endl;
 				// print2D(_root, 5);
-				if (!r->left || !r->right)
-					r = delSingleChild(r);
-				else
-				{
+				if (r->left && r->right)
 					swap_nodes(&r, &minright);
-					r = delSingleChild(r);
-				}
-				// std::cout << "-------------------------deleteNode2-----------------------------------" << std::endl;
-				// std::cout << "r: " << &r->pr << std::endl;
+				if (r->parent)
+					temp_start = r->parent;
+				// std::cout << "temp_start.first: " << temp_start->pr.first << std::endl;
+				// std::cout << "temp_start.second: " << temp_start->pr.second << std::endl;
+				r = recursiveDeletion(temp_start, val);
+				// std::cout << "r.first: " << r->pr.first << std::endl;
+				// std::cout << "r.second: " << r->pr.second << std::endl;
 				// print2D(_root, 5);
+				// std::cout << "-------------------------beforeBalance-----------------------------------" << std::endl;
+				r = balanceDeletion(r);
 				while (r && r->parent)
 				{
-					r = balanceDeletion(r);
+					r->parent = balanceDeletion(r->parent);
 					r = r->parent;
+				// 	std::cout << "bf out r.first: " << r->pr.first << std::endl;
+				// 	std::cout << "bf out r.second: " << r->pr.second << std::endl;
 				}
 				return r;
 			}
@@ -262,21 +280,29 @@ namespace ft
 			NodeTree*	balanceDeletion(NodeTree* r)
 			{
 				int bf = getBalanceFactor(r);
+				// std::cout << "bf: " << bf << std::endl;
+				// std::cout << "r.first: " << r->pr.first << std::endl;
+				// std::cout << "r.second: " << r->pr.second << std::endl;
 				// Left Left Imbalance/Case or Right rotation 
-				if (bf == 2 && getBalanceFactor(r->left) >= 0)
-					return rightRotate(r);
+				if (bf == 2 && getBalanceFactor(r->left) >= 0){std::cout << "1" << std::endl;
+					return rightRotate(r);}
 				// Left Right Imbalance/Case or LR rotation 
 				else if (bf == 2 && getBalanceFactor(r->left) == -1)
 				{
+					std::cout << "2" << std::endl;
 					r->left = leftRotate(r->left);
 					return rightRotate(r);
 				}
 				// Right Right Imbalance/Case or Left rotation	
 				else if (bf == -2 && getBalanceFactor(r->right) <= 0)
+				{
+					std::cout << "3" << std::endl;
 					return leftRotate(r);
+				}
 				// Right Left Imbalance/Case or RL rotation 
 				else if (bf == -2 && getBalanceFactor(r->right) == 1)
 				{
+					std::cout << "4" << std::endl;
 					r->right = rightRotate(r->right);
 					return leftRotate(r);
 				}
@@ -386,14 +412,22 @@ namespace ft
 			{
 				NodeTree* y = z->left;
 				NodeTree* Tx = y->right;
+				NodeTree* grandad = z->parent;
 
 				// Perform rotation
+				y->parent = grandad;
 				y->right = z;
 				z->left = Tx;
-				y->parent = z->parent;
 				z->parent = y;
 				if (Tx)
 					Tx->parent = z;
+				if (grandad)
+				{
+					if (y->pr < grandad->pr)
+						grandad->left = y;
+					else
+						grandad->right = y;
+				}
 				return y;
 			}
 
@@ -401,14 +435,22 @@ namespace ft
 			{
 				NodeTree* y = z->right;
 				NodeTree* Tx = y->left;
+				NodeTree* grandad = z->parent;
 
 				// Perform rotation
+				y->parent = grandad;
 				y->left = z;
 				z->right = Tx;
-				y->parent = z->parent;
 				z->parent = y;
 				if (Tx)
 					Tx->parent = z;
+				if (grandad)
+				{
+					if (y->pr < grandad->pr)
+						grandad->left = y;
+					else
+						grandad->right = y;
+				}
 				return y;
 			}
 			

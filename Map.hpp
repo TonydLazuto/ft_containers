@@ -148,12 +148,12 @@ namespace ft
 				NodeTree*	to_del;
 
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
-				// _avl.printNode(to_del, "to_del");
 				if (!to_del)
 					return (0);
-				std::cout << "to_del.first: " << to_del->pr.first << std::endl;
-				std::cout << "to_del.second: " << to_del->pr.second << std::endl;
-				std::cout << "to_del: " << &to_del->pr << std::endl;
+				// _avl.printNode(to_del, "to_del");
+				// std::cout << "to_del.first: " << to_del->pr.first << std::endl;
+				// std::cout << "to_del.second: " << to_del->pr.second << std::endl;
+				// std::cout << "to_del: " << &to_del->pr << std::endl;
 				_avl.erase(to_del->pr);
 				_avl.print2D(_avl.getRoot(), 5);
 				std::cout << "-------------------------END-----------------------------------" << std::endl;
@@ -164,15 +164,13 @@ namespace ft
 			void erase (iterator first, iterator last)
 			{
 				// iterator cpy = first;
-
+// int i = 0;
 				while (first != last)
 				{
 					iterator cpy =first;
 					// std::cout << "first.first: " << first->first << std::endl;
 					// std::cout << "first.second: " << first->second << std::endl;
 					std::cout << "begin: " << &*begin() << std::endl;
-					std::cout << "cpy: " << &*cpy << std::endl;
-					std::cout << "first: " << &*first << std::endl;
 					++first;
 					std::cout << "cpy: " << &*cpy << std::endl;
 					std::cout << "first: " << &*first << std::endl;
@@ -181,7 +179,7 @@ namespace ft
 					erase(cpy->first);
 					// std::cout << "first: " << &*first << std::endl;
 					// std::cout << "cpy: " << &*cpy << std::endl;
-
+// i++;
 					// std::cout << "first.first: " << first->first << std::endl;
 					// std::cout << "first.second: " << first->second << std::endl;
 				}
