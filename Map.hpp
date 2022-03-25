@@ -151,6 +151,9 @@ namespace ft
 				// _avl.printNode(to_del, "to_del");
 				if (!to_del)
 					return (0);
+				std::cout << "to_del.first: " << to_del->pr.first << std::endl;
+				std::cout << "to_del.second: " << to_del->pr.second << std::endl;
+				std::cout << "to_del: " << &to_del->pr << std::endl;
 				_avl.erase(to_del->pr);
 				_avl.print2D(_avl.getRoot(), 5);
 				std::cout << "-------------------------END-----------------------------------" << std::endl;
@@ -165,25 +168,22 @@ namespace ft
 				while (first != last)
 				{
 					iterator cpy =first;
-					std::cout << "first.first: " << first->first << std::endl;
-					std::cout << "first.second: " << first->second << std::endl;
+					// std::cout << "first.first: " << first->first << std::endl;
+					// std::cout << "first.second: " << first->second << std::endl;
+					std::cout << "begin: " << &*begin() << std::endl;
 					std::cout << "cpy: " << &*cpy << std::endl;
 					std::cout << "first: " << &*first << std::endl;
 					++first;
+					std::cout << "cpy: " << &*cpy << std::endl;
 					std::cout << "first: " << &*first << std::endl;
-					std::cout << "first.first: " << first->first << std::endl;
-					std::cout << "first.second: " << first->second << std::endl;
+					std::cout << "cpy.first: " << cpy->first << std::endl;
+					std::cout << "cpy.second: " << cpy->second << std::endl;
 					erase(cpy->first);
-					std::cout << "first: " << &*first << std::endl;
-					std::cout << "cpy: " << &*cpy << std::endl;
-					++first;
-					++first;
-					++first;
-					++first;
-					++first;
-					std::cout << "first.first: " << first->first << std::endl;
-					std::cout << "first.second: " << first->second << std::endl;
-					first = last;
+					// std::cout << "first: " << &*first << std::endl;
+					// std::cout << "cpy: " << &*cpy << std::endl;
+
+					// std::cout << "first.first: " << first->first << std::endl;
+					// std::cout << "first.second: " << first->second << std::endl;
 				}
 			}
 

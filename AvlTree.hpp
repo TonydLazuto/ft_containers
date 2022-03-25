@@ -62,6 +62,7 @@ namespace ft
 						std::cout << ", Right=" << r->right->pr.first;
 					if (r->parent)
 						std::cout << ", Parent=" << r->parent->pr.first;
+					// std::cout << ", r: " << &r->pr;
 					std::cout<< std::endl;
 				}
 				else
@@ -108,7 +109,7 @@ namespace ft
 				return NULL; // NULL
 			}
 
-			NodeTree *iterativeSearch(NodeTree* r, const ft::pair<Key, T>& val) const
+			void	iterativeSearch(NodeTree*& r, value_type& val)
 			{
 				while (r != NULL)
 				{
@@ -117,9 +118,8 @@ namespace ft
 					else if (val > r->pr)
 						r = r->right;
 					else
-						return r;
+						return ;
 				}
-				return r;
 			}
 			
 			// 1st arg always root?
@@ -169,24 +169,7 @@ namespace ft
 				return (r);
 			}
 
-			NodeTree	*delSingleChild(NodeTree* r, NodeTree* side)
-			{
-				std::cout << "delSingleChild" << std::endl;
-
-				if (!r)
-					return (NULL);
-				if (!r->left)
-					side = r->right;
-				else if (!r->right)
-					side = r->left;
-				if (side){printNode(side, "side");
-					side->parent = r->parent;}
-				printNode(r, "1CHILD->r");
-				std::cout << "r: " << &*r << std::endl;
-				_alloc_n.destroy(r);
-				_alloc_n.deallocate(r, 1);
-				return side;
-			}
+			
 			
 			void	swap_nodes(NodeTree **r, NodeTree **minright)// ou swap les addresses de pair???
 			{
@@ -194,6 +177,7 @@ namespace ft
 				NodeTree*	r_right = (*r)->right;
 				NodeTree*	r_parent = (*r)->parent;
 				NodeTree*	save_minright_left = (*minright)->left;
+				NodeTree*	save_minright_right = (*minright)->right;
 				NodeTree*	save_minright_parent = (*minright)->parent;
 
 				r_left->parent = *minright;
@@ -202,9 +186,10 @@ namespace ft
 				(*minright)->right = r_right;
 				(*minright)->parent = r_parent;
 
-				(*r)->right = NULL;
+				(*r)->right = save_minright_right;
 				(*r)->left = save_minright_left;
-				save_minright_left->parent = *r;
+				if (save_minright_left)
+					save_minright_left->parent = *r;
 				if (r_parent && ((*r)->pr < r_parent->pr))
 					r_parent->left = *minright;
 				else if (r_parent && ((*r)->pr > r_parent->pr))
@@ -227,44 +212,50 @@ namespace ft
 				}
 			}
 
+			NodeTree	*delSingleChild(NodeTree* r)
+			{
+				NodeTree*	last = r->parent;
+				std::cout << "delSingleChild" << std::endl;
+
+				if (r->right)
+				{
+					swap_nodes(&r, &r->right);
+					last = r->parent;
+					last->right = NULL;
+				}
+				
+				std::cout << "r: " << &r->pr << std::endl;
+				std::cout << "last: " << &last->pr << std::endl;
+				_alloc_n.destroy(r);
+				_alloc_n.deallocate(r, 1);
+				return last;
+			}
+
 			NodeTree*	deleteNode(NodeTree* r, value_type val) {
-				// base case 
-				if (r == NULL)
-					return NULL;
-				else if (val < r->pr)
-					r->left = deleteNode(r->left, val);
-				else if (val > r->pr)
-					r->right = deleteNode(r->right, val);
+				// base case
+				NodeTree* minright = minValueNode(r->right);
+				
+				iterativeSearch(r, val);
+				if (!r)
+					return _root;
+				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
+				// std::cout << "r: " << &r->pr << std::endl;
+				// print2D(_root, 5);
+				if (!r->left || !r->right)
+					r = delSingleChild(r);
 				else
 				{
-					// Node with only one child or no child 
-					if (!r->left)
-						return (delSingleChild(r, r->right));
-					else if (!r->right)
-						return (delSingleChild(r, r->left));
-					else
-					{
-						std::cout << "deleteNode" << std::endl;
-						// Node with two children: Get the inorder successor
-						// (smallest in the right subtree)
-						printNode(r, "DELETENODE->r");
-						NodeTree* minright = minValueNode(r->right);
-						
-						printNode(minright, "minright");
-						// if (r->left)
-						// {
-						// 	NodeTree	*orphan = r->left;
-						// 	orphan->parent = minright;
-						// }
-						
-						swap_nodes(&r, &minright);
-						
-
-						// Delete the inorder successor
-						minright->right = deleteNode(minright->right, r->pr);
-					}
+					swap_nodes(&r, &minright);
+					r = delSingleChild(r);
 				}
-				r = balanceDeletion(r);
+				// std::cout << "-------------------------deleteNode2-----------------------------------" << std::endl;
+				// std::cout << "r: " << &r->pr << std::endl;
+				// print2D(_root, 5);
+				while (r && r->parent)
+				{
+					r = balanceDeletion(r);
+					r = r->parent;
+				}
 				return r;
 			}
 

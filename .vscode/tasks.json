@@ -1,0 +1,28 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: clang build active file",
+			"command": "/usr/bin/clang++",
+			"args": [
+				"-std=c++98",
+				"-g3",
+				"${file}",
+				"-o",
+				"${workspaceFolder}/ft_containers"
+			],
+			"options": {
+				"cwd": "/Users/aderose/Documents/cursus/ft_containers"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "compiler: /usr/bin/clang"
+		}
+	]
+}
