@@ -380,7 +380,7 @@ namespace ft
 				size_type	size;
 
 				size = getNbElets(_root);
-				return (size);
+				return (--size);
 			}
 
 			void	deleteSentinelNode(void)

@@ -34,7 +34,7 @@ namespace ft
 			typedef const T&  const_reference;
 
 			typedef typename ft::MapIterator<NodeTree> iterator;
-			typedef typename ft::MapIterator<const NodeTree> const_iterator; //2eme classe const ?
+			typedef typename ft::MapConstIterator<NodeTree> const_iterator; //2eme classe const ?
 			typedef typename ft::ReverseMapIterator<iterator> reverse_iterator;
 			typedef typename ft::ReverseMapIterator<const_iterator> const_reverse_iterator;
 
@@ -165,7 +165,7 @@ namespace ft
 			{
 				while (first != last)
 				{
-					iterator cpy = first;
+					InputIterator cpy = first;
 					++first;
 					this->insert(*cpy);
 				}
@@ -265,7 +265,14 @@ namespace ft
 			}
 			const_iterator lower_bound (const key_type& k) const
 			{
-				return (const_iterator(this->lower_bound(k)));
+				const_iterator first = begin();
+				const_iterator last = end();
+				for (; first != last; ++first)
+				{
+					if (!_comp(first->first, k))
+						break ;
+				}
+				return first;
 			}
 
 			iterator upper_bound (const key_type& k)
@@ -281,7 +288,14 @@ namespace ft
 			}
 			const_iterator upper_bound (const key_type& k) const
 			{
-				return (const_iterator(this->upper_bound(k)));
+				const_iterator first = begin();
+				const_iterator last = end();
+				for (; first != last; ++first)
+				{
+					if (_comp(k, first->first))
+						break ;
+				}
+				return first;
 			}
 
 			pair<const_iterator,const_iterator>	equal_range (const key_type& k) const
