@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "Maptools.hpp"
-#include "Nullptr.hpp"
 
 template < class Key, class T >
 class Node

@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Maptools.hpp"
 #include "Node.hpp"
-#include "Nullptr.hpp"
+#include "MapIterator.hpp"
 
 #define SPACE 10
 
@@ -127,7 +127,9 @@ namespace ft
 					return r;
 				}
 				else if (val < r->pr)
+				{
 					r->left = insertNode(r->left, r, val, new_insert);
+				}
 				else if (val > r->pr)
 					r->right = insertNode(r->right, r, val, new_insert);
 				else
@@ -313,26 +315,19 @@ namespace ft
 				_root = insertNode(_root, NULL, val, new_insert);
 			}
 
-			void		insertAtPosition(value_type start_val, const value_type& val
+			void		insertAtPosition(value_type& hint_val, const value_type& val
 							, NodeTree*& new_insert)
 			{
-				NodeTree	*position = _root;
-				if (start_val > val)
-					_root = insertNode(_root, NULL, val, new_insert);
-				else
+				NodeTree* positionNode = _root;
+
+				iterativeSearch(positionNode, hint_val);
+				positionNode = insertNode(positionNode, NULL, val, new_insert);
+				while (positionNode && positionNode->parent)
 				{
-					iterativeSearch(position, start_val);
-					if (position)
-					{
-						position = insertNode(position, NULL, val, new_insert);
-						while (position && position->parent)
-						{
-							position->parent = balanceInsert(position->parent, val);
-							position = position->parent;
-						}
-						_root = position;
-					}
+					positionNode->parent = balanceInsert(positionNode->parent, val);
+					positionNode = positionNode->parent;
 				}
+				_root = positionNode;
 			}
 
 			void		erase(value_type to_del)

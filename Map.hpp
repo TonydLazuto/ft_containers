@@ -8,7 +8,6 @@
 #include "ReverseMapIterator.hpp"
 #include "IteratorTraits.hpp"
 #include "AvlTree.hpp"
-#include "Nullptr.hpp"
 #include "IsIntegral.hpp"
 #include "EnableIf.hpp"
 
@@ -123,16 +122,41 @@ namespace ft
 
 				return (pair_ret);
 			}
+			
+			value_type	findInsertFromHint(iterator hint, const value_type& val) //private
+			{
+				if (val > _avl.maxValueNode(_avl.getRoot())->pr)
+					return (_avl.maxValueNode(_avl.getRoot())->pr);
+				if (val < _avl.minValueNode(_avl.getRoot())->pr)
+					return (_avl.minValueNode(_avl.getRoot())->pr);
+				if (*hint > val)
+					while (*hint > val)
+						--hint;
+				else
+				{
+					while (*hint < val)
+						++hint;
+					--hint;
+				}
+				return *hint;
+			}
 
 			iterator insert (iterator position, const value_type& val)
 			{
 				_avl.unlinkEnd();
-				NodeTree*	insertNode = _avl.searchByKey(_avl.getRoot(), val.first);
+				NodeTree*	new_insert = _avl.searchByKey(_avl.getRoot(), val.first);
 
-				_avl.insertAtPosition(*position, val, insertNode);
-
+				if (!_avl.getRoot())
+					_avl.insert(val, new_insert);
+				else
+				{
+					value_type hint_val = findInsertFromHint(position, val);
+					_avl.insertAtPosition(hint_val, val, new_insert);
+				}
 				_avl.linkEnd();
-				return (insertNode);
+				// std::cout << "new_insert.first: " << new_insert->pr.first << std::endl;
+				// std::cout << "new_insert.second: " << new_insert->pr.second << std::endl;
+				return (new_insert);
 			}
 
 			template <class InputIterator>
@@ -155,14 +179,14 @@ namespace ft
 
 			size_type erase (const key_type& k)
 			{
-				_avl.unlinkEnd();
+				// _avl.unlinkEnd();
 				NodeTree*	to_del;
 
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
 				if (!to_del)
 					return (0);
 				_avl.erase(to_del->pr);
-				_avl.linkEnd();
+				// _avl.linkEnd();
 				return (1);
 			}
 
