@@ -64,16 +64,12 @@ int main(int argc, char** argv) {
 
 	// second insert function version (with hint position):
 	ft::map<char,int>::iterator it = mymap.begin();
-	// mymap.insert (it, std::pair<char,int>('b',300));  // max efficiency inserting
-	// mymap.insert (it, std::pair<char,int>('c',400));  // no max efficiency inserting
+	mymap.insert (it, ft::pair<char,int>('b',300));  // max efficiency inserting
+	mymap.insert (it, ft::pair<char,int>('c',400));  // no max efficiency inserting
 
 	// third insert function version (range insertion):
-	// std::map<char,int> anothermap;
-	// anothermap.insert(mymap.begin(),mymap.find('c'));
-
 	ft::map<char,int> anothermap;
-	for (it=mymap.begin(); it!=mymap.end(); ++it)
-		anothermap.insert(*it);
+	anothermap.insert(mymap.begin(),mymap.find('c'));
 
 	// showing contents:
 	std::cout << "mymap contains:\n";

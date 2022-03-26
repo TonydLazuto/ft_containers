@@ -56,29 +56,29 @@ namespace ft
 				const allocator_type& alloc = allocator_type())
 				: _avl(), _alloc(alloc), _comp(comp) {}
 
-			// template <class InputIterator>
-			// 	map (InputIterator first, InputIterator last,
-			// 		const key_compare& comp = key_compare(),
-			// 		const allocator_type& alloc = allocator_type(),
-			//		typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
-			// 		: _avl(), _alloc(alloc), _comp(comp)
-			// 	{
-			// 		insert(first, last);
-			// 	}
+			template <class InputIterator>
+				map (InputIterator first, InputIterator last,
+					const key_compare& comp = key_compare(),
+					const allocator_type& alloc = allocator_type(),
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+					: _avl(), _alloc(alloc), _comp(comp)
+				{
+					this->insert(first, last);
+				}
 
 			virtual ~map( void ) { this->clear(); }
 
 			map(const map& x) : _avl(x._avl), _alloc(x._alloc), _comp(x.comp)
 			{
-				// insert(x.begin(), x.end());
+				this->insert(x.begin(), x.end());
 			}
 
-			// map& operator=(map const & x)
-			// {
-			// 	clear();
-			// 	insert(x.begin(), x.end());
-			// 	return *this;
-			// }
+			map& operator=(map const & x)
+			{
+				this->clear();
+				this->insert(x.begin(), x.end());
+				return *this;
+			}
 
 			iterator begin(void) { return (_avl.getBegin()); }
 			const_iterator begin(void) const { return (_avl.getBegin()); }
@@ -124,25 +124,33 @@ namespace ft
 				return (pair_ret);
 			}
 
-			// iterator insert (iterator position, const value_type& val)
-			// {
-			// 	_avl.unlinkEnd();
-			// 	NodeTree*	insertNode = _avl.searchByKey(_avl.getRoot(), val.first);
+			iterator insert (iterator position, const value_type& val)
+			{
+				_avl.unlinkEnd();
+				NodeTree*	insertNode = _avl.searchByKey(_avl.getRoot(), val.first);
 
-			// 	_avl.insertAtPosition(position, val, &insertNode);
+				_avl.insertAtPosition(*position, val, insertNode);
 
-			// 	_avl.linkEnd();
-			// 	return (insertNode);
-			// }
+				_avl.linkEnd();
+				return (insertNode);
+			}
 
-			// template <class InputIterator>
-			// void insert (InputIterator first, InputIterator last,
-				// typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+			template <class InputIterator>
+			void insert (InputIterator first, InputIterator last,
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+			{
+				while (first != last)
+				{
+					iterator cpy = first;
+					++first;
+					this->insert(*cpy);
+				}
+			}
 
 			void erase (iterator position,
 				typename ft::enable_if<!ft::is_integral<iterator>::value, iterator>::type* = NULL)
 			{
-				erase(position->first);
+				this->erase(position->first);
 			}
 
 			size_type erase (const key_type& k)
@@ -160,23 +168,11 @@ namespace ft
 
 			void erase (iterator first, iterator last)
 			{
-				// iterator cpy = first;
 				while (first != last)
 				{
 					iterator cpy = first;
-					// std::cout << "first.first: " << first->first << std::endl;
-					// std::cout << "first.second: " << first->second << std::endl;
-					// std::cout << "begin: " << &*begin() << std::endl;
 					++first;
-					// std::cout << "cpy: " << &*cpy << std::endl;
-					// std::cout << "first: " << &*first << std::endl;
-					// std::cout << "cpy.first: " << cpy->first << std::endl;
-					// std::cout << "cpy.second: " << cpy->second << std::endl;
-					erase(cpy->first);
-					// std::cout << "first: " << &*first << std::endl;
-					// std::cout << "cpy: " << &*cpy << std::endl;
-					// std::cout << "first.first: " << first->first << std::endl;
-					// std::cout << "first.second: " << first->second << std::endl;
+					this->erase(cpy->first);
 				}
 			}
 
@@ -184,8 +180,7 @@ namespace ft
 
 			void clear(void)
 			{
-				erase(begin(), end());
-				_avl.deleteSentinelNode();
+				_avl.clear(); // check leaks
 			}
 
 			mapped_type& operator[](const key_type& k)

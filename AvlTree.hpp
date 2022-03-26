@@ -70,14 +70,6 @@ namespace ft
 				print2D(r->left, space); // Process left child  7
 			}
 
-			bool isTreeEmpty() const
-			{
-				if (_root == NULL)
-					return true;
-				else
-					return false;
-			}
-
 			NodeTree* minValueNode(NodeTree* node) const
 			{
 				NodeTree* min_node = node;
@@ -132,7 +124,6 @@ namespace ft
 					_alloc_n.construct(r, NodeTree(parent));
 					r->pr = val;
 					new_insert = r;
-					std::cout << "Value inserted successfully" << std::endl;
 					return r;
 				}
 				else if (val < r->pr)
@@ -169,8 +160,6 @@ namespace ft
 				return (r);
 			}
 
-			
-			
 			void	swap_nodes(NodeTree*& r, NodeTree*& minright)// ou swap les addresses de pair???
 			{
 				NodeTree*	r_left = r->left;
@@ -284,25 +273,26 @@ namespace ft
 				// std::cout << "r.first: " << r->pr.first << std::endl;
 				// std::cout << "r.second: " << r->pr.second << std::endl;
 				// Left Left Imbalance/Case or Right rotation 
-				if (bf == 2 && getBalanceFactor(r->left) >= 0){std::cout << "1" << std::endl;
+				if (bf == 2 && getBalanceFactor(r->left) >= 0){
+					// std::cout << "1" << std::endl;
 					return rightRotate(r);}
 				// Left Right Imbalance/Case or LR rotation 
 				else if (bf == 2 && getBalanceFactor(r->left) == -1)
 				{
-					std::cout << "2" << std::endl;
+					// std::cout << "2" << std::endl;
 					r->left = leftRotate(r->left);
 					return rightRotate(r);
 				}
 				// Right Right Imbalance/Case or Left rotation	
 				else if (bf == -2 && getBalanceFactor(r->right) <= 0)
 				{
-					std::cout << "3" << std::endl;
+					// std::cout << "3" << std::endl;
 					return leftRotate(r);
 				}
 				// Right Left Imbalance/Case or RL rotation 
 				else if (bf == -2 && getBalanceFactor(r->right) == 1)
 				{
-					std::cout << "4" << std::endl;
+					// std::cout << "4" << std::endl;
 					r->right = rightRotate(r->right);
 					return leftRotate(r);
 				}
@@ -408,6 +398,25 @@ namespace ft
 				AvlTree	tmp(x);
 				x = *this;
 				*this = tmp;
+			}
+			NodeTree*	recursiveClear(NodeTree* r)
+			{
+				if (r == NULL)
+					return (NULL);
+				else if (r->right)
+					r->right = recursiveClear(r->right);
+				else if (r->left)
+					r->left = recursiveClear(r->left);
+				else
+				{
+					_alloc_n.destroy(r);
+					_alloc_n.deallocate(r, 1);
+				}
+				return r;
+			}
+			void	clear(void)
+			{
+				_root = recursiveClear(_root);
 			}
 
 		private:
