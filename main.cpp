@@ -124,44 +124,56 @@ public:
 	}
 	// --- End of class foo
 
-	#define T1 char
-	#define T2 int
+	#define T1 int
+	#define T2 std::string
 	typedef _pair<const T1, T2> T3;
 
-	template <class T>
-	void	is_empty(T const &mp)
+	static int iter = 0;
+
+	template <typename MAP, typename U>
+	void	ft_erase(MAP &mp, U param)
 	{
-		std::cout << "is_empty: " << mp.empty() << std::endl;
+		std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+		mp.erase(param);
+		printSize(mp);
+	}
+
+	template <typename MAP, typename U, typename V>
+	void	ft_erase(MAP &mp, U param, V param2)
+	{
+		std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+		mp.erase(param, param2);
+		printSize(mp);
 	}
 
 	int		main(void)
 	{
 		std::list<T3> lst;
-		unsigned int lst_size = 7;
-		for (unsigned int i = 0; i < lst_size; ++i)
-			lst.push_back(T3('a' + i, lst_size - i));
-
-		TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end()), mp2;
-		TESTED_NAMESPACE::map<T1, T2>::iterator it;
-
-		lst.clear();
-		is_empty(mp);
+		unsigned int lst_size = 10;
+		for (unsigned int i = 1; i < lst_size; ++i)
+			lst.push_back(T3(i, std::string((lst_size - i), i + 65)));
+		TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
 		printSize(mp);
 
-		is_empty(mp2);
-		mp2 = mp;
-		is_empty(mp2);
+		ft_erase(mp, ++mp.begin());
 
-		it = mp.begin();
-		for (unsigned long int i = 3; i < mp.size(); ++i)
-			it++->second = i * 7;
+		// ft_erase(mp, mp.begin());
+		// ft_erase(mp, --mp.end());
 
-		printSize(mp);
-		printSize(mp2);
+		// ft_erase(mp, mp.begin(), ++(++(++mp.begin())));
+		// ft_erase(mp, --(--(--mp.end())), --mp.end());
 
-		mp2.clear();
-		is_empty(mp2);
-		printSize(mp2);
+		// mp[10] = "Hello";
+		// mp[11] = "Hi there";
+		// printSize(mp);
+		// ft_erase(mp, --(--(--mp.end())), mp.end());
+
+		// mp[12] = "ONE";
+		// mp[13] = "TWO";
+		// mp[14] = "THREE";
+		// mp[15] = "FOUR";
+		// printSize(mp);
+		// ft_erase(mp, mp.begin(), mp.end());
 
 
 // int main(void) {

@@ -78,13 +78,14 @@ namespace ft
 			MapIterator& operator--(void)
 			{
 				NodePair	save = _itor->pr;
+				pointer		tmp = _itor->getEndNode();
 
 				if (_itor)
 				{
 					// _itor == LeftChild || _itor == RightChild
 					if (!_itor->left && _itor->parent)
 					{
-						if (_itor->getEndNode()->pr == save)
+						if (tmp->pr == save)
 							_itor = _itor->parent;
 						else
 							while (_itor->pr >= save && _itor->parent)

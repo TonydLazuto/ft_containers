@@ -380,7 +380,7 @@ namespace ft
 			void	createSentinelNode(void)
 			{
 				_end = _alloc_n.allocate(1);
-				_alloc_n.construct(_end, NodeTree());
+				_alloc_n.construct(_end, NodeTree(NULL));
 				_nb_nodes++;
 			}
 

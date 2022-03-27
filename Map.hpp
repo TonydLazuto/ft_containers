@@ -64,6 +64,8 @@ namespace ft
 				{
 					for (; first != last; ++first)
 						this->insert(*first);
+					std::cout << "--------ConstructorRange---------" << std::endl;
+					_avl.print2D(_avl.getRoot(), 5);
 				}
 
 			virtual ~map( void )
