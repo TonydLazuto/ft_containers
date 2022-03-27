@@ -34,7 +34,7 @@ namespace ft
 			typedef const T&  const_reference;
 
 			typedef typename ft::MapIterator<NodeTree> iterator;
-			typedef typename ft::MapConstIterator<NodeTree> const_iterator; //2eme classe const ?
+			typedef typename ft::MapIterator<const NodeTree> const_iterator; //2eme classe const ?
 			typedef typename ft::ReverseMapIterator<iterator> reverse_iterator;
 			typedef typename ft::ReverseMapIterator<const_iterator> const_reverse_iterator;
 
@@ -65,22 +65,32 @@ namespace ft
 					this->insert(first, last);
 				}
 
-			virtual ~map( void ) { this->clear(); }
+			virtual ~map( void )
+			{
+				this->clear();
+				_avl.deleteSentinelNode();
+			}
 
-			map(const map& x) : _avl(x._avl), _alloc(x._alloc), _comp(x.comp)
+			map(const map& x) : _alloc(x._alloc)
 			{
 				this->insert(x.begin(), x.end());
 			}
 
 			map& operator=(map const & x)
 			{
+				// _avl.print2D(_avl.getRoot(), 5);
+				// std::cout << "-----------------" << std::endl;
 				this->clear();
-				this->insert(x.begin(), x.end());
+				// _avl.createSentinelNode();				
+				for (const_iterator it = x.begin(); it != x.end(); ++it)
+					this->insert(*it);
+				// _avl.print2D(_avl.getRoot(), 5);
+				// std::cout << "--------END---------" << std::endl;
 				return *this;
 			}
 
 			iterator begin(void) { return (_avl.getBegin()); }
-			const_iterator begin(void) const { return (_avl.getBegin()); }
+			const_iterator begin(void) const { return (const_cast<NodeTree*>(_avl.getBegin())); }
 			reverse_iterator rbegin(void)
 			{
 				iterator it = _avl.getEnd();
@@ -95,7 +105,7 @@ namespace ft
 			}
 			
 			iterator end(void) { return (_avl.getEnd()); }
-			const_iterator end(void) const { return (_avl.getEnd()); }
+			const_iterator end(void) const { return (const_cast<NodeTree*>(_avl.getEnd())); }
 			reverse_iterator rend(void) { return (reverse_iterator(_avl.getBegin())); }
 			const_reverse_iterator rend(void) const { return (reverse_iterator(_avl.getBegin())); }
 			
@@ -121,24 +131,6 @@ namespace ft
 				_avl.linkEnd();	
 
 				return (pair_ret);
-			}
-			
-			value_type	findInsertFromHint(iterator hint, const value_type& val) //private
-			{
-				if (val > _avl.maxValueNode(_avl.getRoot())->pr)
-					return (_avl.maxValueNode(_avl.getRoot())->pr);
-				if (val < _avl.minValueNode(_avl.getRoot())->pr)
-					return (_avl.minValueNode(_avl.getRoot())->pr);
-				if (*hint > val)
-					while (*hint > val)
-						--hint;
-				else
-				{
-					while (*hint < val)
-						++hint;
-					--hint;
-				}
-				return *hint;
 			}
 
 			iterator insert (iterator position, const value_type& val)
@@ -204,7 +196,7 @@ namespace ft
 
 			void clear(void)
 			{
-				_avl.clear(); // check leaks
+				_avl.clear();
 			}
 
 			mapped_type& operator[](const key_type& k)
@@ -313,6 +305,24 @@ namespace ft
 			ft::AvlTree<Key, T>	_avl;
 			allocator_type		_alloc;
 			key_compare			_comp;
+
+			value_type	findInsertFromHint(iterator hint, const value_type& val) //private
+			{
+				if (val > _avl.maxValueNode(_avl.getRoot())->pr)
+					return (_avl.maxValueNode(_avl.getRoot())->pr);
+				if (val < _avl.minValueNode(_avl.getRoot())->pr)
+					return (_avl.minValueNode(_avl.getRoot())->pr);
+				if (*hint > val)
+					while (*hint > val)
+						--hint;
+				else
+				{
+					while (*hint < val)
+						++hint;
+					--hint;
+				}
+				return *hint;
+			}
 
 	};
 	template <class Key, class T, class Compare, class Allocator>

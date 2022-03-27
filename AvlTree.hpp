@@ -27,8 +27,7 @@ namespace ft
 			AvlTree( const alloc_node& alloc_n = alloc_node() )
 			: _root(NULL), _end(NULL), _alloc_n(alloc_n)
 			{
-				_end = _alloc_n.allocate(1);
-				_alloc_n.construct(_end, NodeTree());
+				createSentinelNode();
 			}
 
 			virtual ~AvlTree( void ) {
@@ -114,7 +113,6 @@ namespace ft
 				}
 			}
 			
-			// 1st arg always root?
 			NodeTree* insertNode(NodeTree* r, NodeTree* parent
 				, const ft::pair<Key, T>& val, NodeTree*& new_insert)
 			{
@@ -237,7 +235,7 @@ namespace ft
 			NodeTree*	deleteNode(NodeTree* r, value_type val) {
 				// base case
 				NodeTree* minright = NULL;
-				NodeTree* temp_start = _root;
+				NodeTree* node_start = _root;
 				
 				iterativeSearch(r, val);
 				minright = minValueNode(r->right);
@@ -249,10 +247,10 @@ namespace ft
 				if (r->left && r->right)
 					swap_nodes(r, minright);
 				if (r->parent)
-					temp_start = r->parent;
-				// std::cout << "temp_start.first: " << temp_start->pr.first << std::endl;
-				// std::cout << "temp_start.second: " << temp_start->pr.second << std::endl;
-				r = recursiveDeletion(temp_start, val);
+					node_start = r->parent;
+				// std::cout << "node_start.first: " << node_start->pr.first << std::endl;
+				// std::cout << "node_start.second: " << node_start->pr.second << std::endl;
+				r = recursiveDeletion(node_start, val);
 				// std::cout << "r.first: " << r->pr.first << std::endl;
 				// std::cout << "r.second: " << r->pr.second << std::endl;
 				// print2D(_root, 5);
@@ -301,12 +299,21 @@ namespace ft
 				return (r);
 			}
 
-			void	printNode(NodeTree *node, std::string name)
+			void	printNode(NodeTree *r, std::string name)
 			{
-				if (node)
+				if (r)
 				{
-					std::cout << name << ".first: " << node->pr.first << std::endl;
-					std::cout << name << ".second: " << node->pr.second << std::endl;
+					std::cout << name << ".first: " << r->pr.first;
+					std::cout << ", " << name << ".second: " << r->pr.second;
+					if (r->left)
+						std::cout << ", Left=" << r->left->pr.first;
+					if (r->right)
+						std::cout << ", Right=" << r->right->pr.first;
+					if (r->parent)
+						std::cout << ", Parent=" << r->parent->pr.first;
+					// std::cout << ", r: " << &r->pr;
+					std::cout<< std::endl;
+
 				}
 			}
 
@@ -346,6 +353,8 @@ namespace ft
 
 			NodeTree	*getRoot(void) const { return _root; }
 
+			void		setRootToNULL(void) { this->_root = NULL; }
+
 			void	linkEnd(void)
 			{
 				NodeTree	*last_node = maxValueNode(_root);
@@ -359,6 +368,8 @@ namespace ft
 
 			void	unlinkEnd(void)
 			{
+				if (!_root)
+					return ;
 				NodeTree	*last_node = maxValueNode(_root);
 				if (last_node && (last_node->parent))
 					last_node = last_node->parent;
@@ -379,8 +390,15 @@ namespace ft
 			{
 				size_type	size;
 
+				if (!_root)
+					return (0);
 				size = getNbElets(_root);
 				return (--size);
+			}
+			void	createSentinelNode(void)
+			{
+				_end = _alloc_n.allocate(1);
+				_alloc_n.construct(_end, NodeTree());
 			}
 
 			void	deleteSentinelNode(void)
@@ -397,20 +415,20 @@ namespace ft
 			NodeTree*	recursiveClear(NodeTree* r)
 			{
 				if (r == NULL)
-					return (NULL);
-				else if (r->right)
-					r->right = recursiveClear(r->right);
-				else if (r->left)
-					r->left = recursiveClear(r->left);
-				else
+					return r;
+				r->right = recursiveClear(r->right);
+				r->left = recursiveClear(r->left);
+				if (!r->left && !r->right)
 				{
 					_alloc_n.destroy(r);
 					_alloc_n.deallocate(r, 1);
+					r = NULL;
 				}
 				return r;
 			}
 			void	clear(void)
 			{
+				unlinkEnd();
 				_root = recursiveClear(_root);
 			}
 

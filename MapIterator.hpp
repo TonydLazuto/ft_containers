@@ -30,7 +30,7 @@ namespace ft
 				this->_itor = rhs._itor;
 				return *this;
 			}
-			NodePair& operator*(void) const { return (this->_itor->pr); }
+			NodePair& operator*(void) const { return (const_cast<NodePair&>(this->_itor->pr)); }
 			NodePair* operator->(void) const { return &(this->operator*()); }
 			
 			MapIterator& operator++(void)
@@ -127,7 +127,7 @@ namespace ft
 	{
 		return (*lhs != *rhs);
 	}
-
+/*
 	template < class Node >
 	class MapConstIterator
 	{
@@ -246,6 +246,7 @@ namespace ft
 	{
 		return (*lhs != *rhs);
 	}
+	*/
 }
 
 #endif
