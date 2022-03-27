@@ -36,12 +36,13 @@ namespace ft
 			MapIterator& operator++(void)
 			{
 				// std::cout << "--- START pre incr ---" << std::endl;
-				NodePair	save = _itor->pr;
+				
 
 				// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
 				// std::cout << "_itor.second: " << _itor->pr.second << std::endl;
 				if (_itor)
 				{
+					NodePair	save = _itor->pr;
 					if (!_itor->right && _itor->parent)
 					{
 						while (_itor->pr <= save && _itor->parent)
@@ -49,9 +50,16 @@ namespace ft
 					}
 					else if (_itor->right) // _itor == Parent
 					{
+						// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
+						// std::cout << "_itor.second: " << _itor->pr.second << std::endl;
 						_itor = _itor->right;
-						while (_itor->left)
+						// std::cout << "yo4" << std::endl;
+
+						while (_itor && _itor->left){
+							// std::cout << "yo5" << std::endl;
 							_itor = _itor->left;
+							}
+						// std::cout << "yo6" << std::endl;
 					}
 				}
 				// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
@@ -62,8 +70,8 @@ namespace ft
 
 			MapIterator operator++(int)
 			{
-				MapIterator tmp = *this;
-				tmp._itor = this->_itor++;
+				MapIterator tmp(*this);
+				operator++();
 				return tmp;
 			}
 			
@@ -93,12 +101,12 @@ namespace ft
 			}
 			MapIterator operator--(int)
 			{
-				MapIterator tmp = *this;
-				tmp._itor = this->_itor--;
+				MapIterator tmp(*this);
+				operator--();
 				return tmp;
 			}
-			// operator MapIterator<const Node> () const
-			// { return (MapIterator<const Node>(this->_itor)); }
+			operator MapIterator<Node> () const
+			{ return (MapIterator<Node>(this->_itor)); }
 	};
 	template <typename Node>
 	bool operator==(ft::MapIterator<Node> lhs,

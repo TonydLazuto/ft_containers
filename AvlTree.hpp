@@ -25,7 +25,7 @@ namespace ft
 
 
 			AvlTree( const alloc_node& alloc_n = alloc_node() )
-			: _root(NULL), _end(NULL), _alloc_n(alloc_n)
+			: _root(NULL), _end(NULL), _alloc_n(alloc_n), _nb_nodes(0)
 			{
 				createSentinelNode();
 			}
@@ -34,13 +34,14 @@ namespace ft
 			}
 
 			AvlTree(AvlTree const & src) : _root(src._root), _end(src._end)
-			, _alloc_n(src._alloc_n) {}
+			, _alloc_n(src._alloc_n), _nb_nodes(src._nb_nodes) {}
 
 			AvlTree& operator=(AvlTree const & rhs)
 			{
 				_root = rhs._root;
 				_end = rhs._end;
 				_alloc_n = rhs._alloc_n;
+				_nb_nodes = rhs._nb_nodes;
 				return *this;
 			}
 
@@ -122,6 +123,7 @@ namespace ft
 					_alloc_n.construct(r, NodeTree(parent));
 					r->pr = val;
 					new_insert = r;
+					_nb_nodes++;
 					return r;
 				}
 				else if (val < r->pr)
@@ -216,19 +218,14 @@ namespace ft
 						temp = r->right;
 					if (temp)
 					{
-						// std::cout << "temp.first: " << temp->pr.first << std::endl;
-						// std::cout << "temp.second: " << temp->pr.second << std::endl;
 						temp->parent = r->parent;
 					}
-					// std::cout << "in r.first: " << r->pr.first << std::endl;
-					// std::cout << "in r.second: " << r->pr.second << std::endl;
 					
 					_alloc_n.destroy(r);
 					_alloc_n.deallocate(r, 1);
+					_nb_nodes--;
 					return (temp);
 				}
-				// std::cout << "out r.first: " << r->pr.first << std::endl;
-				// std::cout << "out r.second: " << r->pr.second << std::endl;
 				return (r);
 			}
 
@@ -243,25 +240,17 @@ namespace ft
 					return _root;
 				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
 				// std::cout << "r: " << &r->pr << std::endl;
-				// print2D(_root, 5);
 				if (r->left && r->right)
 					swap_nodes(r, minright);
 				if (r->parent)
 					node_start = r->parent;
-				// std::cout << "node_start.first: " << node_start->pr.first << std::endl;
-				// std::cout << "node_start.second: " << node_start->pr.second << std::endl;
 				r = recursiveDeletion(node_start, val);
-				// std::cout << "r.first: " << r->pr.first << std::endl;
-				// std::cout << "r.second: " << r->pr.second << std::endl;
-				// print2D(_root, 5);
 				// std::cout << "-------------------------beforeBalance-----------------------------------" << std::endl;
 				r = balanceDeletion(r);
 				while (r && r->parent)
 				{
 					r->parent = balanceDeletion(r->parent);
 					r = r->parent;
-				// 	std::cout << "bf out r.first: " << r->pr.first << std::endl;
-				// 	std::cout << "bf out r.second: " << r->pr.second << std::endl;
 				}
 				return r;
 			}
@@ -269,9 +258,6 @@ namespace ft
 			NodeTree*	balanceDeletion(NodeTree* r)
 			{
 				int bf = getBalanceFactor(r);
-				// std::cout << "bf: " << bf << std::endl;
-				// std::cout << "r.first: " << r->pr.first << std::endl;
-				// std::cout << "r.second: " << r->pr.second << std::endl;
 				// Left Left Imbalance/Case or Right rotation 
 				if (bf == 2 && getBalanceFactor(r->left) >= 0){
 					// std::cout << "1" << std::endl;
@@ -313,7 +299,6 @@ namespace ft
 						std::cout << ", Parent=" << r->parent->pr.first;
 					// std::cout << ", r: " << &r->pr;
 					std::cout<< std::endl;
-
 				}
 			}
 
@@ -388,17 +373,15 @@ namespace ft
 			}
 			size_type	getSize(void) const
 			{
-				size_type	size;
-
-				if (!_root)
-					return (0);
-				size = getNbElets(_root);
-				return (--size);
+				// std::cout << "_______________________________________________" << std::endl;
+				// print2D(_root, 5);
+				return (_nb_nodes - 1);
 			}
 			void	createSentinelNode(void)
 			{
 				_end = _alloc_n.allocate(1);
 				_alloc_n.construct(_end, NodeTree());
+				_nb_nodes++;
 			}
 
 			void	deleteSentinelNode(void)
@@ -422,6 +405,7 @@ namespace ft
 				{
 					_alloc_n.destroy(r);
 					_alloc_n.deallocate(r, 1);
+					_nb_nodes--;
 					r = NULL;
 				}
 				return r;
@@ -437,6 +421,7 @@ namespace ft
 			NodeTree*		_root;
 			NodeTree*		_end;
 			alloc_node		_alloc_n;
+			size_type		_nb_nodes;
 
 			// Get Height
 			int getHeight(NodeTree* r)

@@ -62,7 +62,8 @@ namespace ft
 					typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 					: _avl(), _alloc(alloc), _comp(comp)
 				{
-					this->insert(first, last);
+					for (; first != last; ++first)
+						this->insert(*first);
 				}
 
 			virtual ~map( void )
@@ -73,7 +74,8 @@ namespace ft
 
 			map(const map& x) : _alloc(x._alloc)
 			{
-				this->insert(x.begin(), x.end());
+				for (const_iterator it = x.begin(); it != x.end(); ++it)
+					this->insert(*it);
 			}
 
 			map& operator=(map const & x)

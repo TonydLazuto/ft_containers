@@ -39,7 +39,7 @@ class Node
 			return *this;
 		}
 
-		Node*	getEndNode(void)
+		Node*	getEndNode(void) const
 		{
 			Node<Key, T>* end_node = &*this;
 			/* Go to the rooftop */
