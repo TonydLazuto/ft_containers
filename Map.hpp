@@ -66,6 +66,11 @@ namespace ft
 					// _avl.print2D(_avl.getRoot(), 5);
 				}
 
+			void	print(void)
+			{
+				_avl.print2D(_avl.getRoot(), 5);
+			}
+
 			virtual ~map( void )
 			{
 				this->clear();

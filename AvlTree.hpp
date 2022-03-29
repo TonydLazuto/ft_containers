@@ -163,7 +163,7 @@ namespace ft
 				return (r);
 			}
 
-			void	swap_nodes(NodeTree*& r, NodeTree*& minright)// ou swap les addresses de pair???
+			void	swapNodes(NodeTree*& r, NodeTree*& minright)// ou swap les addresses de pair???
 			{
 				NodeTree*	r_left = r->left;
 				NodeTree*	r_right = r->right;
@@ -208,11 +208,11 @@ namespace ft
 			{
 				if (r == NULL)
 					return NULL;
-				else if (r && val < r->pr)
+				if (r && val < r->pr)
 					r->left = recursiveDeletion(r->left, val);
-				else if (r && val > r->pr)
+				if (r && val > r->pr)
 					r->right = recursiveDeletion(r->right, val);
-				else
+				if (r && val == r->pr)
 				{
 					NodeTree	*temp = r->left;
 					if (r->right)
@@ -221,13 +221,23 @@ namespace ft
 					{
 						temp->parent = r->parent;
 					}
-					
 					_alloc_n.destroy(r);
 					_alloc_n.deallocate(r, 1);
+					r = NULL;
 					_nb_nodes--;
 					return (temp);
 				}
 				return (r);
+			}
+
+			NodeTree*	destroyNode(NodeTree* r)
+			{
+				NodeTree	*temp = r->parent;
+				_alloc_n.destroy(r);
+				_alloc_n.deallocate(r, 1);
+				r = NULL;
+				_nb_nodes--;
+				return temp;
 			}
 
 			NodeTree*	deleteNode(NodeTree* r, value_type val) {
@@ -241,11 +251,15 @@ namespace ft
 					return _root;
 				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
 				// std::cout << "r: " << &r->pr << std::endl;
-				if (r->left && r->right)
-					swap_nodes(r, minright);
 				if (r->parent)
 					node_start = r->parent;
-				r = recursiveDeletion(node_start, val);
+				if (r->left && r->right)
+				{
+					swapNodes(r, minright);
+					r = destroyNode(r);
+				}
+				else
+					r = recursiveDeletion(node_start, val);
 				// std::cout << "-------------------------beforeBalance-----------------------------------" << std::endl;
 				r = balanceDeletion(r);
 				while (r && r->parent)
