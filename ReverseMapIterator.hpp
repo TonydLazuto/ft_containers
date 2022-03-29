@@ -14,12 +14,7 @@ namespace ft
 
 		public:
 			typedef Iter	iterator_type;
-			typedef typename ft::IteratorTraits<Iter>::iterator_category	iterator_category;
-			typedef typename ft::IteratorTraits<Iter>::value_type			value_type;
-			typedef typename ft::IteratorTraits<Iter>::difference_type		difference_type;
-			typedef typename ft::IteratorTraits<Iter>::pointer				pointer;
-			typedef typename ft::IteratorTraits<Iter>::reference			reference;
-			typedef typename Iter::value_type								NodePair;
+			typedef typename Iter::value_type	NodePair;
 
 			ReverseMapIterator( void ) : _itor() {}
 			explicit ReverseMapIterator(iterator_type x) : _itor(x) {}

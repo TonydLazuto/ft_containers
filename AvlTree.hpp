@@ -5,11 +5,13 @@
 #include "Maptools.hpp"
 #include "Node.hpp"
 #include "MapIterator.hpp"
+#include "ReverseMapIterator.hpp"
 
 #define SPACE 10
 
 namespace ft
 {
+	
 	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< ft::pair<Key, T> > >
 	class AvlTree
 	{
@@ -22,7 +24,6 @@ namespace ft
 
 			typedef Alloc alloc_pair;
 			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
-
 
 			AvlTree( const alloc_node& alloc_n = alloc_node() )
 			: _root(NULL), _end(NULL), _alloc_n(alloc_n), _nb_nodes(0)
@@ -333,12 +334,10 @@ namespace ft
 					return _end;
 				return minValueNode(_root);
 			}
-			
-			NodeTree	*getEnd(void) const { return _end; }
 
 			NodeTree	*getRoot(void) const { return _root; }
 
-			void		setRootToNULL(void) { this->_root = NULL; }
+			NodeTree	*getEnd(void) const { return _end; }
 
 			void	linkEnd(void)
 			{

@@ -5,7 +5,6 @@
 #include <memory>
 #include <limits>
 #include "MapIterator.hpp"
-#include "ReverseMapIterator.hpp"
 #include "IteratorTraits.hpp"
 #include "AvlTree.hpp"
 #include "IsIntegral.hpp"
@@ -33,12 +32,11 @@ namespace ft
 			typedef T&        reference;
 			typedef const T&  const_reference;
 
-			typedef typename ft::MapIterator<NodeTree> iterator;
-			typedef typename ft::MapIterator<const NodeTree> const_iterator; //2eme classe const ?
-			typedef typename ft::ReverseMapIterator<iterator> reverse_iterator;
-			typedef typename ft::ReverseMapIterator<const_iterator> const_reverse_iterator;
+			typedef ft::MapIterator<value_type, NodeTree, false> iterator;
+    		typedef ft::MapIterator<const value_type, NodeTree, true> const_iterator;
+			typedef ft::ReverseMapIterator<iterator> reverse_iterator;
+			typedef ft::ReverseMapIterator<const_iterator> const_reverse_iterator;
 
-			typedef typename IteratorTraits<iterator>::difference_type difference_type;
 			typedef size_t	size_type;
 
 			class value_compare : public binary_function<value_type, value_type, bool> {
@@ -64,8 +62,8 @@ namespace ft
 				{
 					for (; first != last; ++first)
 						this->insert(*first);
-					std::cout << "--------ConstructorRange---------" << std::endl;
-					_avl.print2D(_avl.getRoot(), 5);
+					// std::cout << "--------ConstructorRange---------" << std::endl;
+					// _avl.print2D(_avl.getRoot(), 5);
 				}
 
 			virtual ~map( void )
@@ -93,8 +91,18 @@ namespace ft
 				return *this;
 			}
 
-			iterator begin(void) { return (_avl.getBegin()); }
-			const_iterator begin(void) const { return (const_cast<NodeTree*>(_avl.getBegin())); }
+			// iterator begin(void) { return (_avl.begin()); }
+			// const_iterator begin(void) const { return (_avl.begin()); }
+			// reverse_iterator rbegin(void) { return (_avl.rbegin()); }
+			// const_reverse_iterator rbegin(void) const { return (_avl.rbegin()); }
+			
+			// iterator end(void) { return (_avl.end()); }
+			// const_iterator end(void) const { return (_avl.end()); }
+			// reverse_iterator rend(void)  { return (_avl.rend()); }
+			// const_reverse_iterator rend(void) const { return (_avl.rend()); }
+
+			iterator begin(void) { return (iterator(_avl.getBegin())); }
+			const_iterator begin(void) const { return (const_iterator(_avl.getBegin())); }
 			reverse_iterator rbegin(void)
 			{
 				iterator it = _avl.getEnd();
@@ -105,13 +113,13 @@ namespace ft
 			{
 				iterator it = _avl.getEnd();
 				--it;
-				return (reverse_iterator(it));
+				return (const_reverse_iterator(it));
 			}
 			
-			iterator end(void) { return (_avl.getEnd()); }
-			const_iterator end(void) const { return (const_cast<NodeTree*>(_avl.getEnd())); }
+			iterator end(void) { return (iterator(_avl.getEnd())); }
+			const_iterator end(void) const { return (const_iterator(_avl.getEnd())); }
 			reverse_iterator rend(void) { return (reverse_iterator(_avl.getBegin())); }
-			const_reverse_iterator rend(void) const { return (reverse_iterator(_avl.getBegin())); }
+			const_reverse_iterator rend(void) const { return (const_reverse_iterator(_avl.getBegin())); }
 			
 			bool empty(void) const{ return (this->size() == 0 ? true : false); }
 			size_type size(void) const { return (_avl.getSize()); }
