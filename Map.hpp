@@ -74,7 +74,6 @@ namespace ft
 			virtual ~map( void )
 			{
 				this->clear();
-				_avl.deleteSentinelNode();
 			}
 
 			map(const map& x) : _alloc(x._alloc)
@@ -88,7 +87,7 @@ namespace ft
 				// _avl.print2D(_avl.getRoot(), 5);
 				// std::cout << "-----------------" << std::endl;
 				this->clear();
-				// _avl.createSentinelNode();				
+				_avl.createSentinelNode();				
 				for (const_iterator it = x.begin(); it != x.end(); ++it)
 					this->insert(*it);
 				// _avl.print2D(_avl.getRoot(), 5);
@@ -194,6 +193,7 @@ namespace ft
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
 				if (!to_del)
 					return (0);
+				// _avl.printNode(to_del, "to_del");
 				_avl.erase(to_del->pr);
 				// _avl.linkEnd();
 				return (1);

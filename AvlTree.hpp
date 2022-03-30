@@ -232,12 +232,19 @@ namespace ft
 
 			NodeTree*	destroyNode(NodeTree* r)
 			{
-				NodeTree	*temp = r->parent;
+				NodeTree	*r_parent = r->parent;
+				if (r_parent)
+				{
+					if (r->pr > r_parent->pr )
+						r_parent->left = NULL;
+					else
+						r_parent->right = NULL;
+				}
 				_alloc_n.destroy(r);
 				_alloc_n.deallocate(r, 1);
 				r = NULL;
 				_nb_nodes--;
-				return temp;
+				return r_parent;
 			}
 
 			NodeTree*	deleteNode(NodeTree* r, value_type val) {
@@ -257,15 +264,15 @@ namespace ft
 				{
 					swapNodes(r, minright);
 					r = destroyNode(r);
+					// std::cout << "-------------------------destroyNode-----------------------------------" << std::endl;
+					// print2D(r->parent, 5);
 				}
 				else
 					r = recursiveDeletion(node_start, val);
-				// std::cout << "-------------------------beforeBalance-----------------------------------" << std::endl;
 				r = balanceDeletion(r);
 				while (r && r->parent)
 				{
-					r->parent = balanceDeletion(r->parent);
-					r = r->parent;
+					r = balanceDeletion(r->parent);
 				}
 				return r;
 			}
@@ -340,6 +347,8 @@ namespace ft
 			void		erase(value_type to_del)
 			{
 				_root = deleteNode(_root, to_del);
+				// std::cout << "------------------------------ERASE------------------------------" << std::endl;
+				// print2D(_root, 5);
 			}
 
 			NodeTree	*getBegin(void) const
