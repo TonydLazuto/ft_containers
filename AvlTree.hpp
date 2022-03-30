@@ -26,20 +26,21 @@ namespace ft
 			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
 
 			AvlTree( const alloc_node& alloc_n = alloc_node() )
-			: _root(NULL), _end(NULL), _alloc_n(alloc_n), _nb_nodes(0)
+			: _root(NULL), _begin(NULL), _end(NULL), _alloc_n(alloc_n), _nb_nodes(0)
 			{
-				createSentinelNode();
+				createSentinelNodes();
 			}
 
 			virtual ~AvlTree( void ) {
 			}
 
-			AvlTree(AvlTree const & src) : _root(src._root), _end(src._end)
-			, _alloc_n(src._alloc_n), _nb_nodes(src._nb_nodes) {}
+			AvlTree(AvlTree const & src) : _root(src._root), _begin(src._begin)
+			, _end(src._end) , _alloc_n(src._alloc_n), _nb_nodes(src._nb_nodes) {}
 
 			AvlTree& operator=(AvlTree const & rhs)
 			{
 				_root = rhs._root;
+				_begin = rhs._begin;
 				_end = rhs._end;
 				_alloc_n = rhs._alloc_n;
 				_nb_nodes = rhs._nb_nodes;
@@ -204,33 +205,7 @@ namespace ft
 				}
 			}
 
-			NodeTree*	recursiveDeletion(NodeTree*	r, value_type val)
-			{
-				if (r == NULL)
-					return NULL;
-				if (r && val < r->pr)
-					r->left = recursiveDeletion(r->left, val);
-				if (r && val > r->pr)
-					r->right = recursiveDeletion(r->right, val);
-				if (r && val == r->pr)
-				{
-					NodeTree	*temp = r->left;
-					if (r->right)
-						temp = r->right;
-					if (temp)
-					{
-						temp->parent = r->parent;
-					}
-					_alloc_n.destroy(r);
-					_alloc_n.deallocate(r, 1);
-					r = NULL;
-					_nb_nodes--;
-					return (temp);
-				}
-				return (r);
-			}
-
-			NodeTree*	destroyNode(NodeTree* r)
+			NodeTree*	destroyNode(NodeTree*& r)
 			{
 				NodeTree	*r_parent = r->parent;
 				if (r_parent)
@@ -245,6 +220,21 @@ namespace ft
 				r = NULL;
 				_nb_nodes--;
 				return r_parent;
+			}
+
+			NodeTree*	recursiveDeletion(NodeTree*	r, value_type val)
+			{
+				if (r == NULL)
+					return NULL;
+				if (r && val < r->pr)
+					r->left = recursiveDeletion(r->left, val);
+				if (r && val > r->pr)
+					r->right = recursiveDeletion(r->right, val);
+				if (r && val == r->pr)
+				{
+					return (destroyNode(r));
+				}
+				return (r);
 			}
 
 			NodeTree*	deleteNode(NodeTree* r, value_type val) {
@@ -351,33 +341,44 @@ namespace ft
 				// print2D(_root, 5);
 			}
 
-			NodeTree	*getBegin(void) const
-			{
-				if (!_root)
+			NodeTree	*getBegin(void) const {
+				if (!_begin->parent)
 					return _end;
-				return minValueNode(_root);
+				return (_begin->parent);
 			}
 
 			NodeTree	*getRoot(void) const { return _root; }
 
 			NodeTree	*getEnd(void) const { return _end; }
 
-			void	linkEnd(void)
+			void	linkSentinels(void)
 			{
+				NodeTree	*first_node = minValueNode(_root);
 				NodeTree	*last_node = maxValueNode(_root);
 
-				if (last_node)
+				if (_root)
 				{
+					first_node->left = _begin;
+					_begin->parent = first_node;
 					last_node->right = _end;
 					_end->parent = last_node;
 				}
 			}
 
-			void	unlinkEnd(void)
+			void	unlinkSentinels(void)
 			{
 				if (!_root)
 					return ;
+				NodeTree	*first_node = minValueNode(_root);
 				NodeTree	*last_node = maxValueNode(_root);
+
+				if (first_node && (first_node->parent))
+					first_node = first_node->parent;
+				if (first_node)
+				{
+					first_node->left = NULL;
+					_begin->parent = NULL;
+				}
 				if (last_node && (last_node->parent))
 					last_node = last_node->parent;
 				if (last_node)
@@ -397,20 +398,17 @@ namespace ft
 			{
 				// std::cout << "_______________________________________________" << std::endl;
 				// print2D(_root, 5);
-				return (_nb_nodes - 1);
+				return (_nb_nodes == 0 ? 0 : (_nb_nodes - 2));
 			}
-			void	createSentinelNode(void)
+			void	createSentinelNodes(void)
 			{
+				_begin = _alloc_n.allocate(1);
+				_alloc_n.construct(_begin, NodeTree(NULL));
 				_end = _alloc_n.allocate(1);
 				_alloc_n.construct(_end, NodeTree(NULL));
-				_nb_nodes++;
+				_nb_nodes += 2;
 			}
 
-			void	deleteSentinelNode(void)
-			{
-				_alloc_n.destroy(_end);
-				_alloc_n.deallocate(_end, 1);
-			}
 			void swap (AvlTree& x)
 			{
 				AvlTree	tmp(x);
@@ -427,20 +425,21 @@ namespace ft
 				{
 					_alloc_n.destroy(r);
 					_alloc_n.deallocate(r, 1);
-					_nb_nodes--;
 					r = NULL;
 				}
 				return r;
 			}
 			void	clear(void)
 			{
-				unlinkEnd();
+				unlinkSentinels();
 				_root = recursiveClear(_root);
+				_nb_nodes = 0;
 			}
 
 		private:
 
 			NodeTree*		_root;
+			NodeTree*		_begin;
 			NodeTree*		_end;
 			alloc_node		_alloc_n;
 			size_type		_nb_nodes;

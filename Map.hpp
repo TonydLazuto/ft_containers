@@ -87,7 +87,7 @@ namespace ft
 				// _avl.print2D(_avl.getRoot(), 5);
 				// std::cout << "-----------------" << std::endl;
 				this->clear();
-				_avl.createSentinelNode();				
+				_avl.createSentinelNodes();				
 				for (const_iterator it = x.begin(); it != x.end(); ++it)
 					this->insert(*it);
 				// _avl.print2D(_avl.getRoot(), 5);
@@ -128,13 +128,13 @@ namespace ft
 			bool empty(void) const{ return (this->size() == 0 ? true : false); }
 			size_type size(void) const { return (_avl.getSize()); }
 			size_type max_size(void) const {
-				// return (std::numeric_limits<difference_type>::max() / (sizeof(T) / 2 < 1 ? 1 : sizeof(T) / 2 / 2));
+				// return (std::numeric_limits<size_type>::max() / (sizeof(T) / 2 < 1 ? 1 : sizeof(T)));
 				return std::numeric_limits<size_type>::max() / sizeof(T) / 2 / 10;
 			}
 
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
-				_avl.unlinkEnd();
+				_avl.unlinkSentinels();
 				NodeTree*	match_node = _avl.searchByKey(_avl.getRoot(), val.first);
 				NodeTree*	new_insert = NULL;
 
@@ -144,14 +144,14 @@ namespace ft
 				if (match_node == NULL)
 					match_node = new_insert;
 				ft::pair<iterator, bool> pair_ret(match_node, match_node == NULL);
-				_avl.linkEnd();	
+				_avl.linkSentinels();	
 
 				return (pair_ret);
 			}
 
 			iterator insert (iterator position, const value_type& val)
 			{
-				_avl.unlinkEnd();
+				_avl.unlinkSentinels();
 				NodeTree*	new_insert = _avl.searchByKey(_avl.getRoot(), val.first);
 
 				if (!_avl.getRoot())
@@ -161,7 +161,7 @@ namespace ft
 					value_type hint_val = findInsertFromHint(position, val);
 					_avl.insertAtPosition(hint_val, val, new_insert);
 				}
-				_avl.linkEnd();
+				_avl.linkSentinels();
 				// std::cout << "new_insert.first: " << new_insert->pr.first << std::endl;
 				// std::cout << "new_insert.second: " << new_insert->pr.second << std::endl;
 				return (new_insert);
@@ -187,7 +187,7 @@ namespace ft
 
 			size_type erase (const key_type& k)
 			{
-				// _avl.unlinkEnd();
+				// _avl.unlinkSentinels();
 				NodeTree*	to_del;
 
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
@@ -195,7 +195,7 @@ namespace ft
 					return (0);
 				// _avl.printNode(to_del, "to_del");
 				_avl.erase(to_del->pr);
-				// _avl.linkEnd();
+				// _avl.linkSentinels();
 				return (1);
 			}
 
@@ -218,11 +218,13 @@ namespace ft
 
 			mapped_type& operator[](const key_type& k)
 			{
-				NodeTree*	match_elet;
+				// NodeTree*	match_elet;
 
-				match_elet = _avl.searchByKey(_avl.getRoot(), k);
-				if (match_elet)
-					return (match_elet->pr.second);
+				// _avl.unlinkSentinels();
+				// match_elet = _avl.searchByKey(_avl.getRoot(), k);
+				// _avl.linkSentinels();
+				// if (match_elet)
+				// 	return (match_elet->pr.second);
 				ft::pair<iterator, bool> ret_pair = insert(ft::make_pair(k, mapped_type()));
 				return ((ret_pair.first)->second);
 			}
