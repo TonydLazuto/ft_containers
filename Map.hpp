@@ -187,7 +187,7 @@ namespace ft
 
 			size_type erase (const key_type& k)
 			{
-				// _avl.unlinkSentinels();
+				_avl.unlinkSentinels();
 				NodeTree*	to_del;
 
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
@@ -195,7 +195,7 @@ namespace ft
 					return (0);
 				// _avl.printNode(to_del, "to_del");
 				_avl.erase(to_del->pr);
-				// _avl.linkSentinels();
+				_avl.linkSentinels();
 				return (1);
 			}
 

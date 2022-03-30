@@ -207,7 +207,7 @@ namespace ft
 
 			NodeTree*	destroyNode(NodeTree*& r)
 			{
-				NodeTree	*r_parent = r->parent;
+				NodeTree*	r_parent = r->parent;
 				if (r_parent)
 				{
 					if (r->pr > r_parent->pr )
@@ -232,7 +232,16 @@ namespace ft
 					r->right = recursiveDeletion(r->right, val);
 				if (r && val == r->pr)
 				{
-					return (destroyNode(r));
+					NodeTree*	temp = r->left;
+					if (r->right)
+						temp = r->right;
+					if (temp)
+						temp->parent = r->parent;
+					_alloc_n.destroy(r);
+					_alloc_n.deallocate(r, 1);
+					r = NULL;
+					_nb_nodes--;
+					return temp;
 				}
 				return (r);
 			}
@@ -248,6 +257,7 @@ namespace ft
 					return _root;
 				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
 				// std::cout << "r: " << &r->pr << std::endl;
+				// print2D(r->parent, 5);
 				if (r->parent)
 					node_start = r->parent;
 				if (r->left && r->right)
