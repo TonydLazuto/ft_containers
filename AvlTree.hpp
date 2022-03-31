@@ -94,11 +94,13 @@ namespace ft
 			{
 				if (r == NULL)
 					return NULL;
-				if (k < r->pr.first)
+				if (r->pr.first && r->pr.first == k)
+					return r;
+				else if (k < r->pr.first)
 					return searchByKey(r->left, k);
 				else if (k > r->pr.first)
 					return searchByKey(r->right, k);
-				return r;
+				return NULL; // NULL
 			}
 
 			void	iterativeSearch(NodeTree*& r, value_type& val)
@@ -208,15 +210,10 @@ namespace ft
 				NodeTree*	r_parent = r->parent;
 				if (r_parent)
 				{
-<<<<<<< HEAD
 					if (minright->pr < r_parent->pr )
 						r_parent->left = NULL;
-=======
-					if (r->pr > r_parent->pr )
-						r_parent->left = r->left;
->>>>>>> dc9c2e564be834d6247e184fd1e94ccc88eb34cf
 					else
-						r_parent->right = r->right;
+						r_parent->right = NULL;
 				}
 				_alloc_n.destroy(r);
 				_alloc_n.deallocate(r, 1);
@@ -225,73 +222,53 @@ namespace ft
 				return r_parent;
 			}
 
-			NodeTree*	deleteNode(NodeTree*	r, value_type val)
+			NodeTree*	recursiveDeletion(NodeTree*	r, value_type val)
 			{
 				if (r == NULL)
 					return NULL;
-				else if (val < r->pr)
-					r->left = deleteNode(r->left, val);
-				else if (val > r->pr)
-					r->right = deleteNode(r->right, val);
-				else
+				if (r && val < r->pr)
+					r->left = recursiveDeletion(r->left, val);
+				if (r && val > r->pr)
+					r->right = recursiveDeletion(r->right, val);
+				if (r && val == r->pr)
 				{
-					if (r->left && r->right)
-					{
-						NodeTree* minright = minValueNode(r->right);
-						swapNodes(r, minright);
-						r->right = deleteNode(minright->right, r->pr);
-					}
-					else
-					{
-						NodeTree*	temp = r->left;
-						if (r->right)
-							temp = r->right;
-						if (temp)
-							temp->parent = r->parent;
-						_alloc_n.destroy(r);
-						_alloc_n.deallocate(r, 1);
-						r = NULL;
-						_nb_nodes--;
-						return temp;	
-					}
+					NodeTree*	temp = r->left;
+					if (r->right)
+						temp = r->right;
+					if (temp)
+						temp->parent = r->parent;
+					_alloc_n.destroy(r);
+					_alloc_n.deallocate(r, 1);
+					r = NULL;
+					_nb_nodes--;
+					return temp;
 				}
-				r = balanceDeletion(r->parent);
 				return (r);
 			}
-/*
+
 			NodeTree*	deleteNode(NodeTree* r, value_type val) {
 				// base case
 				NodeTree* minright = NULL;
+				NodeTree* node_start = _root;
 				
 				iterativeSearch(r, val);
 				minright = minValueNode(r->right);
-				printNode(minright, " minright");
 				if (!r)
 					return _root;
-<<<<<<< HEAD
-				// std::cout << "r: " << &r->pr << std::endl;
 				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
-				// print2D(_root, 5);
+				// std::cout << "r: " << &r->pr << std::endl;
+				// print2D(r->parent, 5);
 				if (r->parent)
 					node_start = r->parent;
 				if (r->left && r->right)
 				{
 					swapNodes(r, minright);
 					r = destroyNode(r, minright);
-=======
-				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
-				// print2D(_root, 5);
-				if (r->left && r->right)
-				{
-					swapNodes(r, minright);
->>>>>>> dc9c2e564be834d6247e184fd1e94ccc88eb34cf
 					// std::cout << "-------------------------destroyNode-----------------------------------" << std::endl;
 					// print2D(r->parent, 5);
 				}
-				// else
-					r = recursiveDeletion(r, val);
-				// std::cout << "-------------------------BeforeBalance-----------------------------------" << std::endl;
-				// print2D(r, 5);
+				else
+					r = recursiveDeletion(node_start, val);
 				r = balanceDeletion(r);
 				while (r && r->parent)
 				{
@@ -299,7 +276,7 @@ namespace ft
 				}
 				return r;
 			}
-*/
+
 			NodeTree*	balanceDeletion(NodeTree* r)
 			{
 				int bf = getBalanceFactor(r);
@@ -449,7 +426,7 @@ namespace ft
 				*this = tmp;
 			}
 
-			size_type max_size(void) const { return (this->_alloc_n.max_size()); }
+			size_type max_size(void) const { return (_alloc_n.max_size()); }
 
 			NodeTree*	recursiveClear(NodeTree* r)
 			{
@@ -465,7 +442,6 @@ namespace ft
 				}
 				return r;
 			}
-
 			void	clear(void)
 			{
 				unlinkSentinels();
