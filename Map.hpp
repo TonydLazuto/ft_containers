@@ -66,10 +66,10 @@ namespace ft
 					// _avl.print2D(_avl.getRoot(), 5);
 				}
 
-			void	print(void)
-			{
-				_avl.print2D(_avl.getRoot(), 5);
-			}
+			// void	print(void)
+			// {
+			// 	_avl.print2D(_avl.getRoot(), 5);
+			// }
 
 			virtual ~map( void )
 			{
@@ -137,13 +137,14 @@ namespace ft
 				_avl.unlinkSentinels();
 				NodeTree*	match_node = _avl.searchByKey(_avl.getRoot(), val.first);
 				NodeTree*	new_insert = NULL;
+				bool		pr_sec = match_node == NULL;
 
 				_avl.insert(val, new_insert);
 				// printNode(_avl.getRoot());
 				// match_node == NULL => true => insertion has been done
-				if (match_node == NULL)
+				if (!match_node)
 					match_node = new_insert;
-				ft::pair<iterator, bool> pair_ret(match_node, match_node == NULL);
+				ft::pair<iterator, bool> pair_ret(match_node, pr_sec);
 				_avl.linkSentinels();	
 
 				return (pair_ret);
@@ -233,10 +234,10 @@ namespace ft
 
 			iterator find (const key_type& k)
 			{
-				NodeTree*	match_elet = _avl.getRoot();
+				NodeTree*	match_elet = NULL;
 
 				_avl.unlinkSentinels();
-				_avl.iterativeSearch(match_elet, ft::make_pair(k, mapped_type()));
+				match_elet = _avl.searchByKey(_avl.getRoot(), k);
 				_avl.linkSentinels();
 				if (match_elet)
 					return (match_elet);
@@ -244,10 +245,10 @@ namespace ft
 			}
 			const_iterator find (const key_type& k) const
 			{
-				NodeTree*	match_elet = _avl.getRoot();
+				NodeTree*	match_elet = NULL;
 
 				_avl.unlinkSentinels();
-				_avl.iterativeSearch(match_elet, ft::make_pair(k, mapped_type()));
+				match_elet = _avl.searchByKey(_avl.getRoot(), k);
 				_avl.linkSentinels();
 				if (match_elet)
 					return (match_elet);
@@ -256,10 +257,10 @@ namespace ft
 
 			size_type count (const key_type& k) const
 			{
-				NodeTree*	match_elet = _avl.getRoot();
+				NodeTree*	match_elet = NULL;
 
 				_avl.unlinkSentinels();
-				_avl.iterativeSearch(match_elet, ft::make_pair(k, mapped_type()));
+				match_elet = _avl.searchByKey(_avl.getRoot(), k);
 				_avl.linkSentinels();
 				return (match_elet != NULL);
 			}

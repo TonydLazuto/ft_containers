@@ -47,7 +47,7 @@ public:
 };
 */
 
-	#define TESTED_NAMESPACE std
+	#define TESTED_NAMESPACE ft
 
 	#define _pair TESTED_NAMESPACE::pair
 
@@ -125,42 +125,34 @@ public:
 	// --- End of class foo
 
 	#define T1 int
-#define T2 std::string
-typedef _pair<const T1, T2> T3;
+	#define T2 std::string
 
-static int iter = 0;
+	struct ft_more {
+		bool	operator()(const T1 &first, const T1 &second) const {
+			std::cout << "first : " << first;
+			std::cout << ", second : " << second << std::endl;
+			if (first > second)
+				std::cout << "YES" << std::endl;
+			else
+				std::cout << "NO" << std::endl;
+			return (first > second);
+		}
+	};
 
-template <typename MAP, typename U>
-void	ft_erase(MAP &mp, U param)
-{
-	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
-	std::cout << "ret: " << mp.erase(param) << std::endl;
-	printSize(mp);
-}
+	typedef TESTED_NAMESPACE::map<T1, T2, ft_more> ft_mp;
+	typedef TESTED_NAMESPACE::map<T1, T2, ft_more>::iterator ft_mp_it;
 
-int		main(void)
-{
-	std::list<T3> lst;
-	unsigned int lst_size = 6;
-	for (unsigned int i = 0; i < lst_size; ++i)
-		lst.push_back(T3(i, std::string((lst_size - i), i + 65)));
-	TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
-	printSize(mp);
+	int		main(void)
+	{
+		ft_mp mp;
 
-	for (int i = 2; i < 4; ++i)
-		ft_erase(mp, i);
-
-	ft_erase(mp, mp.begin()->first);
-	ft_erase(mp, (--mp.end())->first);
-
-	mp[-1] = "Hello";
-	mp[10] = "Hi there";
-	mp[10] = "Hi there";
-	printSize(mp);
-
-	ft_erase(mp, 0);
-	ft_erase(mp, 1);
-
+		mp[42] = "fgzgxfn";
+		mp[25] = "funny";
+		mp[80] = "hey";
+		mp[12] = "no";
+		mp[27] = "bee";
+		mp[90] = "8";
+		printSize(mp);
 
 // int main(void) {
 // 	ft::map<char,int> mymap;

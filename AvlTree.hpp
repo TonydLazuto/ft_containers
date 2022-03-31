@@ -357,7 +357,7 @@ namespace ft
 
 			NodeTree	*getEnd(void) const { return _end; }
 
-			void	linkSentinels(void)
+			void	linkSentinels(void) const
 			{
 				NodeTree	*first_node = minValueNode(_root);
 				NodeTree	*last_node = maxValueNode(_root);
@@ -371,7 +371,7 @@ namespace ft
 				}
 			}
 
-			void	unlinkSentinels(void)
+			void	unlinkSentinels(void) const
 			{
 				if (!_root)
 					return ;
