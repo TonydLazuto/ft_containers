@@ -124,34 +124,22 @@ public:
 	}
 	// --- End of class foo
 
-	#define T1 int
-	#define T2 std::string
-
-	struct ft_more {
-		bool	operator()(const T1 &first, const T1 &second) const {
-			std::cout << "first : " << first;
-			std::cout << ", second : " << second << std::endl;
-			if (first > second)
-				std::cout << "YES" << std::endl;
-			else
-				std::cout << "NO" << std::endl;
-			return (first > second);
-		}
-	};
-
-	typedef TESTED_NAMESPACE::map<T1, T2, ft_more> ft_mp;
-	typedef TESTED_NAMESPACE::map<T1, T2, ft_more>::iterator ft_mp_it;
+	#define T1 char
+	#define T2 foo<std::string>
 
 	int		main(void)
 	{
-		ft_mp mp;
+		TESTED_NAMESPACE::map<T1, T2> mp;
 
-		mp[42] = "fgzgxfn";
-		mp[25] = "funny";
-		mp[80] = "hey";
-		mp[12] = "no";
-		mp[27] = "bee";
-		mp[90] = "8";
+		mp['a'] = "an element";
+		mp['b'] = "another element";
+		mp['c'] = mp['b'];
+		mp['b'] = "old element";
+
+		printSize(mp);
+
+		std::cout << "insert a new element via operator[]: " << mp['d'] << std::endl;
+
 		printSize(mp);
 
 // int main(void) {

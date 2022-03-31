@@ -221,7 +221,7 @@ namespace ft
 			{
 				iterator it = lower_bound(k);
 				if (it == end() || key_comp()(k, it->first))
-					it = insert(it, value_type(k, mapped_type()));
+					it = insert(it, ft::make_pair(k, mapped_type()));
 				return (it->second);
 			}
 
