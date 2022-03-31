@@ -37,13 +37,6 @@ namespace ft
 		}
 	};
 
-	// template <class T1, class T2>
-	// std::ostream & operator<<(std::ostream &o, const ft::pair<T1, T2> pair)
-	// {
-	// 	o << "pair.first: " << pair.first << std::endl << "pair.second: " << pair.second << std::endl;
-	// 	return o;
-	// }
-
 	template <class T1, class T2>
 	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
 	{ return (lhs.first == rhs.first); }
@@ -58,15 +51,15 @@ namespace ft
 
 	template <class T1, class T2>
 	bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	{ return (!(rhs.first < lhs.first) || (lhs.first == rhs.first)); }
+	{ return ((lhs.first < rhs.first) || (lhs.first == rhs.first)); }
 
 	template <class T1, class T2>
 	bool operator>  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	{ return (!(rhs.first < lhs.first) && !(lhs.first == rhs.first)); }
+	{ return (!(lhs.first < rhs.first) && !(lhs.first == rhs.first)); }
 
 	template <class T1, class T2>
 	bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	{ return !(lhs.first < rhs.first); }
+	{ return (!(lhs.first < rhs.first)); }
 
 
 	template <class T1,class T2>

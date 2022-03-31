@@ -115,7 +115,7 @@ namespace ft
 			}
 			
 			NodeTree* insertNode(NodeTree* r, NodeTree* parent
-				, const ft::pair<Key, T>& val, NodeTree*& new_insert)
+				, const value_type& val, NodeTree*& new_insert)
 			{
 				if (r == NULL)
 				{
@@ -138,7 +138,7 @@ namespace ft
 				return r;
 			}
 
-			NodeTree*	balanceInsert(NodeTree* r, const ft::pair<Key, T>& val)
+			NodeTree*	balanceInsert(NodeTree* r, const value_type& val)
 			{				
 				int bf = getBalanceFactor(r);
 				// Left Left Case
