@@ -129,7 +129,7 @@ namespace ft
 			size_type size(void) const { return (_avl.getSize()); }
 			size_type max_size(void) const {
 				// return (std::numeric_limits<size_type>::max() / (sizeof(T) / 2 < 1 ? 1 : sizeof(T)));
-				return std::numeric_limits<size_type>::max() / sizeof(T) / 2 / 10;
+				return this->_avl.max_size();
 			}
 
 			ft::pair<iterator, bool> insert (const value_type& val)
@@ -218,13 +218,6 @@ namespace ft
 
 			mapped_type& operator[](const key_type& k)
 			{
-				// NodeTree*	match_elet;
-
-				// _avl.unlinkSentinels();
-				// match_elet = _avl.searchByKey(_avl.getRoot(), k);
-				// _avl.linkSentinels();
-				// if (match_elet)
-				// 	return (match_elet->pr.second);
 				ft::pair<iterator, bool> ret_pair = insert(ft::make_pair(k, mapped_type()));
 				return ((ret_pair.first)->second);
 			}
@@ -238,18 +231,22 @@ namespace ft
 
 			iterator find (const key_type& k)
 			{
-				NodeTree*	match_elet;
+				NodeTree*	match_elet = _avl.getRoot();
 
-				match_elet = _avl.searchByKey(_avl.getRoot(), k);
+				_avl.unlinkSentinels();
+				_avl.iterativeSearch(match_elet, ft::make_pair(k, mapped_type()));
+				_avl.linkSentinels();
 				if (match_elet)
 					return (match_elet);
 				return (end());
 			}
 			const_iterator find (const key_type& k) const
 			{
-				NodeTree*	match_elet;
+				NodeTree*	match_elet = _avl.getRoot();
 
-				match_elet = _avl.searchByKey(_avl.getRoot(), k);
+				_avl.unlinkSentinels();
+				_avl.iterativeSearch(match_elet, ft::make_pair(k, mapped_type()));
+				_avl.linkSentinels();
 				if (match_elet)
 					return (match_elet);
 				return (end());
@@ -257,9 +254,11 @@ namespace ft
 
 			size_type count (const key_type& k) const
 			{
-				NodeTree*	match_elet;
+				NodeTree*	match_elet = _avl.getRoot();
 
-				match_elet = _avl.searchByKey(_avl.getRoot(), k);
+				_avl.unlinkSentinels();
+				_avl.iterativeSearch(match_elet, ft::make_pair(k, mapped_type()));
+				_avl.linkSentinels();
 				return (match_elet != NULL);
 			}
 
