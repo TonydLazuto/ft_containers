@@ -187,16 +187,16 @@ namespace ft
 
 			size_type erase (const key_type& k)
 			{
+				// std::cout << "k: " << k << std::endl;
 				_avl.unlinkSentinels();
 				NodeTree*	to_del;
 
+				// _avl.print2D(_avl.getRoot(), 5);
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
-				if (!to_del)
-					return (0);
-				// _avl.printNode(to_del, "to_del");
-				_avl.erase(to_del->pr);
+				if (to_del)
+					_avl.erase(to_del->pr);
 				_avl.linkSentinels();
-				return (1);
+				return (to_del ? 1 : 0);
 			}
 
 			void erase (iterator first, iterator last)

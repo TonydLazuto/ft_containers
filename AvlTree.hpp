@@ -94,13 +94,11 @@ namespace ft
 			{
 				if (r == NULL)
 					return NULL;
-				if (r->pr.first && r->pr.first == k)
-					return r;
-				else if (k < r->pr.first)
+				if (k < r->pr.first)
 					return searchByKey(r->left, k);
 				else if (k > r->pr.first)
 					return searchByKey(r->right, k);
-				return NULL; // NULL
+				return r;
 			}
 
 			void	iterativeSearch(NodeTree*& r, value_type& val)
@@ -213,7 +211,7 @@ namespace ft
 					if (minright->pr < r_parent->pr )
 						r_parent->left = NULL;
 					else
-						r_parent->right = NULL;
+						r_parent->right = r->right;
 				}
 				_alloc_n.destroy(r);
 				_alloc_n.deallocate(r, 1);
@@ -256,8 +254,7 @@ namespace ft
 				if (!r)
 					return _root;
 				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
-				// std::cout << "r: " << &r->pr << std::endl;
-				// print2D(r->parent, 5);
+				// print2D(_root, 5);
 				if (r->parent)
 					node_start = r->parent;
 				if (r->left && r->right)
@@ -265,7 +262,7 @@ namespace ft
 					swapNodes(r, minright);
 					r = destroyNode(r, minright);
 					// std::cout << "-------------------------destroyNode-----------------------------------" << std::endl;
-					// print2D(r->parent, 5);
+					// print2D(minright, 5);
 				}
 				else
 					r = recursiveDeletion(node_start, val);
