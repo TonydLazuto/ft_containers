@@ -338,8 +338,7 @@ namespace ft
 				positionNode = insertNode(positionNode, NULL, val, new_insert);
 				while (positionNode && positionNode->parent)
 				{
-					positionNode->parent = balanceInsert(positionNode->parent, val);
-					positionNode = positionNode->parent;
+					positionNode = balanceInsert(positionNode->parent, val);
 				}
 				_root = positionNode;
 			}

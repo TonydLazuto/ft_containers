@@ -218,8 +218,10 @@ namespace ft
 
 			mapped_type& operator[](const key_type& k)
 			{
-				ft::pair<iterator, bool> ret_pair = insert(ft::make_pair(k, mapped_type()));
-				return ((ret_pair.first)->second);
+				iterator it = lower_bound(k);
+				if (it == end() || key_comp()(k, it->first))
+					it = insert(it, value_type(k, mapped_type()));
+				return (it->second);
 			}
 
 			key_compare key_comp(void) const { return (key_compare()); }
