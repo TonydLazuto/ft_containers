@@ -1,3 +1,5 @@
+#ifndef LEXICOGRAPHICAL_HPP
+# define LEXICOGRAPHICAL_HPP
 
 namespace ft
 {
@@ -33,3 +35,5 @@ namespace ft
 		return (first2 != last2);
 	}
 }
+
+#endif

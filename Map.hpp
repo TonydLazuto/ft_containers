@@ -322,6 +322,25 @@ namespace ft
 
 			allocator_type get_allocator(void) const { return this->_alloc; }
 
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator==(const map<First,Second,MyComp,MyAlloc>& lhs,
+					const map<First,Second,MyComp,MyAlloc>& rhs);
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator!=(const map<First,Second,MyComp,MyAlloc>& lhs,
+					const map<First,Second,MyComp,MyAlloc>& rhs);
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator< (const map<First,Second,MyComp,MyAlloc>& lhs,
+					const map<First,Second,MyComp,MyAlloc>& rhs);
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator<=(const map<First,Second,MyComp,MyAlloc>& lhs,
+					const map<First,Second,MyComp,MyAlloc>& rhs);
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator>=(const map<First,Second,MyComp,MyAlloc>& lhs,
+					const map<First,Second,MyComp,MyAlloc>& rhs);
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator> (const map<First,Second,MyComp,MyAlloc>& lhs,
+					const map<First,T,MyComp,MyAlloc>& rhs);
+
 		private:
 			ft::AvlTree<Key, T>	_avl;
 			allocator_type		_alloc;
@@ -347,28 +366,34 @@ namespace ft
 
 	};
 	template <class Key, class T, class Compare, class Allocator>
-	bool operator==(const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+	bool operator==(const map<Key,T,Compare,Allocator>& lhs,
+		const map<Key,T,Compare,Allocator>& rhs)
+		{ return (lhs._avl == rhs._avl); }
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool operator< (const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+	bool operator!=(const map<Key,T,Compare,Allocator>& lhs,
+		const map<Key,T,Compare,Allocator>& rhs)
+		{ return (lhs._avl != rhs._avl); }
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool operator!=(const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+	bool operator< (const map<Key,T,Compare,Allocator>& lhs,
+		const map<Key,T,Compare,Allocator>& rhs)
+		{ return (lhs._avl < rhs._avl); }
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool operator> (const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+	bool operator<=(const map<Key,T,Compare,Allocator>& lhs,
+		const map<Key,T,Compare,Allocator>& rhs)
+		{ return (lhs._avl <= rhs._avl); }
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool operator>=(const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+	bool operator>=(const map<Key,T,Compare,Allocator>& lhs,
+		const map<Key,T,Compare,Allocator>& rhs)
+		{ return (lhs._avl >= rhs._avl); }
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool operator<=(const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+	bool operator> (const map<Key,T,Compare,Allocator>& lhs,
+		const map<Key,T,Compare,Allocator>& rhs)
+		{ return (lhs._avl > rhs._avl); }
 
 	// specialized algorithms:
 	template <class Key, class T, class Compare, class Allocator>

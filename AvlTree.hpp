@@ -6,6 +6,7 @@
 #include "Node.hpp"
 #include "MapIterator.hpp"
 #include "ReverseMapIterator.hpp"
+#include "Lexicographical.hpp"
 
 #define SPACE 10
 
@@ -445,6 +446,30 @@ namespace ft
 				_nb_nodes = 0;
 			}
 
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator==(const AvlTree<First, Second, MyComp, MyAlloc> &lhs,
+					const AvlTree<First, Second, MyComp, MyAlloc> &rhs);
+
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator<(const AvlTree<First, Second, MyComp, MyAlloc> &lhs,
+					const AvlTree<First, Second, MyComp, MyAlloc> &rhs);
+			
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator!=(const AvlTree<First, Second, MyComp, MyAlloc> &lhs,
+					const AvlTree<First, Second, MyComp, MyAlloc> &rhs);
+
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator<=(const AvlTree<First, Second, MyComp, MyAlloc> &lhs,
+					const AvlTree<First, Second, MyComp, MyAlloc> &rhs);
+
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator>(const AvlTree<First, Second, MyComp, MyAlloc> &lhs,
+					const AvlTree<First, Second, MyComp, MyAlloc> &rhs);
+
+			template <class First, class Second, class MyComp, class MyAlloc>
+				friend bool operator>=(const AvlTree<First, Second, MyComp, MyAlloc> &lhs,
+					const AvlTree<Key, Second, MyComp, MyAlloc> &rhs);
+
 		private:
 
 			NodeTree*		_root;
@@ -524,8 +549,50 @@ namespace ft
 				}
 				return y;
 			}
-			
 	};
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator==(const AvlTree<Key, T, Compare, Alloc> &lhs,
+		const AvlTree<Key, T, Compare, Alloc> &rhs)
+	{
+		return (lhs.getSize() == rhs.getSize() 
+			&& ft::lexicographical_compare(lhs._begin, lhs._end, rhs._begin, rhs._end));
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator!=(const AvlTree<Key, T, Compare, Alloc> &lhs,
+		const AvlTree<Key, T, Compare, Alloc> &rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator<(const AvlTree<Key, T, Compare, Alloc> &lhs,
+		const AvlTree<Key, T, Compare, Alloc> &rhs)
+	{
+		return ft::lexicographical_compare(lhs._begin, lhs._end, rhs._begin, rhs._end);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator<=(const AvlTree<Key, T, Compare, Alloc> &lhs,
+		const AvlTree<Key, T, Compare, Alloc> &rhs)
+	{
+		return !(rhs < lhs);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator>(const AvlTree<Key, T, Compare, Alloc> &lhs,
+		const AvlTree<Key, T, Compare, Alloc> &rhs)
+	{
+		return (rhs < lhs);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator>=(const AvlTree<Key, T, Compare, Alloc> &lhs,
+		const AvlTree<Key, T, Compare, Alloc> &rhs)
+	{
+		return !(lhs < rhs);
+	}
 }
 
 #endif

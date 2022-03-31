@@ -125,22 +125,46 @@ public:
 	// --- End of class foo
 
 	#define T1 char
-	#define T2 foo<std::string>
+	#define T2 int
+	typedef _pair<const T1, T2> T3;
+
+	template <class MAP>
+	void	cmp(const MAP &lhs, const MAP &rhs)
+	{
+		static int i = 0;
+
+		std::cout << "############### [" << i++ << "] ###############"  << std::endl;
+		std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
+		std::cout << "lt: " << (lhs <  rhs) << " | le: " << (lhs <= rhs) << std::endl;
+		std::cout << "gt: " << (lhs >  rhs) << " | ge: " << (lhs >= rhs) << std::endl;
+	}
 
 	int		main(void)
 	{
-		TESTED_NAMESPACE::map<T1, T2> mp;
+		TESTED_NAMESPACE::map<T1, T2> mp1;
+		TESTED_NAMESPACE::map<T1, T2> mp2;
 
-		mp['a'] = "an element";
-		mp['b'] = "another element";
-		mp['c'] = mp['b'];
-		mp['b'] = "old element";
+		mp1['a'] = 2; mp1['b'] = 3; mp1['c'] = 4; mp1['d'] = 5;
+		mp2['a'] = 2; mp2['b'] = 3; mp2['c'] = 4; mp2['d'] = 5;
 
-		printSize(mp);
+		cmp(mp1, mp1); // 0
+		cmp(mp1, mp2); // 1
 
-		std::cout << "insert a new element via operator[]: " << mp['d'] << std::endl;
+		mp2['e'] = 6; mp2['f'] = 7; mp2['h'] = 8; mp2['h'] = 9;
 
-		printSize(mp);
+		cmp(mp1, mp2); // 2
+		cmp(mp2, mp1); // 3
+
+		(++(++mp1.begin()))->second = 42;
+
+		cmp(mp1, mp2); // 4
+		cmp(mp2, mp1); // 5
+
+		swap(mp1, mp2);
+
+		cmp(mp1, mp2); // 6
+		cmp(mp2, mp1); // 7
+
 
 // int main(void) {
 // 	ft::map<char,int> mymap;
