@@ -205,12 +205,12 @@ namespace ft
 				}
 			}
 
-			NodeTree*	destroyNode(NodeTree*& r)
+			NodeTree*	destroyNode(NodeTree*& r, NodeTree*& minright)
 			{
 				NodeTree*	r_parent = r->parent;
 				if (r_parent)
 				{
-					if (r->pr > r_parent->pr )
+					if (minright->pr < r_parent->pr )
 						r_parent->left = NULL;
 					else
 						r_parent->right = NULL;
@@ -253,17 +253,18 @@ namespace ft
 				
 				iterativeSearch(r, val);
 				minright = minValueNode(r->right);
+				printNode(minright, " minright");
 				if (!r)
 					return _root;
-				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
 				// std::cout << "r: " << &r->pr << std::endl;
-				// print2D(r->parent, 5);
+				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
+				// print2D(_root, 5);
 				if (r->parent)
 					node_start = r->parent;
 				if (r->left && r->right)
 				{
 					swapNodes(r, minright);
-					r = destroyNode(r);
+					r = destroyNode(r, minright);
 					// std::cout << "-------------------------destroyNode-----------------------------------" << std::endl;
 					// print2D(r->parent, 5);
 				}

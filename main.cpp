@@ -149,7 +149,7 @@ public:
 	int		main(void)
 	{
 		std::list<T3> lst;
-		unsigned int lst_size = 10;
+		unsigned int lst_size = 20;
 		for (unsigned int i = 1; i < lst_size; ++i)
 			lst.push_back(T3(i, std::string((lst_size - i), i + 65)));
 		TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
@@ -168,12 +168,12 @@ public:
 		printSize(mp);
 		ft_erase(mp, --(--(--mp.end())), mp.end());
 
-		mp[12] = "ONE";
-		mp[13] = "TWO";
-		mp[14] = "THREE";
-		mp[15] = "FOUR";
-		printSize(mp);
-		ft_erase(mp, mp.begin(), mp.end());
+		// mp[12] = "ONE";
+		// mp[13] = "TWO";
+		// mp[14] = "THREE";
+		// mp[15] = "FOUR";
+		// printSize(mp);
+		// ft_erase(mp, mp.begin(), mp.end());
 
 
 // int main(void) {
