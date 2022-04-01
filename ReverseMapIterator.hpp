@@ -6,7 +6,7 @@
 
 namespace ft
 {
-	template <class Iter>
+	template <class NodePair, class Iter>
 	class ReverseMapIterator
 	{
 		private:
@@ -14,15 +14,16 @@ namespace ft
 
 		public:
 			typedef Iter	iterator_type;
-			typedef typename Iter::value_type	NodePair;
 
 			ReverseMapIterator( void ) : _itor() {}
-			explicit ReverseMapIterator(iterator_type x) : _itor(x) {}
+			explicit ReverseMapIterator(iterator_type itor) : _itor(itor) {}
 			virtual ~ReverseMapIterator( void ) {}
-			template < class OtherIter >
-			ReverseMapIterator (const ReverseMapIterator<OtherIter> &rev)
+			ReverseMapIterator (ReverseMapIterator const& rev_it)
+			: _itor(rev_it._itor) {}
+			template < class MyPair, class OtherIter >
+			ReverseMapIterator (const ReverseMapIterator<MyPair, OtherIter> &rev)
 			: _itor(rev.base()) {}
-			ReverseMapIterator& operator=(ReverseMapIterator<Iter> const & rhs)
+			ReverseMapIterator& operator=(ReverseMapIterator<NodePair, Iter> const & rhs)
 			{
 				if (*this != rhs)
 					this->_itor = rhs._itor;
@@ -34,14 +35,14 @@ namespace ft
 			NodePair& operator*(void) const
 			{
 				iterator_type tmp = _itor;
-				return (*tmp);
+				return (*--tmp);
 			}
 			NodePair* operator->(void) const { return &(operator*()); }
 
 			ReverseMapIterator operator++(int)
 			{
-				ReverseMapIterator tmp = *this;
-				tmp._itor = this->_itor--;
+				ReverseMapIterator tmp(*this);
+				operator++();
 				return tmp;
 			}
 			ReverseMapIterator& operator++(void)
@@ -51,8 +52,8 @@ namespace ft
 			}
 			ReverseMapIterator operator--(int)
 			{
-				ReverseMapIterator tmp = *this;
-				tmp._itor = this->_itor++;
+				ReverseMapIterator tmp(*this);
+				operator--();
 				return tmp;
 			}
 			ReverseMapIterator& operator--(void)
@@ -61,49 +62,27 @@ namespace ft
 				return *this;
 			}
 
-			operator ReverseMapIterator<const Iter> ()
-			{ return (ReverseMapIterator<Iter>(this->_itor)); }
+			operator ReverseMapIterator<const NodePair, const Iter> ()
+			{ return (ReverseMapIterator<NodePair, Iter>(this->_itor)); }
 			
+			bool operator!=(ReverseMapIterator<NodePair, Iter> rhs)
+			{
+				return this->_itor != rhs._itor;
+			}
+			bool operator==(ReverseMapIterator<NodePair, Iter> rhs)
+			{
+				return this->_itor == rhs._itor;
+			}
+
+			bool operator==(ReverseMapIterator<const NodePair, const Iter> rhs) const
+			{
+				return this->_itor == rhs._itor;
+			}
+			bool operator!=(ReverseMapIterator<const NodePair, const Iter> rhs) const
+			{
+				return this->_itor != rhs._itor;
+			}
 	};
-
-	template <class Iterator>
-		bool operator== (const ft::ReverseMapIterator<Iterator>& lhs,
-			const ft::ReverseMapIterator<Iterator>& rhs)
-			{ return (*(lhs.base()) == *(rhs.base())); }
-
-	template <class Iterator_L, class Iterator_R>
-		bool operator== (const ft::ReverseMapIterator<Iterator_L>& lhs,
-			const ft::ReverseMapIterator<Iterator_R>& rhs)
-			{ return (*(lhs.base()) == *(rhs.base())); }
-	template <class Iterator>
-		bool operator== (ft::ReverseMapIterator<Iterator>& lhs,
-			ft::ReverseMapIterator<Iterator>& rhs)
-			{ return (*(lhs.base()) == *(rhs.base())); }
-
-	template <class Iterator_L, class Iterator_R>
-		bool operator== (ft::ReverseMapIterator<Iterator_L>& lhs,
-			ft::ReverseMapIterator<Iterator_R>& rhs)
-			{ return (*(lhs.base()) == *(rhs.base())); }
-
-	template <class Iterator>
-		bool operator!= (const ft::ReverseMapIterator<Iterator>& lhs,
-			const ft::ReverseMapIterator<Iterator>& rhs)
-			{ return (*(lhs.base()) != *(rhs.base())); }
-
-	template <class Iterator_L, class Iterator_R>
-		bool operator!= (const ft::ReverseMapIterator<Iterator_L>& lhs,
-			const ft::ReverseMapIterator<Iterator_R>& rhs)
-			{ return (*(lhs.base()) != *(rhs.base())); }
-			
-	template <class Iterator>
-		bool operator!= (ft::ReverseMapIterator<Iterator>& lhs,
-			ft::ReverseMapIterator<Iterator>& rhs)
-			{ return (*(lhs.base()) != *(rhs.base())); }
-
-	template <class Iterator_L, class Iterator_R>
-		bool operator!= (ft::ReverseMapIterator<Iterator_L>& lhs,
-			ft::ReverseMapIterator<Iterator_R>& rhs)
-			{ return (*(lhs.base()) != *(rhs.base())); }
 
 }
 

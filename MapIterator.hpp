@@ -105,11 +105,11 @@ namespace ft
 			{ return (MapIterator<const NodePair, NodeTree, true>(this->_itor)); }
 
 
-			bool operator!=(MapIterator<NodePair, NodeTree, false> rhs) const
+			bool operator!=(MapIterator<NodePair, NodeTree, false> rhs)
 			{
 				return this->_itor != rhs._itor;
 			}
-			bool operator==(MapIterator<NodePair, NodeTree, false> rhs) const
+			bool operator==(MapIterator<NodePair, NodeTree, false> rhs)
 			{
 				return this->_itor == rhs._itor;
 			}
