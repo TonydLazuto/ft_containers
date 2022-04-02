@@ -29,43 +29,43 @@ namespace ft
 			return *this;
 		}
 
-		pair& operator=(pair const* pr) // ...
-		{
-			this->first = pr->first;
-			this->second = pr->second;
-			return *this;
-		}
+		// pair& operator=(pair const* pr) // ...
+		// {
+		// 	this->first = pr->first;
+		// 	this->second = pr->second;
+		// 	return *this;
+		// }
 	};
 
 	template <class T1, class T2>
-	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+	bool operator== (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
 	{ return (lhs.first == rhs.first); }
 
 	template <class T1, class T2>
-	bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	{ return !(lhs.first == rhs.first); }
+	bool operator!= (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+	{ return !(lhs == rhs); }
 
 	template <class T1, class T2>
-	bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	{ return (lhs.first < rhs.first); }
+	bool operator<  (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+	{ return ((lhs.first != rhs.first) ? (lhs.first < rhs.first) : (lhs.second < rhs.second)); }
 
 	template <class T1, class T2>
-	bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	{ return ((lhs.first < rhs.first) || (lhs.first == rhs.first)); }
+	bool operator<= (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+	{ return !(rhs < lhs); }
 
 	template <class T1, class T2>
-	bool operator>  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	{ return (!(lhs.first < rhs.first) && !(lhs.first == rhs.first)); }
+	bool operator>  (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+	{ return (rhs < lhs); }
 
 	template <class T1, class T2>
-	bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	{ return (!(lhs.first < rhs.first)); }
+	bool operator>= (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
+	{ return !(lhs < rhs); }
 
 
 	template <class T1,class T2>
-	pair<T1, T2> make_pair (T1 x, T2 y)
+	ft::pair<T1, T2> make_pair (T1 x, T2 y)
 	{
-		return ( pair<T1,T2>(x, y) );
+		return ( ft::pair<T1,T2>(x, y) );
 	}
 
 	template <class Arg1, class Arg2, class Result>
@@ -78,7 +78,8 @@ namespace ft
 	template <class T>
 	struct less : binary_function <T, T, bool>
 	{
-		bool operator() (const T& x, const T& y) const { return (x < y); }
+		bool operator() (const T& x, const T& y) const
+		{ return (x < y); }
 	};
 }
 

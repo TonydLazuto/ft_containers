@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iterator>
 #include "AvlTree.hpp"
+#include "Maptools.hpp"
 
 namespace ft 
 {
@@ -39,7 +40,7 @@ namespace ft
 					NodePair	save = _itor->pr;
 					if (!_itor->right && _itor->parent)
 					{
-						while (_itor->pr <= save && _itor->parent)
+						while (_itor->pr.first <= save.first && _itor->parent)
 							_itor = _itor->parent;
 					}
 					else if (_itor->right) // _itor == Parent
@@ -82,7 +83,7 @@ namespace ft
 						if (tmp->pr == save)
 							_itor = _itor->parent;
 						else
-							while (_itor->pr >= save && _itor->parent)
+							while (_itor->pr.first >= save.first && _itor->parent)
 								_itor = _itor->parent;
 						}
 					else if (_itor->left) // _itor == Parent

@@ -105,26 +105,6 @@ namespace ft
 			reverse_iterator rend(void)  { return (_avl.rend()); }
 			const_reverse_iterator rend(void) const { return (_avl.rend()); }
 
-			// iterator begin(void) { return (iterator(_avl.getBegin())); }
-			// const_iterator begin(void) const { return (const_iterator(_avl.getBegin())); }
-			// reverse_iterator rbegin(void)
-			// {
-			// 	iterator it = _avl.getEnd();
-			// 	--it;
-			// 	return (reverse_iterator(it));
-			// }
-			// const_reverse_iterator rbegin(void) const
-			// {
-			// 	iterator it = _avl.getEnd();
-			// 	--it;
-			// 	return (const_reverse_iterator(it));
-			// }
-			
-			// iterator end(void) { return (iterator(_avl.getEnd())); }
-			// const_iterator end(void) const { return (const_iterator(_avl.getEnd())); }
-			// reverse_iterator rend(void) { return (reverse_iterator(_avl.getBegin())); }
-			// const_reverse_iterator rend(void) const { return (const_reverse_iterator(_avl.getBegin())); }
-			
 			bool empty(void) const{ return (this->size() == 0 ? true : false); }
 			size_type size(void) const { return (_avl.getSize()); }
 			size_type max_size(void) const {
@@ -188,7 +168,6 @@ namespace ft
 
 			size_type erase (const key_type& k)
 			{
-				// std::cout << "k: " << k << std::endl;
 				_avl.unlinkSentinels();
 				NodeTree*	to_del;
 
@@ -347,17 +326,17 @@ namespace ft
 			key_compare			_comp;
 
 			value_type	findInsertFromHint(iterator hint, const value_type& val) //private
-			{
-				if (val > _avl.maxValueNode(_avl.getRoot())->pr)
+			{	
+				if (val.first > _avl.maxValueNode(_avl.getRoot())->pr.first)
 					return (_avl.maxValueNode(_avl.getRoot())->pr);
-				if (val < _avl.minValueNode(_avl.getRoot())->pr)
+				if (val.first < _avl.minValueNode(_avl.getRoot())->pr.first)
 					return (_avl.minValueNode(_avl.getRoot())->pr);
-				if (*hint > val)
-					while (*hint > val)
+				if (hint->first > val.first)
+					while (hint->first > val.first)
 						--hint;
 				else
 				{
-					while (*hint < val)
+					while (hint->first < val.first)
 						++hint;
 					--hint;
 				}

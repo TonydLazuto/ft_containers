@@ -9,11 +9,11 @@ class Node
 {
 	public:
 		// typedef ft::pair<Key, T>*	pr_ptr;
+		typedef ft::pair<Key, T>	value_type;
 		Node*						parent;
 		Node*						left;
 		Node*						right;
-		ft::pair<Key, T>			pr;
-		typedef ft::pair<Key, T>	value_type;
+		value_type					pr;
 
 		Node( void ) : parent(NULL), left(NULL), right(NULL), pr() {}
 

@@ -138,41 +138,31 @@ public:
 		return (it);
 	}
 
-	#define T1 char
-	#define T2 int
-	typedef _pair<const T1, T2> T3;
+#define T1 int
+#define T2 std::string
 
-	int		main(void)
-	{
-		std::list<T3> lst;
-		unsigned int lst_size = 5;
-		for (unsigned int i = 0; i < lst_size; ++i)
-			lst.push_back(T3('a' + i, (i + 1) * 7));
+struct ft_more {
+	bool	operator()(const T1 &first, const T1 &second) const {
+		std::cout << "first: " << first << std::endl;
+		std::cout << "second: " << second << std::endl;
+		return (first > second);
+	}
+};
 
-		TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
-		TESTED_NAMESPACE::map<T1, T2>::iterator it_ = mp.begin();
-		TESTED_NAMESPACE::map<T1, T2>::reverse_iterator it(it_), ite;
-		printSize(mp);
+typedef TESTED_NAMESPACE::map<T1, T2, ft_more> ft_mp;
+typedef TESTED_NAMESPACE::map<T1, T2, ft_more>::iterator ft_mp_it;
 
-		std::cout << (it_ == it.base()) << std::endl;
-		std::cout << (it_ == dec(it, 3).base()) << std::endl;
+int		main(void)
+{
+	ft_mp mp;
 
-		printPair(it.base());
-		printPair(inc(it.base(), 1));
-
-		std::cout << "TEST OFFSET" << std::endl;
-		--it;
-		printPair(it);
-		printPair(it.base());
-
-		it = mp.rbegin(); ite = mp.rend();
-		std::cout << "it: " << it->first << std::endl;
-		std::cout << "it: " << ite->first << std::endl;
-		while (it != ite)
-			std::cout << "[rev] " << printPair(it++, false) << std::endl;
-		printReverse(mp);
-
-
+	mp[42] = "fgzgxfn";
+	mp[25] = "funny";
+	mp[80] = "hey";
+	mp[12] = "no";
+	mp[27] = "bee";
+	mp[90] = "8";
+	printSize(mp);
 // int main(void) {
 // 	ft::map<char,int> mymap;
 

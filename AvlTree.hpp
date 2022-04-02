@@ -24,6 +24,7 @@ namespace ft
 			typedef ft::pair<Key, T> value_type;
 			typedef	Node<Key, T> NodeTree;
 			typedef size_t	size_type;
+			typedef Compare key_compare;
 
 			typedef Alloc alloc_pair;
 			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
@@ -33,10 +34,11 @@ namespace ft
 			typedef ft::ReverseMapIterator<value_type, iterator> reverse_iterator;
 			typedef ft::ReverseMapIterator<const value_type, const_iterator> const_reverse_iterator;
 
-			AvlTree( const alloc_node& alloc_n = alloc_node(),
-				 const Alloc& alloc_pair = Alloc() )
+			AvlTree( const key_compare& comp = key_compare(),
+				const alloc_node& alloc_n = alloc_node(),
+				const Alloc& alloc_pair = Alloc() )
 			: _root(NULL), _begin(NULL), _end(NULL), _alloc_n(alloc_n)
-				, _alloc_pair(alloc_pair), _nb_nodes(0)
+				, _alloc_pair(alloc_pair), _nb_nodes(0), _comp(comp)
 			{
 				createSentinelNodes();
 			}
@@ -46,7 +48,7 @@ namespace ft
 
 			AvlTree(AvlTree const & src) : _root(src._root), _begin(src._begin)
 				, _end(src._end), _alloc_n(src._alloc_n), _alloc_pair(src._alloc_pair)
-				, _nb_nodes(src._nb_nodes) {}
+				, _nb_nodes(src._nb_nodes), _comp(src._comp) {}
 
 			AvlTree& operator=(AvlTree const & rhs)
 			{
@@ -56,6 +58,7 @@ namespace ft
 				_alloc_n = rhs._alloc_n;
 				_alloc_pair = rhs._alloc_pair;
 				_nb_nodes = rhs._nb_nodes;
+				_comp = rhs._comp;
 				return *this;
 			}
 
@@ -106,9 +109,9 @@ namespace ft
 			{
 				if (r == NULL)
 					return NULL;
-				if (k < r->pr.first)
+				if (_comp(k, r->pr.first))
 					return searchByKey(r->left, k);
-				else if (k > r->pr.first)
+				else if (_comp(r->pr.first, k))
 					return searchByKey(r->right, k);
 				return r;
 			}
@@ -117,9 +120,9 @@ namespace ft
 			{
 				while (r != NULL)
 				{
-					if (val < r->pr)
+					if (_comp(val.first, r->pr.first))
 						r = r->left;
-					else if (val > r->pr)
+					else if (_comp(r->pr.first, val.first))
 						r = r->right;
 					else
 						return ;
@@ -138,11 +141,11 @@ namespace ft
 					_nb_nodes++;
 					return r;
 				}
-				else if (val < r->pr)
+				else if (_comp(val.first, r->pr.first))
 				{
 					r->left = insertNode(r->left, r, val, new_insert);
 				}
-				else if (val > r->pr)
+				else if (_comp(r->pr.first, val.first))
 					r->right = insertNode(r->right, r, val, new_insert);
 				else
 					return r;
@@ -154,19 +157,19 @@ namespace ft
 			{				
 				int bf = getBalanceFactor(r);
 				// Left Left Case
-				if (bf > 1 && val < r->left->pr)
+				if (bf > 1 && _comp(val.first, r->left->pr.first))
 					return rightRotate(r);
 				// Right Right Case  
-				if (bf < -1 && val > r->right->pr)
+				if (bf < -1 && _comp(r->right->pr.first, val.first))
 					return leftRotate(r);
 				// Left Right Case  
-				if (bf > 1 && val > r->left->pr)
+				if (bf > 1 && _comp(r->left->pr.first, val.first))
 				{
 					r->left = leftRotate(r->left);
 					return rightRotate(r);
 				}
 				// Right Left Case  
-				if (bf < -1 && val < r->right->pr)
+				if (bf < -1 && _comp(val.first, r->right->pr.first))
 				{
 					r->right = rightRotate(r->right);
 					return leftRotate(r);
@@ -193,9 +196,9 @@ namespace ft
 				r->left = save_minright_left;
 				if (save_minright_left)
 					save_minright_left->parent = r;
-				if (r_parent && (r->pr < r_parent->pr))
+				if (r_parent && (_comp(r->pr.first, r_parent->pr.first)))
 					r_parent->left = minright;
-				else if (r_parent && (r->pr > r_parent->pr))
+				else if (r_parent && (_comp(r_parent->pr.first, r->pr.first)))
 					r_parent->right = minright;
 
 				// check if r->right point directly on minright
@@ -208,9 +211,9 @@ namespace ft
 				else
 				{
 					r->parent = save_minright_parent;
-					if (save_minright_parent && (r->pr < save_minright_parent->pr))
+					if (save_minright_parent && (_comp(r->pr.first, save_minright_parent->pr.first)))
 						save_minright_parent->left = r;
-					else if (save_minright_parent && (r->pr > save_minright_parent->pr))
+					else if (save_minright_parent && (_comp(save_minright_parent->pr.first, r->pr.first)))
 						save_minright_parent->right = r;
 				}
 			}
@@ -220,7 +223,7 @@ namespace ft
 				NodeTree*	r_parent = r->parent;
 				if (r_parent)
 				{
-					if (minright->pr < r_parent->pr )
+					if (_comp(minright->pr.first, r_parent->pr.first))
 						r_parent->left = NULL;
 					else
 						r_parent->right = r->right;
@@ -236,9 +239,9 @@ namespace ft
 			{
 				if (r == NULL)
 					return NULL;
-				if (r && val < r->pr)
+				if (r && _comp(val.first, r->pr.first))
 					r->left = recursiveDeletion(r->left, val);
-				if (r && val > r->pr)
+				if (r && _comp(r->pr.first, val.first))
 					r->right = recursiveDeletion(r->right, val);
 				if (r && val == r->pr)
 				{
@@ -495,6 +498,7 @@ namespace ft
 			alloc_node		_alloc_n;
 			Alloc			_alloc_pair;
 			size_type		_nb_nodes;
+			key_compare		_comp;
 
 			// Get Height
 			int getHeight(NodeTree* r)
@@ -537,7 +541,7 @@ namespace ft
 					Tx->parent = z;
 				if (grandad)
 				{
-					if (y->pr < grandad->pr)
+					if (_comp(y->pr.first, grandad->pr.first))
 						grandad->left = y;
 					else
 						grandad->right = y;
@@ -560,7 +564,7 @@ namespace ft
 					Tx->parent = z;
 				if (grandad)
 				{
-					if (y->pr < grandad->pr)
+					if (_comp(y->pr.first, grandad->pr.first))
 						grandad->left = y;
 					else
 						grandad->right = y;
