@@ -95,11 +95,19 @@ namespace ft
 			reverse_iterator rend(void)  { return (_avl.rend()); }
 			const_reverse_iterator rend(void) const { return (_avl.rend()); }
 
-			bool empty(void) const{ return (this->size() == 0 ? true : false); }
-			size_type size(void) const { return (_avl.getSize()); }
-			size_type max_size(void) const {
-				// return (std::numeric_limits<size_type>::max() / (sizeof(T) / 2 < 1 ? 1 : sizeof(T)));
-				return this->_avl.max_size();
+
+			bool			empty(void) const
+			{
+				return (this->size() == 0 ? true : false);
+			}
+
+			size_type		size(void) const
+			{
+				return (_avl.getSize());
+			}
+			size_type		max_size(void) const
+			{
+				return _avl.max_size();
 			}
 
 			ft::pair<iterator, bool>	insert (const value_type& val)

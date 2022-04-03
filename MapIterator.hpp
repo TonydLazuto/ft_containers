@@ -20,7 +20,7 @@ namespace ft
 			MapIterator( pointer itor ) : _itor(itor) {}
 			virtual ~MapIterator( void ) {}
 			MapIterator(MapIterator const & src) : _itor(src._itor) {}
-			MapIterator& operator=(MapIterator const & rhs)
+			MapIterator&	operator=(MapIterator const & rhs)
 			{
 				this->_itor = rhs._itor;
 				return *this;

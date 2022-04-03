@@ -30,55 +30,55 @@ namespace ft
 				return *this;
 			}
 
-			pointer base() const { return this->_itor; }
-			reference operator*(void) { return (*this->_itor); }
-			pointer operator->(void) { return &(this->operator*()); }
+			pointer					base() const { return this->_itor; }
+			reference				operator*(void) { return (*this->_itor); }
+			pointer					operator->(void) { return &(this->operator*()); }
 
-			RandomAccessIterator& operator++(void)
+			RandomAccessIterator&	operator++(void)
 			{
 				this->_itor++;
 				return *this;
 			}
-			RandomAccessIterator operator++(int)
+			RandomAccessIterator	operator++(int)
 			{
 				RandomAccessIterator tmp = *this;
 				tmp._itor = this->_itor++;
 				return tmp;
 			}
 			
-			RandomAccessIterator& operator--(void)
+			RandomAccessIterator&	operator--(void)
 			{
 				this->_itor--;
 				return *this;
 			}
-			RandomAccessIterator operator--(int)
+			RandomAccessIterator	operator--(int)
 			{
 				RandomAccessIterator tmp = *this;
 				tmp._itor = this->_itor--;
 				return tmp;
 			}
 			
-			RandomAccessIterator operator+(difference_type n) const
+			RandomAccessIterator	operator+(difference_type n) const
 			{
 				return (this->_itor + n);
 			}
-			RandomAccessIterator operator-(difference_type n) const
+			RandomAccessIterator	operator-(difference_type n) const
 			{
 				return (this->_itor - n);
 			}
 
-			RandomAccessIterator& operator+=(difference_type n)
+			RandomAccessIterator&	operator+=(difference_type n)
 			{
 				this->_itor += n;
 				return *this;
 			}
-			RandomAccessIterator& operator-=(difference_type n)
+			RandomAccessIterator&	operator-=(difference_type n)
 			{
 				this->_itor -= n;
 				return *this;
 			}
 
-			reference operator[](difference_type n) { return (*(this->_itor + n)); }
+			reference				operator[](difference_type n) { return (*(this->_itor + n)); }
 
 			operator RandomAccessIterator<const T> () const { return (RandomAccessIterator<const T>(this->_itor)); }
 

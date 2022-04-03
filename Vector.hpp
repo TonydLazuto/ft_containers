@@ -100,40 +100,24 @@ namespace ft
 
 			iterator begin(void) { return _v; }
 			const_iterator begin(void) const { return _v; }
-			reverse_iterator rbegin(void)
-			{
-				return (reverse_iterator(_v_end));
-			}
-			const_reverse_iterator rbegin(void) const
-			{
-				return (reverse_iterator(_v_end));
-			}
+			reverse_iterator rbegin(void) { return (reverse_iterator(_v_end)); }
+			const_reverse_iterator rbegin(void) const { return (reverse_iterator(_v_end)); }
 			
-			iterator end(void)
-			{
-				if (empty())
-					return _v;
-				return (_v_end);
-			}
-			const_iterator end(void) const
-			{
-				if (empty())
-					return _v;
-				return (_v_end);
-			}
+			iterator end(void) { return (empty() == true ? _v : _v_end); }
+			const_iterator end(void) const  { return (empty() == true ? _v : _v_end); }
 			reverse_iterator rend(void) { return (reverse_iterator(_v)); }
 			const_reverse_iterator rend(void) const { return (reverse_iterator(_v)); }
 			
-			size_type size(void) const 
+			size_type			size(void) const 
 			{
 				return static_cast<size_type>(this->_v_end - this->_v);
 			}
-			size_type max_size(void) const
+			size_type			max_size(void) const
 			{
 				return (_alloc.max_size());
 			}
 
-			void resize(size_type n, value_type val = value_type())
+			void 				resize(size_type n, value_type val = value_type())
 			{
 				if (n == 0)
 					this->clear();
@@ -146,12 +130,15 @@ namespace ft
 					insert(this->end(), n - this->size(), val);
 				}
 			}
-			size_type capacity(void) const
+			size_type			capacity(void) const
 			{
 				return static_cast<size_type>(this->_v_end_alloc - this->_v);
 			}
-			bool empty(void) const { return (this->size() == 0 ? true : false); }
-			void reserve (size_type n)
+			bool				empty(void) const
+			{
+				return (this->size() == 0 ? true : false);
+			}
+			void				reserve (size_type n)
 			{
 				size_type	save_size = this->size();
 				pointer		new_v;
@@ -171,10 +158,16 @@ namespace ft
 				}
 			}
 
-			reference operator[] (size_type n) { return (*(this->_v + n)); }
-			const_reference operator[] (size_type n) const { return (const_cast<const_reference>(*(this->_v + n))); }
+			reference			operator[] (size_type n)
+			{
+				return (*(this->_v + n));
+			}
+			const_reference 	operator[] (size_type n) const
+			{
+				return (const_cast<const_reference>(*(this->_v + n)));
+			}
 			
-			reference at (size_type n)
+			reference			at (size_type n)
 			{
 				if (n >= size())
 				{
@@ -183,7 +176,7 @@ namespace ft
 				return ((*this)[n]);
 			}
 
-			const_reference at (size_type n) const
+			const_reference		at (size_type n) const
 			{
 				if (n >= size())
 				{
@@ -192,22 +185,22 @@ namespace ft
 				return (const_cast<const_reference>((*this)[n]));
 			}
 
-			reference front(void) { return *this->_v; }
+			reference			front(void) { return *this->_v; }
 
-			const_reference front(void) const { return *this->_v; }
+			const_reference		front(void) const { return *this->_v; }
 
-			reference back(void)
+			reference			back(void)
 			{
 				return (*(this->_v_end - 1));
 			}
 
-			const_reference back(void) const
+			const_reference		back(void) const
 			{
 				return (*(this->_v_end - 1));
 			}
 
 			template <class InputIterator>
-  				void assign (InputIterator first, InputIterator last,
+  				void	assign (InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 				{
 					if (size())
@@ -215,14 +208,14 @@ namespace ft
 					insert(this->begin(), first, last);
 				}
 
-			void assign(size_type n, const value_type& val)
+			void				assign(size_type n, const value_type& val)
 			{
 				if (size())
 					this->clear();
 				insert(this->begin(), n, val);
 			}
 
-			void push_back(const value_type& val)
+			void				push_back(const value_type& val)
 			{
 				if (capacity() == 0)
 					reserve(1);
@@ -232,13 +225,13 @@ namespace ft
 				this->_v_end++;
 			}
 
-			void pop_back(void)
+			void				pop_back(void)
 			{
 				_alloc.destroy(&this->back());
 				this->_v_end--;
 			}
 
-			iterator insert(iterator position, const value_type& val)
+			iterator			insert(iterator position, const value_type& val)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
 
@@ -263,7 +256,7 @@ namespace ft
 				return (iterator(this->_v + pos));
 			}
 
-			void insert(iterator position, size_type n, const value_type& val)
+			void				insert(iterator position, size_type n, const value_type& val)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
 
@@ -293,7 +286,7 @@ namespace ft
 			
 
 			template <class InputIterator>
-			void insert(iterator position, InputIterator first, InputIterator last,
+			void	insert(iterator position, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
@@ -325,7 +318,7 @@ namespace ft
 				}
 			}
 
-			iterator erase(iterator position)
+			iterator			erase(iterator position)
 			{
 				size_type pos = static_cast<size_type>(position - this->begin());
 
@@ -342,7 +335,7 @@ namespace ft
 				return (position);
 			}
 
-			iterator erase(iterator first, iterator last)
+			iterator			erase(iterator first, iterator last)
 			{
 				size_type len = static_cast<size_type>(last - first);
 				size_type fpos = static_cast<size_type>(first - this->begin());
@@ -358,7 +351,7 @@ namespace ft
 				return (first);
 			}
 
-			void swap(vector& x)
+			void				swap(vector& x)
 			{
 				pointer tmp_v = x._v;
 				pointer tmp_v_end = x._v_end;
@@ -376,7 +369,7 @@ namespace ft
 				this->_alloc = tmp_alloc;
 			}
 
-			void clear(void)
+			void				clear(void)
 			{
 				if (this->capacity())
 				{
@@ -385,7 +378,7 @@ namespace ft
 				}
 			}
 
-			allocator_type get_allocator(void) const { return this->_alloc; }
+			allocator_type	get_allocator(void) const { return this->_alloc; }
 
 
 		private:

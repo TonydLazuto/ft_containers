@@ -48,7 +48,7 @@ namespace ft
 				, _end(src._end), _alloc_n(src._alloc_n), _alloc_pair(src._alloc_pair)
 				, _nb_nodes(src._nb_nodes), _comp(src._comp) {}
 
-			AvlTree& operator=(AvlTree const & rhs)
+			AvlTree&	operator=(AvlTree const & rhs)
 			{
 				_root = rhs._root;
 				_begin = rhs._begin;
@@ -367,8 +367,14 @@ namespace ft
 			reverse_iterator rend(void) { return (reverse_iterator(getBegin())); }
 			const_reverse_iterator rend(void) const { return (const_reverse_iterator(getBegin())); }
 
-			size_type	getSize(void) const { return (_nb_nodes); }
-			size_type	max_size(void) const { return (_alloc_n.max_size()); }
+			size_type	getSize(void) const
+			{
+				return (_nb_nodes);
+			}
+			size_type	max_size(void) const
+			{
+				return (_alloc_n.max_size());
+			}
 
 			void		swap (AvlTree& x)
 			{
@@ -408,7 +414,6 @@ namespace ft
 				unlinkSentinels();
 				_root = recursiveClear(_root);
 			}
-
 
 			/**
 			 * @brief Sentinel SECTION

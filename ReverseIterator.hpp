@@ -33,50 +33,50 @@ namespace ft
 				return *this;
 			}
 
-			iterator_type base(void) const { return _itor; }
+			iterator_type		base(void) const { return _itor; }
 
-			reference operator*(void) const
+			reference			operator*(void) const
 			{
 				iterator_type tmp = _itor;
 				return (*(--tmp));
 			}
-			pointer operator->(void) const { return &(operator*()); }
-			reference operator[](difference_type n) const { return (this->base()[-n - 1]); }
+			pointer				operator->(void) const { return &(operator*()); }
+			reference			operator[](difference_type n) const { return (this->base()[-n - 1]); }
 
-			ReverseIterator operator++(int)
+			ReverseIterator		operator++(int)
 			{
 				ReverseIterator tmp = *this;
 				tmp._itor = this->_itor--;
 				return tmp;
 			}
-			ReverseIterator& operator++(void)
+			ReverseIterator&	operator++(void)
 			{
 				--this->_itor;
 				return *this;
 			}
-			ReverseIterator operator--(int)
+			ReverseIterator 	operator--(int)
 			{
 				ReverseIterator tmp = *this;
 				tmp._itor = this->_itor++;
 				return tmp;
 			}
-			ReverseIterator& operator--(void)
+			ReverseIterator&	operator--(void)
 			{
 				++this->_itor;
 				return *this;
 			}
-			ReverseIterator operator+(difference_type n) const {
+			ReverseIterator		operator+(difference_type n) const {
 				return (ReverseIterator(_itor - n));
 			}
-			ReverseIterator& operator+=(difference_type n)
+			ReverseIterator&	operator+=(difference_type n)
 			{
 				_itor -= n;
 				return (*this);
 			}
-			ReverseIterator operator-(difference_type n) const {
+			ReverseIterator		operator-(difference_type n) const {
 				return (ReverseIterator(_itor + n));
 			}
-			ReverseIterator& operator-=(difference_type n)
+			ReverseIterator&	operator-=(difference_type n)
 			{
 				_itor += n;
 				return (*this);
