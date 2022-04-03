@@ -242,48 +242,48 @@ namespace ft
 
 			iterator lower_bound (const key_type& k)
 			{
-				iterator first = begin();
+				iterator elet = begin();
 				iterator last = end();
-				for (; first != last; ++first)
+				for (; elet != last; ++elet)
 				{
-					if (!_comp(first->first, k))
+					if (!_comp(elet->first, k))
 						break ;
 				}
-				return first;
+				return elet;
 			}
 			const_iterator lower_bound (const key_type& k) const
 			{
-				const_iterator first = begin();
+				const_iterator elet = begin();
 				const_iterator last = end();
-				for (; first != last; ++first)
+				for (; elet != last; ++elet)
 				{
-					if (!_comp(first->first, k))
+					if (!_comp(elet->first, k))
 						break ;
 				}
-				return first;
+				return elet;
 			}
 
 			iterator upper_bound (const key_type& k)
 			{
-				iterator first = begin();
+				iterator elet = begin();
 				iterator last = end();
-				for (; first != last; ++first)
+				for (; elet != last; ++elet)
 				{
-					if (_comp(k, first->first))
+					if (_comp(k, elet->first))
 						break ;
 				}
-				return first;
+				return elet;
 			}
 			const_iterator upper_bound (const key_type& k) const
 			{
-				const_iterator first = begin();
+				const_iterator elet = begin();
 				const_iterator last = end();
-				for (; first != last; ++first)
+				for (; elet != last; ++elet)
 				{
-					if (_comp(k, first->first))
+					if (_comp(k, elet->first))
 						break ;
 				}
-				return first;
+				return elet;
 			}
 
 			pair<const_iterator,const_iterator>	equal_range (const key_type& k) const
