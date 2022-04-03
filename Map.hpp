@@ -62,8 +62,6 @@ namespace ft
 				{
 					for (; first != last; ++first)
 						this->insert(*first);
-					// std::cout << "--------ConstructorRange---------" << std::endl;
-					// _avl.print2D(_avl.getRoot(), 5);
 				}
 
 			void	print(void) const
@@ -84,14 +82,11 @@ namespace ft
 
 			map& operator=(map const & x)
 			{
-				// _avl.print2D(_avl.getRoot(), 5);
-				// std::cout << "-----------------" << std::endl;
 				this->clear();
-				_avl.createSentinelNodes();				
+				_avl.deleteSentinelNodes();
+				_avl.createSentinelNodes();
 				for (const_iterator it = x.begin(); it != x.end(); ++it)
 					this->insert(*it);
-				// _avl.print2D(_avl.getRoot(), 5);
-				// std::cout << "--------END---------" << std::endl;
 				return *this;
 			}
 
@@ -134,17 +129,19 @@ namespace ft
 			{
 				_avl.unlinkSentinels();
 				NodeTree*	new_insert = _avl.searchByKey(_avl.getRoot(), val.first);
-
+				
 				if (!_avl.getRoot())
 					_avl.insert(val, new_insert);
 				else
 				{
+					if (position == begin())
+						position = _avl.minValueNode(_avl.getRoot());
+					if (position == end())
+						position = _avl.maxValueNode(_avl.getRoot());
 					value_type hint_val = findInsertFromHint(position, val);
 					_avl.insertAtPosition(hint_val, val, new_insert);
 				}
 				_avl.linkSentinels();
-				// std::cout << "new_insert.first: " << new_insert->pr.first << std::endl;
-				// std::cout << "new_insert.second: " << new_insert->pr.second << std::endl;
 				return (new_insert);
 			}
 
@@ -171,7 +168,6 @@ namespace ft
 				_avl.unlinkSentinels();
 				NodeTree*	to_del;
 
-				// _avl.print2D(_avl.getRoot(), 5);
 				to_del = _avl.searchByKey(_avl.getRoot(), k);
 				if (to_del)
 					_avl.erase(to_del->pr);
@@ -325,7 +321,7 @@ namespace ft
 			allocator_type		_alloc;
 			key_compare			_comp;
 
-			value_type	findInsertFromHint(iterator hint, const value_type& val) //private
+			value_type	findInsertFromHint(iterator hint, const value_type& val)
 			{	
 				if (val.first > _avl.maxValueNode(_avl.getRoot())->pr.first)
 					return (_avl.maxValueNode(_avl.getRoot())->pr);

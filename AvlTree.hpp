@@ -18,8 +18,6 @@ namespace ft
 	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< ft::pair<Key, T> > >
 	class AvlTree
 	{
-		// friend class TestAvlTree;
-
 		public:
 			typedef ft::pair<Key, T> value_type;
 			typedef	Node<Key, T> NodeTree;
@@ -44,6 +42,7 @@ namespace ft
 			}
 
 			virtual ~AvlTree( void ) {
+				deleteSentinelNodes();
 			}
 
 			AvlTree(AvlTree const & src) : _root(src._root), _begin(src._begin)
@@ -85,6 +84,23 @@ namespace ft
 				else
 					std::cout << std::endl;
 				print2D(r->left, space); // Process left child  7
+			}
+
+			void	printNode(NodeTree *r, std::string name)
+			{
+				if (r)
+				{
+					std::cout << name << ".first: " << r->pr.first;
+					std::cout << ", " << name << ".second: " << r->pr.second;
+					if (r->left)
+						std::cout << ", Left=" << r->left->pr.first;
+					if (r->right)
+						std::cout << ", Right=" << r->right->pr.first;
+					if (r->parent)
+						std::cout << ", Parent=" << r->parent->pr.first;
+					// std::cout << ", r: " << &r->pr;
+					std::cout<< std::endl;
+				}
 			}
 
 			NodeTree* minValueNode(NodeTree* node) const
@@ -319,23 +335,6 @@ namespace ft
 				return (r);
 			}
 
-			void	printNode(NodeTree *r, std::string name)
-			{
-				if (r)
-				{
-					std::cout << name << ".first: " << r->pr.first;
-					std::cout << ", " << name << ".second: " << r->pr.second;
-					if (r->left)
-						std::cout << ", Left=" << r->left->pr.first;
-					if (r->right)
-						std::cout << ", Right=" << r->right->pr.first;
-					if (r->parent)
-						std::cout << ", Parent=" << r->parent->pr.first;
-					// std::cout << ", r: " << &r->pr;
-					std::cout<< std::endl;
-				}
-			}
-
 			void		insert(const value_type& val, NodeTree*& new_insert)
 			{
 				_root = insertNode(_root, NULL, val, new_insert);
@@ -358,8 +357,6 @@ namespace ft
 			void		erase(value_type to_del)
 			{
 				_root = deleteNode(_root, to_del);
-				// std::cout << "------------------------------ERASE------------------------------" << std::endl;
-				// print2D(_root, 5);
 			}
 
 			NodeTree	*getBegin(void) const {
@@ -394,6 +391,64 @@ namespace ft
 				return (reverse_iterator(getBegin()));
 			}
 
+
+			size_type	getNbElets(NodeTree *node) const
+			{
+				if (node)
+					return getNbElets(node->right) + getNbElets(node->left) + 1;
+				return (0);
+			}
+			size_type	getSize(void) const
+			{
+				return (_nb_nodes == 0 ? 0 : (_nb_nodes - 2));
+			}
+			
+
+			void swap (AvlTree& x)
+			{
+				NodeTree* tmp_begin = x._begin;
+				NodeTree* tmp_end = x._end;
+				NodeTree* tmp_root = x._root;
+				size_type tmp_nb_nodes = x._nb_nodes;
+
+				x._begin = this->_begin;
+				x._end = this->_end;
+				x._root = this->_root;
+				x._nb_nodes = this->_nb_nodes;
+
+				this->_begin = tmp_begin;
+				this->_end = tmp_end;
+				this->_root = tmp_root;
+				this->_nb_nodes = tmp_nb_nodes;
+			}
+
+			size_type max_size(void) const { return (_alloc_n.max_size()); }
+
+			NodeTree*	recursiveClear(NodeTree* r)
+			{
+				if (r == NULL)
+					return r;
+				r->right = recursiveClear(r->right);
+				r->left = recursiveClear(r->left);
+				if (!r->left && !r->right)
+				{
+					_alloc_n.destroy(r);
+					_alloc_n.deallocate(r, 1);
+					r = NULL;
+				}
+				return r;
+			}
+			void	clear(void)
+			{
+				unlinkSentinels();
+				_root = recursiveClear(_root);
+				_nb_nodes = 0;
+			}
+
+
+			/**
+			 * @brief Sentinel SECTION
+			 */
 			void	linkSentinels(void) const
 			{
 				NodeTree	*first_node = minValueNode(_root);
@@ -431,18 +486,6 @@ namespace ft
 				}
 			}
 
-			size_type	getNbElets(NodeTree *node) const
-			{
-				if (node)
-					return getNbElets(node->right) + getNbElets(node->left) + 1;
-				return (0);
-			}
-			size_type	getSize(void) const
-			{
-				// std::cout << "_______________________________________________" << std::endl;
-				// print2D(_root, 5);
-				return (_nb_nodes == 0 ? 0 : (_nb_nodes - 2));
-			}
 			void	createSentinelNodes(void)
 			{
 				_begin = _alloc_n.allocate(1);
@@ -452,35 +495,14 @@ namespace ft
 				_nb_nodes += 2;
 			}
 
-			void swap (AvlTree& x)
+			void	deleteSentinelNodes(void)
 			{
-				AvlTree	tmp(x);
-				x = *this;
-				*this = tmp;
+				_alloc_n.destroy(_begin);
+				_alloc_n.deallocate(_begin, 1);
+				_alloc_n.destroy(_end);
+				_alloc_n.deallocate(_end, 1);
 			}
 
-			size_type max_size(void) const { return (_alloc_n.max_size()); }
-
-			NodeTree*	recursiveClear(NodeTree* r)
-			{
-				if (r == NULL)
-					return r;
-				r->right = recursiveClear(r->right);
-				r->left = recursiveClear(r->left);
-				if (!r->left && !r->right)
-				{
-					_alloc_n.destroy(r);
-					_alloc_n.deallocate(r, 1);
-					r = NULL;
-				}
-				return r;
-			}
-			void	clear(void)
-			{
-				unlinkSentinels();
-				_root = recursiveClear(_root);
-				_nb_nodes = 0;
-			}
 
 			template <class First, class Second, class MyComp, class MyAlloc>
 				friend bool operator==(const AvlTree<First, Second, MyComp, MyAlloc> &lhs,
