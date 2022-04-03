@@ -193,7 +193,7 @@ namespace ft
 				return (r);
 			}
 
-			void	swapNodes(NodeTree*& r, NodeTree*& minright)// ou swap les addresses de pair???
+			void	swapNodes(NodeTree*& r, NodeTree*& minright)
 			{
 				NodeTree*	r_left = r->left;
 				NodeTree*	r_right = r->right;
@@ -216,9 +216,11 @@ namespace ft
 					r_parent->left = minright;
 				else if (r_parent && (_comp(r_parent->pr.first, r->pr.first)))
 					r_parent->right = minright;
-
-				// check if r->right point directly on minright
-				// to avoid self pointing on r->right
+				/**
+				 * @brief 
+				 * check if "r->right" point directly on "minright"
+				 * to avoid "r" self pointing on "r->right"
+				 */
 				if (r_right && r_right->pr == minright->pr)
 				{
 					minright->right = r;
@@ -284,16 +286,12 @@ namespace ft
 				minright = minValueNode(r->right);
 				if (!r)
 					return _root;
-				// std::cout << "-------------------------deleteNode-----------------------------------" << std::endl;
-				// print2D(_root, 5);
 				if (r->parent)
 					node_start = r->parent;
 				if (r->left && r->right)
 				{
 					swapNodes(r, minright);
 					r = destroyNode(r, minright);
-					// std::cout << "-------------------------destroyNode-----------------------------------" << std::endl;
-					// print2D(minright, 5);
 				}
 				else
 					r = recursiveDeletion(node_start, val);
@@ -310,25 +308,19 @@ namespace ft
 				int bf = getBalanceFactor(r);
 				// Left Left Imbalance/Case or Right rotation 
 				if (bf == 2 && getBalanceFactor(r->left) >= 0){
-					// std::cout << "1" << std::endl;
 					return rightRotate(r);}
 				// Left Right Imbalance/Case or LR rotation 
 				else if (bf == 2 && getBalanceFactor(r->left) == -1)
 				{
-					// std::cout << "2" << std::endl;
 					r->left = leftRotate(r->left);
 					return rightRotate(r);
 				}
 				// Right Right Imbalance/Case or Left rotation	
 				else if (bf == -2 && getBalanceFactor(r->right) <= 0)
-				{
-					// std::cout << "3" << std::endl;
 					return leftRotate(r);
-				}
 				// Right Left Imbalance/Case or RL rotation 
 				else if (bf == -2 && getBalanceFactor(r->right) == 1)
 				{
-					// std::cout << "4" << std::endl;
 					r->right = rightRotate(r->right);
 					return leftRotate(r);
 				}
@@ -400,7 +392,7 @@ namespace ft
 			}
 			size_type	getSize(void) const
 			{
-				return (_nb_nodes == 0 ? 0 : (_nb_nodes - 2));
+				return (_nb_nodes);
 			}
 			
 
@@ -435,6 +427,7 @@ namespace ft
 					_alloc_n.destroy(r);
 					_alloc_n.deallocate(r, 1);
 					r = NULL;
+					_nb_nodes--;
 				}
 				return r;
 			}
@@ -442,7 +435,6 @@ namespace ft
 			{
 				unlinkSentinels();
 				_root = recursiveClear(_root);
-				_nb_nodes = 0;
 			}
 
 
@@ -492,7 +484,6 @@ namespace ft
 				_alloc_n.construct(_begin, NodeTree(NULL));
 				_end = _alloc_n.allocate(1);
 				_alloc_n.construct(_end, NodeTree(NULL));
-				_nb_nodes += 2;
 			}
 
 			void	deleteSentinelNodes(void)

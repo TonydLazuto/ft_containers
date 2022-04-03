@@ -47,7 +47,7 @@ public:
 };
 */
 
-	#define TESTED_NAMESPACE ft
+	#define TESTED_NAMESPACE std
 
 	#define _pair TESTED_NAMESPACE::pair
 
@@ -138,31 +138,33 @@ public:
 		return (it);
 	}
 
-#define T1 int
-#define T2 std::string
+	#define T1 int
+	#define T2 std::string
 
-struct ft_more {
-	bool	operator()(const T1 &first, const T1 &second) const {
-		std::cout << "first: " << first << std::endl;
-		std::cout << "second: " << second << std::endl;
-		return (first > second);
-	}
-};
+	struct ft_more {
+		bool	operator()(const T1 &first, const T1 &second) const {
+			std::cout << "first: " << first << std::endl;
+			std::cout << "second: " << second << std::endl;
+			return (first > second);
+		}
+	};
 
-typedef TESTED_NAMESPACE::map<T1, T2, ft_more> ft_mp;
-typedef TESTED_NAMESPACE::map<T1, T2, ft_more>::iterator ft_mp_it;
+	typedef TESTED_NAMESPACE::map<T1, T2, ft_more> ft_mp;
+	typedef TESTED_NAMESPACE::map<T1, T2, ft_more>::iterator ft_mp_it;
 
-int		main(void)
-{
-	ft_mp mp;
+	int		main(void)
+	{
+		ft_mp mp;
 
-	mp[42] = "fgzgxfn";
-	mp[25] = "funny";
-	mp[80] = "hey";
-	mp[12] = "no";
-	mp[27] = "bee";
-	mp[90] = "8";
-	printSize(mp);
+		mp[42] = "fgzgxfn";
+		mp[25] = "funny";
+		mp[80] = "hey";
+		mp[12] = "no";
+		mp[27] = "bee";
+		mp[90] = "8";
+		printSize(mp);
+
+
 // int main(void) {
 // 	ft::map<char,int> mymap;
 

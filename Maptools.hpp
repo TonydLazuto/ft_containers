@@ -29,12 +29,6 @@ namespace ft
 			return *this;
 		}
 
-		// pair& operator=(pair const* pr) // ...
-		// {
-		// 	this->first = pr->first;
-		// 	this->second = pr->second;
-		// 	return *this;
-		// }
 	};
 
 	template <class T1, class T2>

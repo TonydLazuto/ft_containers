@@ -130,7 +130,7 @@ namespace ft
 				_avl.unlinkSentinels();
 				NodeTree*	new_insert = _avl.searchByKey(_avl.getRoot(), val.first);
 				
-				if (!_avl.getRoot())
+				if (!_avl.getRoot() || new_insert)
 					_avl.insert(val, new_insert);
 				else
 				{

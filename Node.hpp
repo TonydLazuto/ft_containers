@@ -8,7 +8,6 @@ template < class Key, class T >
 class Node
 {
 	public:
-		// typedef ft::pair<Key, T>*	pr_ptr;
 		typedef ft::pair<Key, T>	value_type;
 		Node*						parent;
 		Node*						left;

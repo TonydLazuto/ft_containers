@@ -32,9 +32,6 @@ namespace ft
 			
 			MapIterator& operator++(void)
 			{
-				// std::cout << "--- START pre incr ---" << std::endl;
-				// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
-				// std::cout << "_itor.second: " << _itor->pr.second << std::endl;
 				if (_itor)
 				{
 					NodePair	save = _itor->pr;
@@ -45,21 +42,12 @@ namespace ft
 					}
 					else if (_itor->right) // _itor == Parent
 					{
-						// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
-						// std::cout << "_itor.second: " << _itor->pr.second << std::endl;
 						_itor = _itor->right;
-						// std::cout << "yo4" << std::endl;
 
-						while (_itor && _itor->left){
-							// std::cout << "yo5" << std::endl;
+						while (_itor && _itor->left)
 							_itor = _itor->left;
-							}
-						// std::cout << "yo6" << std::endl;
 					}
 				}
-				// std::cout << "_itor.first: " << _itor->pr.first << std::endl;
-				// std::cout << "_itor.second: " << _itor->pr.second << std::endl;
-				// std::cout << "--- END pre incr ---" << std::endl;
 				return *this;
 			}
 
@@ -77,7 +65,6 @@ namespace ft
 
 				if (_itor)
 				{
-					// _itor == LeftChild || _itor == RightChild
 					if (!_itor->left && _itor->parent)
 					{
 						if (tmp->pr == save)
@@ -86,7 +73,7 @@ namespace ft
 							while (_itor->pr.first >= save.first && _itor->parent)
 								_itor = _itor->parent;
 						}
-					else if (_itor->left) // _itor == Parent
+					else if (_itor->left)
 					{
 						_itor = _itor->left;
 						while (_itor->right)
