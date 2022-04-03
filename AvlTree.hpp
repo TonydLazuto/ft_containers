@@ -12,10 +12,10 @@
 
 namespace ft
 {
-	template < class NodePair, class NodeTree, bool isConst >
+	template < class NodePair, class NodeTree, class Compare, bool isConst >
 	class MapIterator;
 
-	template < class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator< ft::pair<Key, T> > >
+	template < class Key, class T, class Compare, class Alloc >
 	class AvlTree
 	{
 		public:
@@ -27,16 +27,15 @@ namespace ft
 			typedef Alloc alloc_pair;
 			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
 
-			typedef ft::MapIterator<value_type, NodeTree, false> iterator;
-    		typedef ft::MapIterator<const value_type, NodeTree, true> const_iterator;
+			typedef ft::MapIterator<value_type, NodeTree, key_compare, false> iterator;
+    		typedef ft::MapIterator<const value_type, NodeTree, key_compare,true> const_iterator;
 			typedef ft::ReverseMapIterator<value_type, iterator> reverse_iterator;
 			typedef ft::ReverseMapIterator<const value_type, const_iterator> const_reverse_iterator;
 
-			AvlTree( const key_compare& comp = key_compare(),
-				const alloc_node& alloc_n = alloc_node(),
+			AvlTree( const alloc_node& alloc_n = alloc_node(),
 				const Alloc& alloc_pair = Alloc() )
 			: _root(NULL), _begin(NULL), _end(NULL), _alloc_n(alloc_n)
-				, _alloc_pair(alloc_pair), _nb_nodes(0), _comp(comp)
+				, _alloc_pair(alloc_pair), _nb_nodes(0)
 			{
 				createSentinelNodes();
 			}
@@ -61,7 +60,7 @@ namespace ft
 				return *this;
 			}
 
-			void print2D(NodeTree* r, int space) const {
+			void		print2D(NodeTree* r, int space) const {
 				if (r == NULL) // Base case  1
 					return;
 				space += SPACE; // Increase distance between levels   2
@@ -86,7 +85,7 @@ namespace ft
 				print2D(r->left, space); // Process left child  7
 			}
 
-			void	printNode(NodeTree *r, std::string name)
+			void		printNode(NodeTree *r, std::string name) const
 			{
 				if (r)
 				{
@@ -103,7 +102,7 @@ namespace ft
 				}
 			}
 
-			NodeTree* minValueNode(NodeTree* node) const
+			NodeTree*	minValueNode(NodeTree* node) const
 			{
 				NodeTree* min_node = node;
 				/* loop down to find the leftmost leaf */
@@ -112,16 +111,17 @@ namespace ft
 				return min_node;
 			}
 
-			NodeTree* maxValueNode(NodeTree* node) const
+			NodeTree*	maxValueNode(NodeTree* node) const
 			{
 				NodeTree* max_node = node;
 				/* loop down to find the rightmost leaf */
+				// print2D(_root, 5);
 				while (max_node && max_node->right)
 					max_node = max_node->right;
 				return max_node;
 			}
 
-			NodeTree* searchByKey(NodeTree* r, Key k) const
+			NodeTree*	searchByKey(NodeTree* r, Key k) const
 			{
 				if (r == NULL)
 					return NULL;
@@ -132,7 +132,7 @@ namespace ft
 				return r;
 			}
 
-			void	iterativeSearch(NodeTree*& r, value_type& val)
+			void		iterativeSearch(NodeTree*& r, value_type& val)
 			{
 				while (r != NULL)
 				{
@@ -145,7 +145,7 @@ namespace ft
 				}
 			}
 			
-			NodeTree* insertNode(NodeTree* r, NodeTree* parent
+			NodeTree*	insertNode(NodeTree* r, NodeTree* parent
 				, const value_type& val, NodeTree*& new_insert)
 			{
 				if (r == NULL)
@@ -193,7 +193,7 @@ namespace ft
 				return (r);
 			}
 
-			void	swapNodes(NodeTree*& r, NodeTree*& minright)
+			void		swapNodes(NodeTree*& r, NodeTree*& minright)
 			{
 				NodeTree*	r_left = r->left;
 				NodeTree*	r_right = r->right;
@@ -297,9 +297,7 @@ namespace ft
 					r = recursiveDeletion(node_start, val);
 				r = balanceDeletion(r);
 				while (r && r->parent)
-				{
 					r = balanceDeletion(r->parent);
-				}
 				return r;
 			}
 
@@ -356,47 +354,23 @@ namespace ft
 					_begin->parent = _end;
 				return (_begin->parent);
 			}
-
 			NodeTree	*getRoot(void) const { return _root; }
-
 			NodeTree	*getEnd(void) const { return _end; }
 
 			iterator begin(void) { return (iterator(getBegin())); }
 			const_iterator begin(void) const { return (const_iterator(getBegin())); }
-			reverse_iterator rbegin(void)
-			{
-				return (reverse_iterator(getEnd()));
-			}
-			const_reverse_iterator rbegin(void) const
-			{
-				return (const_reverse_iterator(getEnd()));
-			}
+			reverse_iterator rbegin(void) { return (reverse_iterator(getEnd())); }
+			const_reverse_iterator rbegin(void) const { return (const_reverse_iterator(getEnd())); }
 			
 			iterator end(void) { return (iterator(getEnd())); }
 			const_iterator end(void) const { return (const_iterator(getEnd())); }
-			reverse_iterator rend(void)
-			{
-				return (reverse_iterator(getBegin()));
-			}
-			const_reverse_iterator rend(void) const
-			{
-				return (reverse_iterator(getBegin()));
-			}
+			reverse_iterator rend(void) { return (reverse_iterator(getBegin())); }
+			const_reverse_iterator rend(void) const { return (const_reverse_iterator(getBegin())); }
 
+			size_type	getSize(void) const { return (_nb_nodes); }
+			size_type	max_size(void) const { return (_alloc_n.max_size()); }
 
-			size_type	getNbElets(NodeTree *node) const
-			{
-				if (node)
-					return getNbElets(node->right) + getNbElets(node->left) + 1;
-				return (0);
-			}
-			size_type	getSize(void) const
-			{
-				return (_nb_nodes);
-			}
-			
-
-			void swap (AvlTree& x)
+			void		swap (AvlTree& x)
 			{
 				NodeTree* tmp_begin = x._begin;
 				NodeTree* tmp_end = x._end;
@@ -414,8 +388,6 @@ namespace ft
 				this->_nb_nodes = tmp_nb_nodes;
 			}
 
-			size_type max_size(void) const { return (_alloc_n.max_size()); }
-
 			NodeTree*	recursiveClear(NodeTree* r)
 			{
 				if (r == NULL)
@@ -431,7 +403,7 @@ namespace ft
 				}
 				return r;
 			}
-			void	clear(void)
+			void		clear(void)
 			{
 				unlinkSentinels();
 				_root = recursiveClear(_root);
@@ -441,21 +413,20 @@ namespace ft
 			/**
 			 * @brief Sentinel SECTION
 			 */
-			void	linkSentinels(void) const
+			void		linkSentinels(void) const
 			{
+				if (!_root)
+					return ;
 				NodeTree	*first_node = minValueNode(_root);
 				NodeTree	*last_node = maxValueNode(_root);
 
-				if (_root)
-				{
-					first_node->left = _begin;
-					_begin->parent = first_node;
-					last_node->right = _end;
-					_end->parent = last_node;
-				}
+				first_node->left = _begin;
+				_begin->parent = first_node;
+				last_node->right = _end;
+				_end->parent = last_node;
 			}
 
-			void	unlinkSentinels(void) const
+			void		unlinkSentinels(void) const
 			{
 				if (!_root)
 					return ;
@@ -478,7 +449,7 @@ namespace ft
 				}
 			}
 
-			void	createSentinelNodes(void)
+			void		createSentinelNodes(void)
 			{
 				_begin = _alloc_n.allocate(1);
 				_alloc_n.construct(_begin, NodeTree(NULL));
@@ -486,7 +457,7 @@ namespace ft
 				_alloc_n.construct(_end, NodeTree(NULL));
 			}
 
-			void	deleteSentinelNodes(void)
+			void		deleteSentinelNodes(void)
 			{
 				_alloc_n.destroy(_begin);
 				_alloc_n.deallocate(_begin, 1);
@@ -514,7 +485,7 @@ namespace ft
 			key_compare		_comp;
 
 			// Get Height
-			int getHeight(NodeTree* r)
+			int			getHeight(NodeTree* r)
 			{
 				if (r == NULL)
 					return -1;
@@ -532,14 +503,14 @@ namespace ft
 			}
 
 			// Get Balance factor of Node N
-			int getBalanceFactor(NodeTree* n)
+			int			getBalanceFactor(NodeTree* n)
 			{
 				if (n == NULL)
 					return (-1);
 				return (getHeight(n->left) - getHeight(n->right));
 			}
 
-			NodeTree* rightRotate(NodeTree* z)
+			NodeTree*	rightRotate(NodeTree* z)
 			{
 				NodeTree* y = z->left;
 				NodeTree* Tx = y->right;
@@ -562,7 +533,7 @@ namespace ft
 				return y;
 			}
 
-			NodeTree* leftRotate(NodeTree* z)
+			NodeTree*	leftRotate(NodeTree* z)
 			{
 				NodeTree* y = z->right;
 				NodeTree* Tx = y->left;
@@ -590,7 +561,7 @@ namespace ft
 	bool operator==(const AvlTree<Key, T, Compare, Alloc> &lhs,
 		const AvlTree<Key, T, Compare, Alloc> &rhs)
 	{
-		return (lhs.getSize() == rhs.getSize() 
+		return (lhs.getSize() == rhs.getSize()
 			&& ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 

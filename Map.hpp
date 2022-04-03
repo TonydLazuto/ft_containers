@@ -32,8 +32,8 @@ namespace ft
 			typedef T&        reference;
 			typedef const T&  const_reference;
 
-			typedef ft::MapIterator<value_type, NodeTree, false> iterator;
-    		typedef ft::MapIterator<const value_type, NodeTree, true> const_iterator;
+			typedef ft::MapIterator<value_type, NodeTree, key_compare, false> iterator;
+    		typedef ft::MapIterator<const value_type, NodeTree, key_compare,true> const_iterator;
 			typedef ft::ReverseMapIterator<value_type, iterator> reverse_iterator;
 			typedef ft::ReverseMapIterator<const value_type, const_iterator> const_reverse_iterator;
 
@@ -63,11 +63,6 @@ namespace ft
 					for (; first != last; ++first)
 						this->insert(*first);
 				}
-
-			void	print(void) const
-			{
-				_avl.print2D(_avl.getRoot(), 5);
-			}
 
 			virtual ~map( void )
 			{
@@ -107,7 +102,7 @@ namespace ft
 				return this->_avl.max_size();
 			}
 
-			ft::pair<iterator, bool> insert (const value_type& val)
+			ft::pair<iterator, bool>	insert (const value_type& val)
 			{
 				_avl.unlinkSentinels();
 				NodeTree*	match_node = _avl.searchByKey(_avl.getRoot(), val.first);
@@ -115,8 +110,6 @@ namespace ft
 				bool		pr_sec = match_node == NULL;
 
 				_avl.insert(val, new_insert);
-				// printNode(_avl.getRoot());
-				// match_node == NULL => true => insertion has been done
 				if (!match_node)
 					match_node = new_insert;
 				ft::pair<iterator, bool> pair_ret(match_node, pr_sec);
@@ -125,7 +118,7 @@ namespace ft
 				return (pair_ret);
 			}
 
-			iterator insert (iterator position, const value_type& val)
+			iterator		insert (iterator position, const value_type& val)
 			{
 				_avl.unlinkSentinels();
 				NodeTree*	new_insert = _avl.searchByKey(_avl.getRoot(), val.first);
@@ -146,7 +139,7 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last,
+			void			insert (InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
 			{
 				while (first != last)
@@ -157,13 +150,13 @@ namespace ft
 				}
 			}
 
-			void erase (iterator position,
+			void			erase (iterator position,
 				typename ft::enable_if<!ft::is_integral<iterator>::value, iterator>::type* = NULL)
 			{
 				this->erase(position->first);
 			}
 
-			size_type erase (const key_type& k)
+			size_type		erase (const key_type& k)
 			{
 				_avl.unlinkSentinels();
 				NodeTree*	to_del;
@@ -175,7 +168,7 @@ namespace ft
 				return (to_del ? 1 : 0);
 			}
 
-			void erase (iterator first, iterator last)
+			void			erase (iterator first, iterator last)
 			{
 				while (first != last)
 				{
@@ -185,29 +178,27 @@ namespace ft
 				}
 			}
 
-			void swap (map& x) { _avl.swap(x._avl); }
+			void			swap (map& x) { _avl.swap(x._avl); }
 
-			void clear(void)
-			{
-				_avl.clear();
-			}
+			void			clear(void) { _avl.clear(); }
 
-			mapped_type& operator[](const key_type& k)
+			mapped_type&	operator[](const key_type& k)
 			{
-				iterator it = lower_bound(k);
-				if (it == end() || key_comp()(k, it->first))
-					it = insert(it, ft::make_pair(k, mapped_type()));
+				iterator it = find(k);
+				if (it == end())
+					insert(ft::make_pair(k, mapped_type()));
+				it = this->find(k);
 				return (it->second);
 			}
 
-			key_compare key_comp(void) const { return (key_compare()); }
+			key_compare		key_comp(void) const { return (key_compare()); }
 
-			value_compare value_comp(void) const
+			value_compare	value_comp(void) const
 			{
 				return (value_compare(key_compare()));
 			}
 
-			iterator find (const key_type& k)
+			iterator		find (const key_type& k)
 			{
 				NodeTree*	match_elet = NULL;
 
@@ -218,7 +209,7 @@ namespace ft
 					return (match_elet);
 				return (end());
 			}
-			const_iterator find (const key_type& k) const
+			const_iterator	find (const key_type& k) const
 			{
 				NodeTree*	match_elet = NULL;
 
@@ -230,7 +221,7 @@ namespace ft
 				return (end());
 			}
 
-			size_type count (const key_type& k) const
+			size_type		count (const key_type& k) const
 			{
 				NodeTree*	match_elet = NULL;
 
@@ -240,7 +231,7 @@ namespace ft
 				return (match_elet != NULL);
 			}
 
-			iterator lower_bound (const key_type& k)
+			iterator		lower_bound (const key_type& k)
 			{
 				iterator elet = begin();
 				iterator last = end();
@@ -251,7 +242,7 @@ namespace ft
 				}
 				return elet;
 			}
-			const_iterator lower_bound (const key_type& k) const
+			const_iterator	lower_bound (const key_type& k) const
 			{
 				const_iterator elet = begin();
 				const_iterator last = end();
@@ -263,7 +254,7 @@ namespace ft
 				return elet;
 			}
 
-			iterator upper_bound (const key_type& k)
+			iterator		upper_bound (const key_type& k)
 			{
 				iterator elet = begin();
 				iterator last = end();
@@ -274,7 +265,7 @@ namespace ft
 				}
 				return elet;
 			}
-			const_iterator upper_bound (const key_type& k) const
+			const_iterator	upper_bound (const key_type& k) const
 			{
 				const_iterator elet = begin();
 				const_iterator last = end();
@@ -317,26 +308,31 @@ namespace ft
 					const map<First,Second,MyComp,MyAlloc>& rhs);
 
 		private:
-			ft::AvlTree<Key, T>	_avl;
-			allocator_type		_alloc;
-			key_compare			_comp;
+			ft::AvlTree<Key, T, Compare, Alloc>	_avl;
+			allocator_type						_alloc;
+			key_compare							_comp;
 
 			value_type	findInsertFromHint(iterator hint, const value_type& val)
 			{	
-				if (val.first > _avl.maxValueNode(_avl.getRoot())->pr.first)
+				if (_comp(_avl.maxValueNode(_avl.getRoot())->pr.first, val.first))
 					return (_avl.maxValueNode(_avl.getRoot())->pr);
-				if (val.first < _avl.minValueNode(_avl.getRoot())->pr.first)
+				if (_comp(val.first, _avl.minValueNode(_avl.getRoot())->pr.first))
 					return (_avl.minValueNode(_avl.getRoot())->pr);
-				if (hint->first > val.first)
-					while (hint->first > val.first)
+				if (_comp(val.first, hint->first))
+					while (_comp(val.first, hint->first))
 						--hint;
 				else
 				{
-					while (hint->first < val.first)
+					while (_comp(hint->first, val.first))
 						++hint;
 					--hint;
 				}
 				return *hint;
+			}
+
+			void		print(void) const
+			{
+				_avl.print2D(_avl.getRoot(), 5);
 			}
 
 	};
@@ -370,7 +366,6 @@ namespace ft
 		const map<Key,T,Compare,Allocator>& rhs)
 		{ return !(lhs < rhs); }
 
-	// specialized algorithms:
 	template <class Key, class T, class Compare, class Allocator>
 	void swap(map<Key,T,Compare,Allocator>& x,
 		map<Key,T,Compare,Allocator>& y)
