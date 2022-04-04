@@ -74,7 +74,6 @@ namespace ft
 						std::cout << ", Right=" << r->right->pr.first;
 					if (r->parent)
 						std::cout << ", Parent=" << r->parent->pr.first;
-					// std::cout << ", r: " << &r->pr;
 					std::cout<< std::endl;
 				}
 				else
@@ -94,7 +93,6 @@ namespace ft
 						std::cout << ", Right=" << r->right->pr.first;
 					if (r->parent)
 						std::cout << ", Parent=" << r->parent->pr.first;
-					// std::cout << ", r: " << &r->pr;
 					std::cout<< std::endl;
 				}
 			}
@@ -102,7 +100,7 @@ namespace ft
 			NodeTree*	minValueNode(NodeTree* node) const
 			{
 				NodeTree* min_node = node;
-				/* loop down to find the leftmost leaf */
+
 				while (min_node && min_node->left != NULL)
 					min_node = min_node->left;				
 				return min_node;
@@ -111,8 +109,7 @@ namespace ft
 			NodeTree*	maxValueNode(NodeTree* node) const
 			{
 				NodeTree* max_node = node;
-				/* loop down to find the rightmost leaf */
-				// print2D(_root, 5);
+
 				while (max_node && max_node->right)
 					max_node = max_node->right;
 				return max_node;
@@ -274,8 +271,8 @@ namespace ft
 				return (r);
 			}
 
-			NodeTree*	deleteNode(NodeTree* r, value_type val) {
-				// base case
+			NodeTree*	deleteNode(NodeTree* r, value_type val)
+			{
 				NodeTree* minright = NULL;
 				NodeTree* node_start = _root;
 				
@@ -485,17 +482,14 @@ namespace ft
 			size_type		_nb_nodes;
 			key_compare		_comp;
 
-			// Get Height
 			int			getHeight(NodeTree* r)
 			{
 				if (r == NULL)
 					return -1;
 				else
 				{
-					/* compute the height of each subtree */
 					int lheight = getHeight(r->left);
 					int rheight = getHeight(r->right);
-					/* use the larger one */
 					if (lheight > rheight)
 						return (lheight + 1);
 					else
@@ -503,7 +497,6 @@ namespace ft
 				}
 			}
 
-			// Get Balance factor of Node N
 			int			getBalanceFactor(NodeTree* n)
 			{
 				if (n == NULL)
@@ -517,7 +510,6 @@ namespace ft
 				NodeTree* Tx = y->right;
 				NodeTree* grandad = z->parent;
 
-				// Perform rotation
 				y->parent = grandad;
 				y->right = z;
 				z->left = Tx;
@@ -540,7 +532,6 @@ namespace ft
 				NodeTree* Tx = y->left;
 				NodeTree* grandad = z->parent;
 
-				// Perform rotation
 				y->parent = grandad;
 				y->left = z;
 				z->right = Tx;

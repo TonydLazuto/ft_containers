@@ -86,7 +86,7 @@ namespace ft
 
 			vector& operator=(const vector& x)
 			{
-				size_type save_capacity = capacity() > x.capacity() ? capacity() : x.capacity();
+				size_type save_capacity = capacity() > x.size() ? capacity() : x.size();
 				if (this->size())
 				{
 					this->clear();
