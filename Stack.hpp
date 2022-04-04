@@ -67,7 +67,7 @@ namespace ft
 				friend bool operator>=(const ft::stack<Tbis, ContainerBis>& lhs, const ft::stack<Tbis, ContainerBis>& rhs);
 
 
-		private:
+		protected:
 			container_type _ctnr;
 			
 			

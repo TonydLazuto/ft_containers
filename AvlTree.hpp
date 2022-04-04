@@ -24,7 +24,6 @@ namespace ft
 			typedef size_t	size_type;
 			typedef Compare key_compare;
 
-			typedef Alloc alloc_pair;
 			typedef typename Alloc::template rebind<NodeTree>::other alloc_node;
 
 			typedef ft::MapIterator<value_type, NodeTree, key_compare, false> iterator;
@@ -32,10 +31,9 @@ namespace ft
 			typedef ft::ReverseMapIterator<value_type, iterator> reverse_iterator;
 			typedef ft::ReverseMapIterator<const value_type, const_iterator> const_reverse_iterator;
 
-			AvlTree( const alloc_node& alloc_n = alloc_node(),
-				const Alloc& alloc_pair = Alloc() )
+			AvlTree( const alloc_node& alloc_n = alloc_node() )
 			: _root(NULL), _begin(NULL), _end(NULL), _alloc_n(alloc_n)
-				, _alloc_pair(alloc_pair), _nb_nodes(0)
+				, _nb_nodes(0)
 			{
 				createSentinelNodes();
 			}
@@ -45,7 +43,7 @@ namespace ft
 			}
 
 			AvlTree(AvlTree const & src) : _root(src._root), _begin(src._begin)
-				, _end(src._end), _alloc_n(src._alloc_n), _alloc_pair(src._alloc_pair)
+				, _end(src._end), _alloc_n(src._alloc_n)
 				, _nb_nodes(src._nb_nodes), _comp(src._comp) {}
 
 			AvlTree&	operator=(AvlTree const & rhs)
@@ -54,7 +52,6 @@ namespace ft
 				_begin = rhs._begin;
 				_end = rhs._end;
 				_alloc_n = rhs._alloc_n;
-				_alloc_pair = rhs._alloc_pair;
 				_nb_nodes = rhs._nb_nodes;
 				_comp = rhs._comp;
 				return *this;
@@ -485,7 +482,6 @@ namespace ft
 			NodeTree*		_begin;
 			NodeTree*		_end;
 			alloc_node		_alloc_n;
-			Alloc			_alloc_pair;
 			size_type		_nb_nodes;
 			key_compare		_comp;
 
