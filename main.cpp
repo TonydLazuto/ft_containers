@@ -16,6 +16,8 @@
 
 // #include "TestAvlTree.hpp"
 #include <stdlib.h>
+#include <chrono>
+using namespace std::chrono;
 
 #define MAX_RAM 4294967296
 #define BUFFER_SIZE 4096
@@ -123,44 +125,49 @@ public:
 		return o;
 	}
 	// --- End of class foo
-	template <typename T>
-	T	dec(T it, int n)
+
+	#define T1 int
+	#define T2 char
+	typedef _pair<const T1, T2> T3;
+
+	int		main(void)
 	{
-		while (n-- > 0)
-			--it;
-		return (it);
-	}
-	template <typename T>
-	T	inc(T it, int n)
-	{
-		while (n-- > 0)
-			++it;
-		return (it);
-	}
 
-#define T1 int
-#define T2 std::string
+		std::list<T3> lst;
+		unsigned int lst_size = 91;
+		for (unsigned int i = 0; i < lst_size; ++i)
+			lst.push_back(T3(i, i + 65));
+		TESTED_NAMESPACE::map<T1, T2> mp;
 
-struct ft_more {
-	bool	operator()(const T1 &first, const T1 &second) const {
-		return (first > second);
-	}
-};
+		unsigned int nb_lists = 1000;
 
-typedef TESTED_NAMESPACE::map<T1, T2, ft_more> ft_mp;
-// typedef TESTED_NAMESPACE::map<T1, T2, ft_more>::iterator ft_mp_it;
+		auto start = high_resolution_clock::now();
+		for (unsigned int i = 0; i < nb_lists ; ++i)
+		{
+			std::list<T3> tmp;
+			for (unsigned int j = 0; j < lst_size; ++j)
+				tmp.push_back(T3(i, j + 65));
+			mp.insert(tmp.begin(), tmp.end());
+		}
+		auto stop = high_resolution_clock::now();
+		auto duration = duration_cast<microseconds>(stop - start);
+		// To get the value of duration use the count()
+		// member function on the duration object
+		std::cout << "Time taken for insert: " << duration.count() << std::endl;
 
-int		main(void)
-{
-	ft_mp mp;
+		// mp.print();
 
-	mp[42] = "fgzgxfn";
-	mp[25] = "funny";
-	mp[80] = "hey";
-	mp[12] = "no";
-	mp[27] = "bee";
-	mp[90] = "8";
-	printSize(mp);
+		auto start2 = high_resolution_clock::now();
+		for (unsigned int i = 0; i < nb_lists ; ++i)
+		{
+			mp.erase(mp.find(i));
+		}
+		auto stop2 = high_resolution_clock::now();
+		auto duration2 = duration_cast<microseconds>(stop2 - start2);
+		std::cout << "Time taken for erase: " << duration2.count() << std::endl;
+
+		
+		
 
 
 // int main(void) {

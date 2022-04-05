@@ -33,7 +33,7 @@ namespace ft
 
 			AvlTree( const alloc_node& alloc_n = alloc_node() )
 			: _root(NULL), _begin(NULL), _end(NULL), _alloc_n(alloc_n)
-				, _nb_nodes(0)
+				, _nb_nodes(0), _hit(0)
 			{
 				createSentinelNodes();
 			}
@@ -43,8 +43,8 @@ namespace ft
 			}
 
 			AvlTree(AvlTree const & src) : _root(src._root), _begin(src._begin)
-				, _end(src._end), _alloc_n(src._alloc_n)
-				, _nb_nodes(src._nb_nodes), _comp(src._comp) {}
+				, _end(src._end), _alloc_n(src._alloc_n), _nb_nodes(src._nb_nodes)
+				, _comp(src._comp), _hit(src._hit) {}
 
 			AvlTree&	operator=(AvlTree const & rhs)
 			{
@@ -54,6 +54,7 @@ namespace ft
 				_alloc_n = rhs._alloc_n;
 				_nb_nodes = rhs._nb_nodes;
 				_comp = rhs._comp;
+				_hit = rhs._hit;
 				return *this;
 			}
 
@@ -159,12 +160,15 @@ namespace ft
 					r->right = insertNode(r->right, r, val, new_insert);
 				else
 					return r;
-				r = balanceInsert(r, val);
+				if (_hit % 100 == 0)
+				{
+					r = balanceInsert(r, val);
+				}
 				return r;
 			}
 
 			NodeTree*	balanceInsert(NodeTree* r, const value_type& val)
-			{				
+			{
 				int bf = getBalanceFactor(r);
 				// Left Left Case
 				if (bf > 1 && _comp(val.first, r->left->pr.first))
@@ -322,6 +326,10 @@ namespace ft
 			void		insert(const value_type& val, NodeTree*& new_insert)
 			{
 				_root = insertNode(_root, NULL, val, new_insert);
+				if (new_insert)
+					_hit++;
+				if (_hit == 100)
+					_hit = 1;
 			}
 
 			void		insertAtPosition(value_type& hint_val, const value_type& val
@@ -336,6 +344,10 @@ namespace ft
 					positionNode = balanceInsert(positionNode->parent, val);
 				}
 				_root = positionNode;
+				if (new_insert)
+					_hit++;
+				if (_hit == 100)
+					_hit = 1;
 			}
 
 			void		erase(value_type to_del)
@@ -481,6 +493,7 @@ namespace ft
 			alloc_node		_alloc_n;
 			size_type		_nb_nodes;
 			key_compare		_comp;
+			int				_hit;
 
 			int			getHeight(NodeTree* r)
 			{
