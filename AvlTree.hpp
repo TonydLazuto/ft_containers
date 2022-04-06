@@ -33,7 +33,7 @@ namespace ft
 
 			AvlTree( const alloc_node& alloc_n = alloc_node() )
 			: _root(NULL), _begin(NULL), _end(NULL), _alloc_n(alloc_n)
-				, _nb_nodes(0), _hit(0)
+				, _nb_nodes(0)
 			{
 				createSentinelNodes();
 			}
@@ -44,7 +44,7 @@ namespace ft
 
 			AvlTree(AvlTree const & src) : _root(src._root), _begin(src._begin)
 				, _end(src._end), _alloc_n(src._alloc_n), _nb_nodes(src._nb_nodes)
-				, _comp(src._comp), _hit(src._hit) {}
+				, _comp(src._comp) {}
 
 			AvlTree&	operator=(AvlTree const & rhs)
 			{
@@ -54,7 +54,6 @@ namespace ft
 				_alloc_n = rhs._alloc_n;
 				_nb_nodes = rhs._nb_nodes;
 				_comp = rhs._comp;
-				_hit = rhs._hit;
 				return *this;
 			}
 
@@ -73,8 +72,9 @@ namespace ft
 						std::cout << ", Left=" << r->left->pr.first;
 					if (r->right)
 						std::cout << ", Right=" << r->right->pr.first;
-					if (r->parent)
-						std::cout << ", Parent=" << r->parent->pr.first;
+					// if (r->parent)
+					// 	std::cout << ", Parent=" << r->parent->pr.first;
+					std::cout << ", h=" << r->height;
 					std::cout<< std::endl;
 				}
 				else
@@ -139,6 +139,15 @@ namespace ft
 						return ;
 				}
 			}
+
+			void	iterateParentHeights(NodeTree* r)
+			{
+				while (r)
+				{
+					r = r->parent;
+					r = updateHeight(r);
+				}
+			}
 			
 			NodeTree*	insertNode(NodeTree* r, NodeTree* parent
 				, const value_type& val, NodeTree*& new_insert)
@@ -147,6 +156,7 @@ namespace ft
 				{
 					r = _alloc_n.allocate(1);
 					_alloc_n.construct(r, NodeTree(parent));
+					iterateParentHeights(r);
 					r->pr = val;
 					new_insert = r;
 					_nb_nodes++;
@@ -160,16 +170,15 @@ namespace ft
 					r->right = insertNode(r->right, r, val, new_insert);
 				else
 					return r;
-				if (_hit % 100 == 0)
-				{
+				if (new_insert)
 					r = balanceInsert(r, val);
-				}
 				return r;
 			}
 
 			NodeTree*	balanceInsert(NodeTree* r, const value_type& val)
 			{
 				int bf = getBalanceFactor(r);
+
 				// Left Left Case
 				if (bf > 1 && _comp(val.first, r->left->pr.first))
 					return rightRotate(r);
@@ -326,10 +335,6 @@ namespace ft
 			void		insert(const value_type& val, NodeTree*& new_insert)
 			{
 				_root = insertNode(_root, NULL, val, new_insert);
-				if (new_insert)
-					_hit++;
-				if (_hit == 100)
-					_hit = 1;
 			}
 
 			void		insertAtPosition(value_type& hint_val, const value_type& val
@@ -344,10 +349,6 @@ namespace ft
 					positionNode = balanceInsert(positionNode->parent, val);
 				}
 				_root = positionNode;
-				if (new_insert)
-					_hit++;
-				if (_hit == 100)
-					_hit = 1;
 			}
 
 			void		erase(value_type to_del)
@@ -463,9 +464,9 @@ namespace ft
 			void		createSentinelNodes(void)
 			{
 				_begin = _alloc_n.allocate(1);
-				_alloc_n.construct(_begin, NodeTree(NULL));
+				_alloc_n.construct(_begin, NodeTree());
 				_end = _alloc_n.allocate(1);
-				_alloc_n.construct(_end, NodeTree(NULL));
+				_alloc_n.construct(_end, NodeTree());
 			}
 
 			void		deleteSentinelNodes(void)
@@ -493,28 +494,16 @@ namespace ft
 			alloc_node		_alloc_n;
 			size_type		_nb_nodes;
 			key_compare		_comp;
-			int				_hit;
-
-			int			getHeight(NodeTree* r)
-			{
-				if (r == NULL)
-					return -1;
-				else
-				{
-					int lheight = getHeight(r->left);
-					int rheight = getHeight(r->right);
-					if (lheight > rheight)
-						return (lheight + 1);
-					else
-						return (rheight + 1);
-				}
-			}
 
 			int			getBalanceFactor(NodeTree* n)
 			{
-				if (n == NULL)
-					return (-1);
-				return (getHeight(n->left) - getHeight(n->right));
+				if (n == NULL || (!n->left && !n->right))
+					return (0);
+				if (!n->left)
+					return (-n->right->height - 1);
+				else if (!n->right)
+					return (n->left->height + 1);
+				return (n->left->height - n->right->height);
 			}
 
 			NodeTree*	rightRotate(NodeTree* z)
@@ -536,6 +525,8 @@ namespace ft
 					else
 						grandad->right = y;
 				}
+				z = updateHeight(z);
+				y = updateHeight(y);
 				return y;
 			}
 
@@ -558,7 +549,31 @@ namespace ft
 					else
 						grandad->right = y;
 				}
+				z = updateHeight(z);
+				y = updateHeight(y);
 				return y;
+			}
+
+			NodeTree*	updateHeight(NodeTree* node)
+			{
+				if (!node)
+					return NULL;
+				if (node->left && node->right)
+				{
+					if (node->left->height > node->right->height)
+						node->height = node->left->height + 1;
+					else
+						node->height = node->right->height + 1;
+				}
+				else if (node->left)
+				{
+					node->height = node->left->height + 1;
+				}
+				else if (node->right)
+					node->height = node->right->height + 1;
+				else
+					node->height = 0;
+				return (node);
 			}
 	};
 

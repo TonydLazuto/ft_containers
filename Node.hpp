@@ -13,11 +13,13 @@ class Node
 		Node*						left;
 		Node*						right;
 		value_type					pr;
+		int							height;
 
-		Node( void ) : parent(NULL), left(NULL), right(NULL), pr() {}
+		Node( void ) : parent(NULL), left(NULL), right(NULL)
+		, pr(), height(0) {}
 
 		Node( Node<Key, T>* theparent )
-		: parent(theparent), left(NULL), right(NULL), pr() {}
+		: parent(theparent), left(NULL), right(NULL), pr(), height(0) {}
 
 		virtual ~Node( void ) {}
 
@@ -27,6 +29,7 @@ class Node
 			left = src.left;
 			right = src.right;
 			pr = src.pr;
+			height = src.height;
 		}
 
 		Node& operator=(Node const & rhs)
@@ -35,6 +38,7 @@ class Node
 			left = rhs.left;
 			right = rhs.right;
 			pr = rhs.pr;
+			height = rhs.height;
 			return *this;
 		}
 

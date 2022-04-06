@@ -340,7 +340,9 @@ namespace ft
 
 			void		print(void) const
 			{
+				_avl.unlinkSentinels();
 				_avl.print2D(_avl.getRoot(), 5);
+				_avl.linkSentinels();
 			}
 
 	};
